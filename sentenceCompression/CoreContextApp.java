@@ -55,16 +55,22 @@ public class CoreContextApp {
 				RelativeClauseExtractor.extractNonRestrictiveRelativeClauses(sentence, sentence.getOriginal(), true, -1);
 				
 				PrepositionalPhraseExtractor.extractInitialPPs(sentence, sentence.getOriginal(), true, -1);
-				PrepositionalPhraseExtractor.extractInfixPPs(sentence, sentence.getOriginal(), true, -1);
+				PrepositionalPhraseExtractor.extractAppositivePPs(sentence, sentence.getOriginal(), true, -1);
 				PrepositionalPhraseExtractor.extractFromTo(sentence, sentence.getOriginal(), true, -1);
-				
-				AppositivePhraseExtractor.extractRestrictiveAppositives(sentence, sentence.getOriginal(), true, -1);
-				
-				ParticipialPhraseExtractor.extractPresentParticiplesAfterNNP(sentence, sentence.getOriginal(), true, -1);
 				PrepositionalPhraseExtractor.extractAccording(sentence, sentence.getOriginal(), true, -1);
 				PrepositionalPhraseExtractor.extractIncluding(sentence, sentence.getOriginal(), true, -1);
-				ConjoinedPhrasesExtractor.extractWhilePlusParticiple(sentence, sentence.getOriginal(), true, -1);
 				PrepositionalPhraseExtractor.extractByPlusParticiple(sentence, sentence.getOriginal(), true, -1);
+				
+				ParticipialPhraseExtractor.extractPresentParticiplesAfterNNP(sentence, sentence.getOriginal(), true, -1);
+				ParticipialPhraseExtractor.extractPresentAndPastParticiples(sentence, sentence.getOriginal(), true, -1);
+				
+				InitialNounPhraseExtractor.extractInitialParentheticalNounPhrases(sentence, sentence.getOriginal(), true, -1);
+				
+				AdjectiveAdverbPhraseExtractor.extractAdjectivePhrases(sentence, sentence.getOriginal(), true, -1);
+				AdjectiveAdverbPhraseExtractor.extractAdverbPhrases(sentence, sentence.getOriginal(), true, -1);
+				
+				AppositivePhraseExtractor.extractNonRestrictiveAppositives(sentence, sentence.getOriginal(), true, -1);
+				AppositivePhraseExtractor.extractRestrictiveAppositives(sentence, sentence.getOriginal(), true, -1);
 				
 				ConjoinedPhrasesExtractor.infixWhenSplit(sentence, sentence.getOriginal(), true, -1);
 				ConjoinedPhrasesExtractor.infixAsSinceSplit(sentence, sentence.getOriginal(), true, -1);
@@ -78,13 +84,7 @@ public class CoreContextApp {
 				ConjoinedPhrasesExtractor.infixAndOrButSplit(sentence, sentence.getOriginal(), true, -1);
 				ConjoinedPhrasesExtractor.infixCommaAndOrButSplit(sentence, sentence.getOriginal(), true, -1);
 				ConjoinedPhrasesExtractor.ifSplit(sentence, sentence.getOriginal(), true, -1);
-				
-				ParticipialPhraseExtractor.extractPresentAndPastParticiples(sentence, sentence.getOriginal(), true, -1);
-				InitialNounPhraseExtractor.extractInitialParentheticalNounPhrases(sentence, sentence.getOriginal(), true, -1);
-				AdjectiveAdverbPhraseExtractor.extractAdjectivePhrases(sentence, sentence.getOriginal(), true, -1);
-				AdjectiveAdverbPhraseExtractor.extractAdverbPhrases(sentence, sentence.getOriginal(), true, -1);
-				AppositivePhraseExtractor.extractNonRestrictiveAppositives(sentence, sentence.getOriginal(), true, -1);
-			
+				ConjoinedPhrasesExtractor.extractWhilePlusParticiple(sentence, sentence.getOriginal(), true, -1);
 				
 				Punctuation.splitAtColon(sentence, sentence.getOriginal(), true, -1);
 				Punctuation.extractParentheses(sentence, sentence.getOriginal(), true, -1);

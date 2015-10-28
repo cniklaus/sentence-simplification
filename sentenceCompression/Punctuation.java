@@ -156,6 +156,7 @@ public class Punctuation {
 	}
 	
 	
+	
 	public static boolean extractParentheses(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		String sentence = Sentence.listToString(parse.yield());
 		boolean isSplit = false;

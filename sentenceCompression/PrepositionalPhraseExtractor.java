@@ -147,7 +147,7 @@ public class PrepositionalPhraseExtractor {
 	}
 	
 	
-	public static boolean extractInfixPPs(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
+	public static boolean extractAppositivePPs(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		 	
 		String sentence = Sentence.listToString(parse.yield());
 		boolean isSplit = false;
@@ -457,8 +457,8 @@ public class PrepositionalPhraseExtractor {
 		
 		return isSplit;
 	}
-	
 
+	
 	public static boolean extractByPlusParticiple(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());

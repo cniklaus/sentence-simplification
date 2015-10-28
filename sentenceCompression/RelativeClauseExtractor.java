@@ -136,6 +136,5 @@ public class RelativeClauseExtractor {
 		
 		return isSplit;
 	}
-	
 
 }
