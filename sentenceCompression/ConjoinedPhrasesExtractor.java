@@ -731,6 +731,7 @@ public class ConjoinedPhrasesExtractor {
 					//System.out.println("success2");
 					if (t.getChild(i).label().value().equals("SBAR")) {
 						//System.out.println("success3");
+						
 						if (t.getChild(i).getChild(0).label().value().equals("IN") && t.getChild(i).getChild(1).label().value().equals("S")) {
 							
 							if (t.getChild(i).getChild(0).getChild(0).label().value().equals("because")) {
@@ -758,6 +759,8 @@ public class ConjoinedPhrasesExtractor {
 								}
 								else if (t.getChild(i-1).label().value().equals(",")) {
 									phraseToDelete = ", " + t.getChild(i).getChild(0).getChild(0).label().value() + " " + Sentence.listToString(t.getChild(i).getChild(1).yield());
+								} else {
+									phraseToDelete = t.getChild(i).getChild(0).getChild(0).label().value() + " " + Sentence.listToString(t.getChild(i).getChild(1).yield());
 								}
 								
 								SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
@@ -772,6 +775,8 @@ public class ConjoinedPhrasesExtractor {
 								}
 								else if (t.getChild(i-1).label().value().equals(",")) {
 									phraseToDelete = ", " + t.getChild(i).getChild(0).getChild(0).label().value() + " " + Sentence.listToString(t.getChild(i).getChild(1).yield());
+								} else {
+									phraseToDelete = t.getChild(i).getChild(0).getChild(0).label().value() + " " + Sentence.listToString(t.getChild(i).getChild(1).yield());
 								}
 								
 								SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
@@ -941,4 +946,28 @@ public class ConjoinedPhrasesExtractor {
 		return isSplit;
 	}
 	
+	
+	public static boolean extractSo(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
+		
+		String sentence = Sentence.listToString(parse.yield());
+		boolean isSplit = false;
+		
+		for (Tree t : parse) {
+			if (t.getChildrenAsList().size() >= 3) {
+				for (int i = 0; i < t.getChildrenAsList().size()-2; i++) {
+					if (t.getChild(i).label().value().equals(",") && t.getChild(i+1).label().value().equals("IN") && t.getChild(i+2).label().value().equals("S")) {
+						if (t.getChild(i+1).getChild(0).label().value().equals("so")) {
+							String phrase = Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield()) + " .";
+							String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield());
+							
+							SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+							isSplit = true;
+						}
+					}
+				}
+			}
+		}
+	
+		return isSplit;
+	}
 }

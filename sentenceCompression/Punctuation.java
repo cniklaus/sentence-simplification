@@ -6,15 +6,12 @@ import java.util.List;
 import edu.stanford.nlp.ling.LabeledWord;
 import edu.stanford.nlp.ling.Sentence;
 import edu.stanford.nlp.trees.Tree;
-import edu.stanford.nlp.trees.tregex.TregexMatcher;
-import edu.stanford.nlp.trees.tregex.TregexPattern;
 
 public class Punctuation {
 
 	public static boolean splitAtColon(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		String sentence = Sentence.listToString(parse.yield());
 		boolean isSplit = false;
-		boolean isPresent = SentenceProcessor.isPresent(parse);
 		
 		for (Tree t : parse) {
 			if (t.getChildrenAsList().size() >= 3) {
@@ -97,7 +94,7 @@ public class Punctuation {
 					}
 					isSplit = true;
 				}
-				
+				/**
 				if (t.getChild(i).label().value().equals(":") && t.getChild(i).getChild(0).label().value().equals(":") && (t.getChild(i+1).label().value().equals("UCP") || t.getChild(i+1).label().value().equals("NP"))) {
 					
 					TregexPattern patternMW = TregexPattern.compile("NP . /:/");
@@ -148,7 +145,7 @@ public class Punctuation {
 						SentenceProcessor.updateSentence(phrase2, delete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 					}
 					isSplit = true;
-				}
+				}*/
 			}
 		}
 		
@@ -295,6 +292,7 @@ public class Punctuation {
 					}
 				}
 			}
+			/**
 			if (t.getChildrenAsList().size() >= 3) {
 				for (int i = 0; i < t.getChildrenAsList().size()-2; i++) {
 					if (t.getChild(i).label().value().equals("NP") && t.getChild(i+1).label().value().equals(":") && t.getChild(i+2).label().value().equals("NP") && i == t.getChildrenAsList().size()-3) {
@@ -322,7 +320,7 @@ public class Punctuation {
 						isSplit = true;
 					}
 				}
-			}
+			}*/
 		}
 		
 		return isSplit;
@@ -374,18 +372,18 @@ public class Punctuation {
 			}
 			
 			
-				if (t.getChildrenAsList().size() >= 5) {
-					for (int i = 0; i < t.getChildrenAsList().size()-4; i++) {
-						if (t.getChild(i).label().value().equals("NP") && t.getChild(i+1).label().value().equals("-LRB-") && t.getChild(i+2).label().value().equals("CC") && t.getChild(i+3).label().value().equals("NP") && t.getChild(i+4).label().value().equals("-RRB-")) {
-							if (t.getChild(i+2).getChild(0).label().value().equals("and")) {
-								String phrase = "This " + aux + " as well as " + Sentence.listToString(t.getChild(i+3).yield()) + " .";
-								String phraseToDelete = Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield()) + " " + Sentence.listToString(t.getChild(i+4).yield());
-								
-								SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-								isSplit = true;
-							}
+			if (t.getChildrenAsList().size() >= 5) {
+				for (int i = 0; i < t.getChildrenAsList().size()-4; i++) {
+					if (t.getChild(i).label().value().equals("NP") && t.getChild(i+1).label().value().equals("-LRB-") && t.getChild(i+2).label().value().equals("CC") && t.getChild(i+3).label().value().equals("NP") && t.getChild(i+4).label().value().equals("-RRB-")) {
+						if (t.getChild(i+2).getChild(0).label().value().equals("and")) {
+							String phrase = "This " + aux + " as well as " + Sentence.listToString(t.getChild(i+3).yield()) + " .";
+							String phraseToDelete = Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield()) + " " + Sentence.listToString(t.getChild(i+4).yield());
+							
+							SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+							isSplit = true;
 						}
 					}
+				}
 				
 			}
 			

@@ -55,11 +55,11 @@ public class CoreContextApp {
 				RelativeClauseExtractor.extractNonRestrictiveRelativeClauses(sentence, sentence.getOriginal(), true, -1);
 				
 				PrepositionalPhraseExtractor.extractInitialPPs(sentence, sentence.getOriginal(), true, -1);
-				PrepositionalPhraseExtractor.extractAppositivePPs(sentence, sentence.getOriginal(), true, -1);
+				PrepositionalPhraseExtractor.extractInfixPPs(sentence, sentence.getOriginal(), true, -1);
 				PrepositionalPhraseExtractor.extractFromTo(sentence, sentence.getOriginal(), true, -1);
 				PrepositionalPhraseExtractor.extractAccording(sentence, sentence.getOriginal(), true, -1);
 				PrepositionalPhraseExtractor.extractIncluding(sentence, sentence.getOriginal(), true, -1);
-				PrepositionalPhraseExtractor.extractByPlusParticiple(sentence, sentence.getOriginal(), true, -1);
+				PrepositionalPhraseExtractor.extractToDo(sentence, sentence.getOriginal(), true, -1);
 				
 				ParticipialPhraseExtractor.extractPresentParticiplesAfterNNP(sentence, sentence.getOriginal(), true, -1);
 				ParticipialPhraseExtractor.extractPresentAndPastParticiples(sentence, sentence.getOriginal(), true, -1);
@@ -85,6 +85,7 @@ public class CoreContextApp {
 				ConjoinedPhrasesExtractor.infixCommaAndOrButSplit(sentence, sentence.getOriginal(), true, -1);
 				ConjoinedPhrasesExtractor.ifSplit(sentence, sentence.getOriginal(), true, -1);
 				ConjoinedPhrasesExtractor.extractWhilePlusParticiple(sentence, sentence.getOriginal(), true, -1);
+				ConjoinedPhrasesExtractor.extractSo(sentence, sentence.getOriginal(), true, -1);
 				
 				Punctuation.splitAtColon(sentence, sentence.getOriginal(), true, -1);
 				Punctuation.extractParentheses(sentence, sentence.getOriginal(), true, -1);
@@ -137,6 +138,10 @@ public class CoreContextApp {
 						str = str.replace(", .", ".");
 						sentence.getContext().set(v, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
 					}
+					if (str.endsWith(", . ''")) {
+						str = str.replace(", . ''", ".");
+						sentence.getContext().set(v, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
+					}
 					contextSen.add(str);
 					//System.out.println(str);
 					v++;
@@ -147,10 +152,9 @@ public class CoreContextApp {
 				for (String str : contextSen) {
 					
 					for (int j = m+1; j < contextSen.size(); j++) {
-						//System.out.println("compared: " + coreSen.get(j));
 						
 						if (str.equals(contextSen.get(j))) {
-							sentence.getContext().remove(m);
+							sentence.getContext().set(m, null);
 						}
 					}
 					m++;

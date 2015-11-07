@@ -31,6 +31,7 @@ public class AdjectiveAdverbPhraseExtractor {
 								String phrase = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + aux + Sentence.listToString(t.getChild(i+3).yield()) + " .";
 								String phraseToDelete = Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield()) + " " + Sentence.listToString(t.getChild(i+4).yield());
 								
+								
 								SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 								isSplit = true;
 							}
@@ -52,6 +53,7 @@ public class AdjectiveAdverbPhraseExtractor {
 								String phrase = Sentence.listToString(t.getChild(i).yield()) + aux + Sentence.listToString(t.getChild(i+2).yield()) + " .";
 								String phraseToDelete = Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield());
 								
+								
 								SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 								isSplit = true;
 							}
@@ -66,8 +68,9 @@ public class AdjectiveAdverbPhraseExtractor {
 								boolean isSingular = SentenceProcessor.isSingular(label.get(label.size()-1));
 								String aux = SentenceProcessor.setAux(isSingular, isPresent);
 								
-								String phrase = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + aux + Sentence.listToString(t.getChild(i+2).yield()) + " .";
+								String phrase = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + aux + Sentence.listToString(t.getChild(i+3).yield()) + " .";
 								String phraseToDelete = Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield());
+								
 								
 								SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 								isSplit = true;
@@ -90,6 +93,7 @@ public class AdjectiveAdverbPhraseExtractor {
 								String phrase = Sentence.listToString(t.getChild(i).yield()) + aux + Sentence.listToString(t.getChild(i+2).yield()) + " .";
 								String phraseToDelete = Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield());
 								
+								
 								SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 								isSplit = true;
 							}
@@ -105,6 +109,7 @@ public class AdjectiveAdverbPhraseExtractor {
 							String phrase = "This " + aux2 + " when being " + Sentence.listToString(t.getChild(i).yield()) + " .";
 							String phraseToDelete = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield());
 							
+							
 							SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 							isSplit = true;
 						}
@@ -112,6 +117,7 @@ public class AdjectiveAdverbPhraseExtractor {
 							if (t.getChild(i).getChild(0).label().value().equals("ADVP") && t.getChild(i).getChild(1).label().value().equals("ADJP")) {
 								String phrase = "This " + aux2 + " when being " + Sentence.listToString(t.getChild(i).yield()) + " .";
 								String phraseToDelete = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield());
+								
 								
 								SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 								isSplit = true;

@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import edu.stanford.nlp.ling.Sentence;
 import edu.stanford.nlp.trees.Tree;
@@ -40,6 +41,7 @@ public class FileOperator {
 	public void writeFile(ArrayList<CoreContextSentence> sentences, File file) throws IOException {
 		
 		FileWriter writer = new FileWriter(file);
+		
 				
 		for (CoreContextSentence s : sentences) {
 			
@@ -53,14 +55,16 @@ public class FileOperator {
 					}
 					
 				}
-				
+				Collections.reverse(s.getCoreNew());
 				for (Tree t : s.getCoreNew()) {
 					writer.write("core sentence: " + Sentence.listToString(t.yield()) + "\n");
 				}
 				
-				
 				for (Tree t : s.getContext()) {
-					writer.write("context sentence: " + Sentence.listToString(t.yield()) + "\n");
+					if (t != null) {
+						writer.write("context sentence: " + Sentence.listToString(t.yield()) + "\n");
+					}
+					
 				}
 				
 				writer.write("\n");

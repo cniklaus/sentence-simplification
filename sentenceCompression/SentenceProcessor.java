@@ -246,6 +246,8 @@ public class SentenceProcessor {
 		boolean isPrunedBrackets = false;
 		boolean isPrunedIf = false;
 		boolean isPrunedFromTo = false;
+		boolean isPrunedSo = false;
+		boolean isPrunedToDo = false;
 		
 		while (n < currentContext.size()) {
 			
@@ -288,6 +290,9 @@ public class SentenceProcessor {
 			if (n < sentence.getContext().size()) {	
 				isPrunedIf = ConjoinedPhrasesExtractor.ifSplit(sentence, currentContext.get(n), false, n);
 			}
+			if (n < sentence.getContext().size()) {	
+				isPrunedSo = ConjoinedPhrasesExtractor.extractSo(sentence, currentContext.get(n), false, n);
+			}
 				
 			if (n < sentence.getContext().size()) {	
 				isPrunedAccording = PrepositionalPhraseExtractor.extractAccording(sentence, currentContext.get(n), false, n);
@@ -295,16 +300,15 @@ public class SentenceProcessor {
 			if (n < sentence.getContext().size()) {	
 				isPrunedGerundAfterWhile = ConjoinedPhrasesExtractor.extractWhilePlusParticiple(sentence, currentContext.get(n), false, n);
 			}
-			
+
 			if (n < sentence.getContext().size()) {	
-				isPrunedByGerund = PrepositionalPhraseExtractor.extractByPlusParticiple(sentence, currentContext.get(n), false, n);
+				isPrunedToDo = PrepositionalPhraseExtractor.extractToDo(sentence, currentContext.get(n), false, n);
 			}
-			//}
 			if (n < sentence.getContext().size()) {	
 				isPrunedInitialPPs = PrepositionalPhraseExtractor.extractInitialPPs(sentence, currentContext.get(n), false, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedAppositivePPs = PrepositionalPhraseExtractor.extractAppositivePPs(sentence, currentContext.get(n), false, n);
+				isPrunedAppositivePPs = PrepositionalPhraseExtractor.extractInfixPPs(sentence, currentContext.get(n), false, n);
 			}
 			if (n < sentence.getContext().size()) {	
 				isPrunedFromTo = PrepositionalPhraseExtractor.extractFromTo(sentence, currentContext.get(n), false, n);
@@ -350,7 +354,7 @@ public class SentenceProcessor {
 					isPrunedSBARAfterBefore || isPrunedInitialWhen || isPrunedInitialThoughAlthoughBecause || isPrunedInfixBecauseThoughAlthough || 
 					isPrunedInfixAndOrBut || isPrunedCommaAndOrBut || isPrunedADVPappositives || isPrunedNPPappositives || isPrunedGerundAfterWhile || 
 					isPrunedGerundAfterComma || isPrunedGerundSentenceStart || isPrunedByGerund || isPrunedColon || isPrunedParentheses || isPrunedBrackets || isPrunedIf
-					|| isPrunedFromTo) {
+					|| isPrunedFromTo || isPrunedSo || isPrunedToDo) {
 				isPruned[n] = true;
 			}
 			
