@@ -16,8 +16,8 @@ public class CoreContextApp {
 	
 	public static void main(String[] args) throws IOException {
 		
-		String input = "data/Wikipedia/Eval/Google/GoogleOutput";
-		String output = "data/Wikipedia/Eval/Google/GoogleResult";
+		String input = "data/Wikipedia/Eval/Mandela/MandelaOutput";
+		String output = "data/Wikipedia/Eval/Mandela/MandelaResult";
 		
 		ArrayList<CoreContextSentence> sen = new ArrayList<CoreContextSentence>();
 		
@@ -27,7 +27,7 @@ public class CoreContextApp {
 		try {
 			sentences = fo.readFile(new File(input));
 			
-			File f = new File("data/Wikipedia/Eval/Google/GoogleParsed");
+			File f = new File("data/Wikipedia/Eval/Mandela/MandelaParsed");
 			PrintWriter pw = new PrintWriter(f);
 			TreePrint print = new TreePrint("penn");
 			int i = 0;

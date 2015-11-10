@@ -304,9 +304,9 @@ public class SentenceProcessor {
 			if (n < sentence.getContext().size()) {	
 				isPrunedToDo = PrepositionalPhraseExtractor.extractToDo(sentence, currentContext.get(n), false, n);
 			}
-			if (n < sentence.getContext().size()) {	
-				isPrunedInitialPPs = PrepositionalPhraseExtractor.extractInitialPPs(sentence, currentContext.get(n), false, n);
-			}
+			//if (n < sentence.getContext().size()) {	
+				//isPrunedInitialPPs = PrepositionalPhraseExtractor.extractInitialPPs(sentence, currentContext.get(n), false, n);
+			//}
 			if (n < sentence.getContext().size()) {	
 				isPrunedAppositivePPs = PrepositionalPhraseExtractor.extractInfixPPs(sentence, currentContext.get(n), false, n);
 			}
