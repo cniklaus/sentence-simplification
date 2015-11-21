@@ -304,6 +304,7 @@ public class SentenceProcessor {
 			if (n < sentence.getContext().size()) {	
 				isPrunedToDo = PrepositionalPhraseExtractor.extractToDo(sentence, currentContext.get(n), false, n);
 			}
+			// initial PPs nicht in context sentences extrahieren (wegen rel clauses mit PP / anderes beispiel: in an effort to maintain ...)
 			//if (n < sentence.getContext().size()) {	
 				//isPrunedInitialPPs = PrepositionalPhraseExtractor.extractInitialPPs(sentence, currentContext.get(n), false, n);
 			//}
