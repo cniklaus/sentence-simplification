@@ -38,6 +38,24 @@ public class RelativeClauseExtractor {
 			for (int i = 0; i < t.getChildrenAsList().size()-2; i++) {
 				
 				if (t.getChild(i).label().value().equals("NP") && t.getChild(i+1).label().value().equals(",") && t.getChild(i+2).label().value().equals("SBAR")) {
+					if (t.getChild(i+2).getChild(0).label().value().equals("WP$") && t.getChild(i+2).getChild(1).label().value().equals("S")) {
+						if (t.getChild(i+2).getChild(0).getChild(0).label().value().equals("whose")) {
+							String relClause = Sentence.listToString(t.getChild(i).yield()) + "'s " + Sentence.listToString(t.getChild(i+2).getChild(1).yield()) + " .";
+							String relClauseToDelete = "";
+							//System.out.println(att);
+							
+							if (i == t.getChildrenAsList().size()-3) {
+								relClauseToDelete = ", " + Sentence.listToString(t.getChild(i+2).yield());
+							}
+							else if (t.getChild(i+3).label().value().equals(",")) {
+								relClauseToDelete = ", " + Sentence.listToString(t.getChild(i+2).yield()) + " ,";
+							}
+							
+							SentenceProcessor.updateSentence(relClause, relClauseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+							isSplit = true;
+						}
+						
+					}
 					if (t.getChild(i+2).getChild(0).label().value().equals("WHNP") && t.getChild(i+2).getChild(1).label().value().equals("S")) {
 						if ((t.getChild(i+2).getChild(0).getChild(0).label().value().equals("WDT") && t.getChild(i+2).getChild(0).getChild(0).getChild(0).label().value().equals("which")) ||
 								(t.getChild(i+2).getChild(0).getChild(0).label().value().equals("WP") && (t.getChild(i+2).getChild(0).getChild(0).getChild(0).label().value().equals("who") || t.getChild(i+2).getChild(0).getChild(0).getChild(0).label().value().equals("whom")))) {
@@ -51,6 +69,24 @@ public class RelativeClauseExtractor {
 							}
 								
 							String relClause = att + " " + Sentence.listToString(t.getChild(i+2).getChild(1).yield()) + " .";
+							String relClauseToDelete = "";
+							//System.out.println(att);
+							
+							if (i == t.getChildrenAsList().size()-3) {
+								relClauseToDelete = ", " + Sentence.listToString(t.getChild(i+2).yield());
+							}
+							else if (t.getChild(i+3).label().value().equals(",")) {
+								relClauseToDelete = ", " + Sentence.listToString(t.getChild(i+2).yield()) + " ,";
+							}
+							
+							SentenceProcessor.updateSentence(relClause, relClauseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+							isSplit = true;
+						}
+						
+						if (t.getChild(i+2).getChild(0).getChild(0).label().value().equals("WP$") && t.getChild(i+2).getChild(0).getChild(0).getChild(0).label().value().equals("whose")) {
+							
+							String relClause = Sentence.listToString(t.getChild(i).yield()) + "'s " + Sentence.listToString(t.getChild(i+2).yield()) + " .";
+							relClause = relClause.replace("whose", "");
 							String relClauseToDelete = "";
 							//System.out.println(att);
 							

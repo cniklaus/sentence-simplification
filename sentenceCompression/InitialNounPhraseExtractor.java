@@ -16,11 +16,22 @@ public class InitialNounPhraseExtractor {
 			if (t.label().value().equals("S")) {
 				if (t.getChildrenAsList().size() >= 2) {
 					if (t.getChild(0).label().value().equals("NP") && t.getChild(1).label().value().equals(",")) {
-						String phrase = "This " + aux + Sentence.listToString(t.getChild(0).yield()) + " .";
-						String phraseToDelete = Sentence.listToString(t.getChild(0).yield()) + " " + Sentence.listToString(t.getChild(1).yield());
+						if (t.getChildrenAsList().size() >= 5) {
+							if (! (t.getChild(2).label().value().equals("S") && t.getChild(3).label().value().equals(",") && t.getChild(4).label().value().equals("VP"))) {
+								String phrase = "This " + aux + Sentence.listToString(t.getChild(0).yield()) + " .";
+								String phraseToDelete = Sentence.listToString(t.getChild(0).yield()) + " " + Sentence.listToString(t.getChild(1).yield());
+							
+								SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+								isSplit = true;
+							}
+						}
+						else {
+							String phrase = "This " + aux + Sentence.listToString(t.getChild(0).yield()) + " .";
+							String phraseToDelete = Sentence.listToString(t.getChild(0).yield()) + " " + Sentence.listToString(t.getChild(1).yield());
 						
-						SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-						isSplit = true;
+							SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+							isSplit = true;
+						}
 					}
 				}
 				if (t.getChildrenAsList().size() >= 3) {

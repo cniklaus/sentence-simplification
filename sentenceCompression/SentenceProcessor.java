@@ -221,7 +221,6 @@ public class SentenceProcessor {
 		boolean isPrunedNPappositives = false;
 		boolean isPrunedVPappositives = false;
 		boolean isPrunedAccording = false;
-		boolean isPrunedGerundAfterNNP = false;
 		boolean isPrunedIncluding = false;
 		boolean isPrunedProperNouns = false;
 		boolean isPrunedInfixWhen = false;
@@ -248,6 +247,7 @@ public class SentenceProcessor {
 		boolean isPrunedFromTo = false;
 		boolean isPrunedSo = false;
 		boolean isPrunedToDo = false;
+		boolean isPrunedOr = false;
 		
 		while (n < currentContext.size()) {
 			
@@ -257,9 +257,9 @@ public class SentenceProcessor {
 			if (n < sentence.getContext().size()) {		
 				isPrunedInfixWhen = ConjoinedPhrasesExtractor.infixWhenSplit(sentence, currentContext.get(n), false, n);
 			}
-			if (n < sentence.getContext().size()) {	
-				isPrunedInfixAsSince = ConjoinedPhrasesExtractor.infixAsSinceSplit(sentence, currentContext.get(n), false, n);
-			}
+			//if (n < sentence.getContext().size()) {	
+				//isPrunedInfixAsSince = ConjoinedPhrasesExtractor.infixAsSinceSplit(sentence, currentContext.get(n), false, n);
+			//}
 			if (n < sentence.getContext().size()) {	
 				isPrunedInfixCommaPPAfterBefore = ConjoinedPhrasesExtractor.infixCommaPPAfterBeforeSplit(sentence, currentContext.get(n), false, n);
 			}
@@ -280,6 +280,9 @@ public class SentenceProcessor {
 			}
 			if (n < sentence.getContext().size()) {	
 				isPrunedInfixBecauseThoughAlthough = ConjoinedPhrasesExtractor.infixBecauseThoughAlthoughSplit(sentence, currentContext.get(n), false, n);
+			}
+			if (n < sentence.getContext().size()) {	
+				isPrunedOr = ConjoinedPhrasesExtractor.or(sentence, currentContext.get(n), false, n);
 			}
 			if (n < sentence.getContext().size()) {	
 				isPrunedInfixAndOrBut = ConjoinedPhrasesExtractor.infixAndOrButSplit(sentence, currentContext.get(n), false, n);
@@ -330,9 +333,6 @@ public class SentenceProcessor {
 				isPrunedNPPappositives = AppositivePhraseExtractor.extractNonRestrictiveAppositives(sentence, currentContext.get(n), false, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedGerundAfterNNP = ParticipialPhraseExtractor.extractPresentParticiplesAfterNNP(sentence, currentContext.get(n), false, n);
-			}
-			if (n < sentence.getContext().size()) {	
 				isPrunedIncluding = PrepositionalPhraseExtractor.extractIncluding(sentence, currentContext.get(n), false, n);
 			}
 			
@@ -345,17 +345,17 @@ public class SentenceProcessor {
 			if (n < sentence.getContext().size()) {	
 				isPrunedParentheses = Punctuation.extractParentheses(sentence, currentContext.get(n), false, n);
 			}
-			if (n < sentence.getContext().size()) {	
-				isPrunedBrackets = Punctuation.removeBrackets(sentence, currentContext.get(n), false, n);
-			}
+		//	if (n < sentence.getContext().size()) {	
+				//isPrunedBrackets = Punctuation.removeBrackets(sentence, currentContext.get(n), false, n);
+			//}
 			
 			if (isPrunedRelClauseNonRestrictive || isPrunedInitialPPs || isPrunedAppositivePPs || isPrunedADJPappositives ||
-					isPrunedNPappositives || isPrunedVPappositives || isPrunedAccording || isPrunedGerundAfterNNP || isPrunedIncluding || isPrunedProperNouns ||
+					isPrunedNPappositives || isPrunedVPappositives || isPrunedAccording || isPrunedIncluding || isPrunedProperNouns ||
 					isPrunedInfixWhen || isPrunedInfixAsSince || isPrunedInfixCommaPPAfterBefore || isPrunedInfixPPAfterBefore || isPrunedInfixPPSAfterBefore ||
 					isPrunedSBARAfterBefore || isPrunedInitialWhen || isPrunedInitialThoughAlthoughBecause || isPrunedInfixBecauseThoughAlthough || 
 					isPrunedInfixAndOrBut || isPrunedCommaAndOrBut || isPrunedADVPappositives || isPrunedNPPappositives || isPrunedGerundAfterWhile || 
 					isPrunedGerundAfterComma || isPrunedGerundSentenceStart || isPrunedByGerund || isPrunedColon || isPrunedParentheses || isPrunedBrackets || isPrunedIf
-					|| isPrunedFromTo || isPrunedSo || isPrunedToDo) {
+					|| isPrunedFromTo || isPrunedSo || isPrunedToDo || isPrunedOr) {
 				isPruned[n] = true;
 			}
 			

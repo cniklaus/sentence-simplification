@@ -170,8 +170,8 @@ public class PrepositionalPhraseExtractor {
 		for (Tree t : parse) {
 			for (int i = 0; i < t.getChildrenAsList().size()-3; i++) {
 				if (t.getChild(i).label().value().equals(",") && t.getChild(i+1).label().value().equals("PP") && (t.getChild(i+2).label().value().equals("NP") || t.getChild(i+2).label().value().equals("PP")) && t.getChild(i+3).label().value().equals(",")) {
-					if (t.getChild(i+1).getChild(0).label().value().equals("TO") || t.getChild(i+1).getChild(0).label().value().equals("IN") || t.getChild(i+1).getChild(0).label().value().equals("VBN") ||
-							t.getChild(i+1).getChild(1).label().value().equals("TO") || t.getChild(i+1).getChild(1).label().value().equals("IN") || t.getChild(i+1).getChild(1).label().value().equals("VBN")) {
+					//if (t.getChild(i+1).getChild(0).label().value().equals("TO") || t.getChild(i+1).getChild(0).label().value().equals("IN") || t.getChild(i+1).getChild(0).label().value().equals("VBN") ||
+							//t.getChild(i+1).getChild(1).label().value().equals("TO") || t.getChild(i+1).getChild(1).label().value().equals("IN") || t.getChild(i+1).getChild(1).label().value().equals("VBN")) {
 						String aux = SentenceProcessor.setAux(true, isPresent);
 						
 						String PPphrase = "This" + aux + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield()) + " .";
@@ -179,11 +179,11 @@ public class PrepositionalPhraseExtractor {
 						
 						SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 						isSplit = true;
-					}
+					//}
 				}
 				if (t.getChild(i).label().value().equals(",") && t.getChild(i+1).label().value().equals("ADVP") && t.getChild(i+2).label().value().equals("PP") && t.getChild(i+3).label().value().equals(",")) {
-					if (t.getChild(i+2).getChild(0).label().value().equals("TO") || t.getChild(i+2).getChild(0).label().value().equals("IN") || t.getChild(i+2).getChild(0).label().value().equals("VBN") ||
-							t.getChild(i+2).getChild(1).label().value().equals("TO") || t.getChild(i+2).getChild(1).label().value().equals("IN") || t.getChild(i+2).getChild(1).label().value().equals("VBN")) {
+					//if (t.getChild(i+2).getChild(0).label().value().equals("TO") || t.getChild(i+2).getChild(0).label().value().equals("IN") || t.getChild(i+2).getChild(0).label().value().equals("VBN") ||
+						//	t.getChild(i+2).getChild(1).label().value().equals("TO") || t.getChild(i+2).getChild(1).label().value().equals("IN") || t.getChild(i+2).getChild(1).label().value().equals("VBN")) {
 						String aux = SentenceProcessor.setAux(true, isPresent);
 						
 						String PPphrase = "This" + aux + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield()) + " .";
@@ -191,13 +191,13 @@ public class PrepositionalPhraseExtractor {
 						
 						SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 						isSplit = true;
-					}
+					//}
 				}
 			}
 			for (int i = 0; i < t.getChildrenAsList().size()-2; i++) {
 				if (t.getChild(i).label().value().equals(",") && t.getChild(i+1).label().value().equals("PP") && t.getChild(i+2).label().value().equals(",")) {
-					if (t.getChild(i+1).getChild(0).label().value().equals("TO") || t.getChild(i+1).getChild(0).label().value().equals("IN") || t.getChild(i+1).getChild(0).label().value().equals("VBN") ||
-							t.getChild(i+1).getChild(1).label().value().equals("TO") || t.getChild(i+1).getChild(1).label().value().equals("IN") || t.getChild(i+1).getChild(1).label().value().equals("VBN")) {
+					//if (t.getChild(i+1).getChild(0).label().value().equals("TO") || t.getChild(i+1).getChild(0).label().value().equals("IN") || t.getChild(i+1).getChild(0).label().value().equals("VBN") ||
+						//	t.getChild(i+1).getChild(1).label().value().equals("TO") || t.getChild(i+1).getChild(1).label().value().equals("IN") || t.getChild(i+1).getChild(1).label().value().equals("VBN")) {
 						String aux = SentenceProcessor.setAux(true, isPresent);
 						
 						String PPphrase = "This" + aux + Sentence.listToString(t.getChild(i+1).yield()) + " .";
@@ -205,7 +205,7 @@ public class PrepositionalPhraseExtractor {
 						
 						SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 						isSplit = true;
-					}
+					//}
 				}
 				if (t.getChild(i).label().value().equals(",") && t.getChild(i+1).label().value().equals("SBAR") && t.getChild(i+2).label().value().equals(",")) {
 					if ((t.getChild(i+1).getChild(0).label().value().equals("IN") && t.getChild(i+1).getChild(1).label().value().equals("S") &&
@@ -223,8 +223,8 @@ public class PrepositionalPhraseExtractor {
 				}
 					
 				if (t.getChild(i).label().value().equals(",") && t.getChild(i+1).label().value().equals("PP") && (t.getChild(i+2).label().value().equals("NP") || t.getChild(i+2).label().value().equals("PP")) && i == t.getChildrenAsList().size()-3) {
-					if (t.getChild(i+1).getChild(0).label().value().equals("TO") || t.getChild(i+1).getChild(0).label().value().equals("IN") || t.getChild(i+1).getChild(0).label().value().equals("VBN") ||
-							t.getChild(i+1).getChild(1).label().value().equals("TO") || t.getChild(i+1).getChild(1).label().value().equals("IN") || t.getChild(i+1).getChild(1).label().value().equals("VBN")) {
+					//if (t.getChild(i+1).getChild(0).label().value().equals("TO") || t.getChild(i+1).getChild(0).label().value().equals("IN") || t.getChild(i+1).getChild(0).label().value().equals("VBN") ||
+						//	t.getChild(i+1).getChild(1).label().value().equals("TO") || t.getChild(i+1).getChild(1).label().value().equals("IN") || t.getChild(i+1).getChild(1).label().value().equals("VBN")) {
 						String aux = SentenceProcessor.setAux(true, isPresent);
 						
 						String PPphrase = "This" + aux + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield()) + " .";
@@ -232,12 +232,12 @@ public class PrepositionalPhraseExtractor {
 							
 						SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 						isSplit = true;
-					}
+					//}
 				}
 				
 				if (t.getChild(i).label().value().equals(",") && t.getChild(i+1).label().value().equals("ADVP") && t.getChild(i+2).label().value().equals("PP") && i == t.getChildrenAsList().size()-3) {
-					if (t.getChild(i+2).getChild(0).label().value().equals("TO") || t.getChild(i+2).getChild(0).label().value().equals("IN") || t.getChild(i+2).getChild(0).label().value().equals("VBN") ||
-							t.getChild(i+2).getChild(1).label().value().equals("TO") || t.getChild(i+2).getChild(1).label().value().equals("IN") || t.getChild(i+2).getChild(1).label().value().equals("VBN")) {
+					//if (t.getChild(i+2).getChild(0).label().value().equals("TO") || t.getChild(i+2).getChild(0).label().value().equals("IN") || t.getChild(i+2).getChild(0).label().value().equals("VBN") ||
+						//	t.getChild(i+2).getChild(1).label().value().equals("TO") || t.getChild(i+2).getChild(1).label().value().equals("IN") || t.getChild(i+2).getChild(1).label().value().equals("VBN")) {
 						String aux = SentenceProcessor.setAux(true, isPresent);
 						
 						String PPphrase = "This" + aux + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield()) + " .";
@@ -245,14 +245,14 @@ public class PrepositionalPhraseExtractor {
 							
 						SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 						isSplit = true;
-					}
+					//}
 				}
 			}
 				
 			for (int i = 0; i < t.getChildrenAsList().size()-1; i++) {
 				if (t.getChild(i).label().value().equals(",") && t.getChild(i+1).label().value().equals("PP") && i == t.getChildrenAsList().size()-2) {
-					if (t.getChild(i+1).getChild(0).label().value().equals("TO") || t.getChild(i+1).getChild(0).label().value().equals("IN") || t.getChild(i+1).getChild(0).label().value().equals("VBN") ||
-							t.getChild(i+1).getChild(1).label().value().equals("TO") || t.getChild(i+1).getChild(1).label().value().equals("IN") || t.getChild(i+1).getChild(1).label().value().equals("VBN")) {
+					//if (t.getChild(i+1).getChild(0).label().value().equals("TO") || t.getChild(i+1).getChild(0).label().value().equals("IN") || t.getChild(i+1).getChild(0).label().value().equals("VBN") ||
+							//t.getChild(i+1).getChild(1).label().value().equals("TO") || t.getChild(i+1).getChild(1).label().value().equals("IN") || t.getChild(i+1).getChild(1).label().value().equals("VBN")) {
 						String aux = SentenceProcessor.setAux(true, isPresent);
 						
 						String PPphrase = "This" + aux + Sentence.listToString(t.getChild(i+1).yield()) + " .";
@@ -260,7 +260,7 @@ public class PrepositionalPhraseExtractor {
 							
 						SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 						isSplit = true;
-					}
+					//}
 				}
 					
 				if (t.getChild(i).label().value().equals(",") && t.getChild(i+1).label().value().equals("SBAR") && i == t.getChildrenAsList().size()-2) {

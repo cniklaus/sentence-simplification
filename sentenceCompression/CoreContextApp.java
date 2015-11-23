@@ -16,8 +16,8 @@ public class CoreContextApp {
 	
 	public static void main(String[] args) throws IOException {
 		
-		String input = "data/Wikipedia/Obama/ObamaOutput";
-		String output = "data/Wikipedia/Obama/ObamaResult";
+		String input = "data/Wikipedia/Eval/Mandela/semikolon";
+		String output = "data/Wikipedia/Eval/Mandela/semikolonResult";
 		
 		ArrayList<CoreContextSentence> sen = new ArrayList<CoreContextSentence>();
 		
@@ -27,7 +27,7 @@ public class CoreContextApp {
 		try {
 			sentences = fo.readFile(new File(input));
 			
-			File f = new File("data/Wikipedia/Obama/ObamaParsed");
+			File f = new File("data/Wikipedia/Eval/Mandela/semikolonParsed");
 			PrintWriter pw = new PrintWriter(f);
 			TreePrint print = new TreePrint("penn");
 			int i = 0;
@@ -61,7 +61,6 @@ public class CoreContextApp {
 				PrepositionalPhraseExtractor.extractIncluding(sentence, sentence.getOriginal(), true, -1);
 				PrepositionalPhraseExtractor.extractToDo(sentence, sentence.getOriginal(), true, -1);
 				
-				ParticipialPhraseExtractor.extractPresentParticiplesAfterNNP(sentence, sentence.getOriginal(), true, -1);
 				ParticipialPhraseExtractor.extractPresentAndPastParticiples(sentence, sentence.getOriginal(), true, -1);
 				
 				InitialNounPhraseExtractor.extractInitialParentheticalNounPhrases(sentence, sentence.getOriginal(), true, -1);
@@ -86,6 +85,7 @@ public class CoreContextApp {
 				ConjoinedPhrasesExtractor.ifSplit(sentence, sentence.getOriginal(), true, -1);
 				ConjoinedPhrasesExtractor.extractWhilePlusParticiple(sentence, sentence.getOriginal(), true, -1);
 				ConjoinedPhrasesExtractor.extractSo(sentence, sentence.getOriginal(), true, -1);
+				ConjoinedPhrasesExtractor.or(sentence, sentence.getOriginal(), true, -1);
 				
 				Punctuation.splitAtColon(sentence, sentence.getOriginal(), true, -1);
 				Punctuation.extractParentheses(sentence, sentence.getOriginal(), true, -1);
