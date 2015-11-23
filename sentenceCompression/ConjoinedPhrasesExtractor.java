@@ -20,6 +20,7 @@ public class ConjoinedPhrasesExtractor {
 					for (int i = 0; i < t.getChildrenAsList().size()-2; i++) {
 						if (t.getChild(i).label().value().equals("S") && t.getChild(i+1).label().value().equals("CC") && t.getChild(i+2).label().value().equals("S")) {
 							if (t.getChild(i+1).getChild(0).label().value().equals("and") || t.getChild(i+1).getChild(0).label().value().equals("or") || t.getChild(i+1).getChild(0).label().value().equals("but")) {
+								/**
 								String phrase1 = Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield());
 								String phraseToDeleteForPhrase2 = Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield()) + " .";
 								String phrase2 = Sentence.listToString(t.yield()).replace(phraseToDeleteForPhrase2, "");
@@ -52,6 +53,22 @@ public class ConjoinedPhrasesExtractor {
 								}
 								
 								isSplit = true;
+								*/
+								
+									//String phrase1 = Sentence.listToString(t.getChild(i).yield()) + " .";
+									String phrase2 = Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield()) + " .";
+									String phraseToDelete = Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield());
+									
+									//System.out.println(phrase1);
+									//System.out.println(phrase2);
+									
+									
+									//SentenceProcessor.addCore(phrase1, coreContextSentence);
+									SentenceProcessor.addCore(phrase2, coreContextSentence);
+									
+									SentenceProcessor.updateSentence("", phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+									//SentenceProcessor.updateSentence("", phrase1.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+								
 								
 							}
 						}
@@ -75,6 +92,7 @@ public class ConjoinedPhrasesExtractor {
 					for (int i = 0; i < t.getChildrenAsList().size()-2; i++) {
 						if (t.getChild(i).label().value().equals("S") && t.getChild(i+1).label().value().equals(",") && t.getChild(i+2).label().value().equals("CC") && t.getChild(i+3).label().value().equals("S")) {
 							if (t.getChild(i+2).getChild(0).label().value().equals("and") || t.getChild(i+2).getChild(0).label().value().equals("or") || t.getChild(i+2).getChild(0).label().value().equals("but")) {
+								/**
 								String phrase1 = Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield());
 								String phraseToDeleteForPhrase2 = Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield()) + " .";
 								String phrase2 = Sentence.listToString(t.yield()).replace(phraseToDeleteForPhrase2, "");
@@ -107,7 +125,23 @@ public class ConjoinedPhrasesExtractor {
 								}
 								
 								isSplit = true;
+								*/
 								
+								//String phrase1 = Sentence.listToString(t.getChild(i).yield()) + " .";
+								String phrase2 = Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield()) + " .";
+								String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield());
+								
+								//System.out.println(phrase1);
+								//System.out.println(phrase2);
+								
+								
+								//SentenceProcessor.addCore(phrase1, coreContextSentence);
+								SentenceProcessor.addCore(phrase2, coreContextSentence);
+								
+								SentenceProcessor.updateSentence("", phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+								//SentenceProcessor.updateSentence("", phrase1.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+							
+							
 							}
 						}
 					}
@@ -355,27 +389,12 @@ public class ConjoinedPhrasesExtractor {
 					if (t.getChild(i).label().value().equals("SBAR") && t.getChild(i+1).label().value().equals(",")) {
 						//System.out.println("success1");
 						if (t.getChild(i).getChild(0).label().value().equals("IN") && t.getChild(i).getChild(1).label().value().equals("S")) {
-							if (t.getChild(i).getChild(0).getChild(0).label().value().equals("Though") || t.getChild(i).getChild(0).getChild(0).label().value().equals("Although")) {
+							if (t.getChild(i).getChild(0).getChild(0).label().value().equals("Because") || t.getChild(i).getChild(0).getChild(0).label().value().equals("Though") || t.getChild(i).getChild(0).getChild(0).label().value().equals("Although")) {
 								String aux = SentenceProcessor.setAux(true, isPresent);
 								String phrase = "This " + aux + Sentence.listToString(t.getChild(i).yield()) + " .";
 								String phraseToDelete = Sentence.listToString(t.getChild(i).yield()) + " ,";
 								
 								SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-								isSplit = true;
-							}
-							else if (t.getChild(i).getChild(0).getChild(0).label().value().equals("Because")) {
-								String phraseNotToDelete = t.getChild(i).getChild(0).getChild(0).label().value() + " " + Sentence.listToString(t.getChild(i).getChild(1).yield());
-								//System.out.println("not to delete: " + phraseNotToDelete);
-								String phraseToDelete = sentence.replace(phraseNotToDelete, "");
-								//System.out.println("to delete: " + phraseToDelete);
-								String s = sentence.replace(phraseNotToDelete, "");
-								
-								s = s.replace("  ", " ");
-								s = s.replace(", .", " .");
-								String phrase = "So" + s.replace("  ", " ");
-								
-								SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-								SentenceProcessor.deleteTokenInOriginal(0, coreContextSentence);
 								isSplit = true;
 							}
 						}
@@ -862,64 +881,59 @@ public class ConjoinedPhrasesExtractor {
 			
 			if (t.label().value().equals("NP") || t.label().value().equals("VP") || t.label().value().equals("S") || t.label().value().equals("ADVP")) {
 				//System.out.println("success1");
-				for (int i = 0; i < t.getChildrenAsList().size(); i++) {
+				for (int i = 0; i < t.getChildrenAsList().size()-1; i++) {
 					//System.out.println("success2");
-					if (t.getChild(i).label().value().equals("SBAR")) {
+					if (t.getChild(i).label().value().equals(",") && t.getChild(i+1).label().value().equals("SBAR")) {
 						//System.out.println("success3");
 						
-						if ((t.getChild(i).getChild(0).label().value().equals("IN") && t.getChild(i).getChild(1).label().value().equals("S")) ||
-								((t.getChild(i).getChild(0).label().value().equals("RB") || t.getChild(i).getChild(0).label().value().equals("ADVP")) && t.getChild(i).getChild(1).label().value().equals("IN") && t.getChild(i).getChild(2).label().value().equals("S"))) {
+						if ((t.getChild(i+1).getChild(0).label().value().equals("IN") && t.getChild(i+1).getChild(1).label().value().equals("S"))) {
 							
-							if (t.getChild(i).getChild(0).getChild(0).label().value().equals("because")) {
-								String phrase = "So " + sentence.replace(Sentence.listToString(t.getChild(i).yield()), "");
-								String notToDelete = Sentence.listToString(t.getChild(i).getChild(1).yield());
-								//System.out.println("phrase: " +  phrase);
-								//System.out.println("not to delete: " + notToDelete);
-								String phraseToDelete = sentence.replace(notToDelete, "");
-								String[] phraseToDeleteTokens = phraseToDelete.split(" ");
-								String toDelete = "";
-								for (int j = 0; j < phraseToDeleteTokens.length-1; j++) {
-									toDelete = toDelete + " " + phraseToDeleteTokens[j];
-								}
-								//System.out.println("phrase to delete: " + toDelete);
-								
-								SentenceProcessor.updateSentence(phrase, toDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-								isSplit = true;
-							}
-							else if (t.getChild(i).getChild(0).getChild(0).label().value().equals("though") || t.getChild(i).getChild(0).getChild(0).label().value().equals("although")) {
+							if (t.getChild(i+1).getChild(0).getChild(0).label().value().equals("because") || t.getChild(i+1).getChild(0).getChild(0).label().value().equals("though") || t.getChild(i+1).getChild(0).getChild(0).label().value().equals("although")) {
 								String aux = SentenceProcessor.setAux(true, isPresent);
-								String phrase = "This" + aux + Sentence.listToString(t.getChild(i).yield()) + " .";
+								String phrase = "This" + aux + Sentence.listToString(t.getChild(i+1).yield()) + " .";
 								String phraseToDelete = "";
-								String phraseToCompare = t.getChild(i).getChild(0).getChild(0).label().value() + " " + Sentence.listToString(t.getChild(i).getChild(1).yield()) + " .";
 								
-								if (i == t.getChildrenAsList().size()-1) {
-									if (i == 0) {
-										phraseToDelete = t.getChild(i).getChild(0).getChild(0).label().value() + " " + Sentence.listToString(t.getChild(i).getChild(1).yield());
-									}
-									else if (t.getChild(i-1).label().value().equals(",")) {
-										phraseToDelete = ", " + t.getChild(i).getChild(0).getChild(0).label().value() + " " + Sentence.listToString(t.getChild(i).getChild(1).yield());
-									} else {
-										phraseToDelete = t.getChild(i).getChild(0).getChild(0).label().value() + " " + Sentence.listToString(t.getChild(i).getChild(1).yield());
-									}
-								} else if (t.getChildrenAsList().size() >= 2 && t.getChild(i+1).label().value().equals(",")) {
-									if (i == 0) {
-										phraseToDelete = t.getChild(i).getChild(0).getChild(0).label().value() + " " + Sentence.listToString(t.getChild(i).getChild(1).yield()) + " ,";
-									}
-									else if (t.getChild(i-1).label().value().equals(",")) {
-										phraseToDelete = ", " + t.getChild(i).getChild(0).getChild(0).label().value() + " " + Sentence.listToString(t.getChild(i).getChild(1).yield()) + " ,";
-									} else {
-										phraseToDelete = t.getChild(i).getChild(0).getChild(0).label().value() + " " + Sentence.listToString(t.getChild(i).getChild(1).yield()) + " ,";
-									}
+								if (i == t.getChildrenAsList().size()-2) {
+									phraseToDelete = ", " + Sentence.listToString(t.getChild(i+1).yield());
+								} else {
+									phraseToDelete = ", " + Sentence.listToString(t.getChild(i+1).yield()) + " ,";
 								}
 								
-								//System.out.println("This is " + phraseToCompare.trim());
-								if (!sentence.equals("This is " + phraseToCompare.trim()) && !sentence.equals("This was " + phraseToCompare.trim())) {
+								
+								if (!sentence.equals(phrase)) {
 									SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 									isSplit = true;
 								}
 								
 							}
 							
+						}
+						if (t.getChild(i+1).getChildrenAsList().size() >= 3) {
+							if ((t.getChild(i+1).getChild(0).label().value().equals("RB") || t.getChild(i+1).getChild(0).label().value().equals("ADVP")) && t.getChild(i+1).getChild(1).label().value().equals("IN") && t.getChild(i+1).getChild(2).label().value().equals("S")) {
+							
+								if (t.getChild(i+1).getChild(1).getChild(0).label().value().equals("because") || t.getChild(i+1).getChild(1).getChild(0).label().value().equals("though") || t.getChild(i+1).getChild(1).getChild(0).label().value().equals("although")) {
+									String aux = SentenceProcessor.setAux(true, isPresent);
+									String phrase = "This" + aux + Sentence.listToString(t.getChild(i+1).yield()) + " .";
+									String phraseToDelete = "";
+									
+									if (i == t.getChildrenAsList().size()-2) {
+										
+										phraseToDelete = ", " + Sentence.listToString(t.getChild(i+1).yield());
+										
+									} else {
+										
+										phraseToDelete = ", " + Sentence.listToString(t.getChild(i+1).yield()) + " ,";
+										
+									}
+									
+									
+									if (!sentence.equals(phrase)) {
+										SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+										isSplit = true;
+									}
+									
+								}
+							}
 						}
 						
 						else if (t.getChild(i).getChild(0).label().value().equals("RB") && t.getChild(i).getChild(1).label().value().equals("IN") && t.getChild(i).getChild(2).label().value().equals("S")) {

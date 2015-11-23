@@ -82,6 +82,30 @@ public class RelativeClauseExtractor {
 							SentenceProcessor.updateSentence(relClause, relClauseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 							isSplit = true;
 						}
+						if (t.getChild(i+2).getChild(0).getChild(0).label().value().equals("DT") && t.getChild(i+2).getChild(0).getChild(1).label().value().equals("WHPP")) {
+							if (t.getChild(i+2).getChild(0).getChild(1).getChild(1).label().value().equals("WHNP")) {
+								if (t.getChild(i+2).getChild(0).getChild(1).getChild(1).getChild(0).label().value().equals("WP") && t.getChild(i+2).getChild(0).getChild(1).getChild(1).getChild(0).getChild(0).label().value().equals("whom")) {
+									String relClause = Sentence.listToString(t.getChild(i+2).getChild(0).yield()) + " the " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(1).yield()) + " .";
+									relClause = relClause.replace("whom", "");
+									String relClauseToDelete = "";
+		
+									
+									if (i == t.getChildrenAsList().size()-3) {
+										relClauseToDelete = ", " + Sentence.listToString(t.getChild(i+2).yield());
+									}
+									else if (t.getChild(i+3).label().value().equals(",")) {
+										relClauseToDelete = ", " + Sentence.listToString(t.getChild(i+2).yield()) + " ,";
+									}
+									
+									//System.out.println(Sentence.listToString(t.getChild(i+2).getChild(0).getChild(1).getChild(1).yield()));
+									//System.out.println(relClause);
+									
+									SentenceProcessor.updateSentence(relClause, relClauseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+									isSplit = true;
+								}
+							}
+							
+						}
 						
 						if (t.getChild(i+2).getChild(0).getChild(0).label().value().equals("WP$") && t.getChild(i+2).getChild(0).getChild(0).getChild(0).label().value().equals("whose")) {
 							
@@ -102,7 +126,7 @@ public class RelativeClauseExtractor {
 						}
 					}
 							
-					else if (t.getChild(i+2).getChild(0).label().value().equals("WHPP") && t.getChild(i+2).getChild(1).label().value().equals("S")) {
+					if (t.getChild(i+2).getChild(0).label().value().equals("WHPP") && t.getChild(i+2).getChild(1).label().value().equals("S")) {
 						if ((t.getChild(i+2).getChild(0).getChild(0).label().value().equals("IN") || t.getChild(i+2).getChild(0).getChild(0).label().value().equals("TO")) && t.getChild(i+2).getChild(0).getChild(1).label().value().equals("WHNP")) {
 							if ((t.getChild(i+2).getChild(0).getChild(1).getChild(0).label().value().equals("WDT") && t.getChild(i+2).getChild(0).getChild(1).getChild(0).getChild(0).label().value().equals("which")) ||
 									(t.getChild(i+2).getChild(0).getChild(1).getChild(0).label().value().equals("WP") && (t.getChild(i+2).getChild(0).getChild(1).getChild(0).getChild(0).label().value().equals("who") || t.getChild(i+2).getChild(0).getChild(1).getChild(0).getChild(0).label().value().equals("whom")))) {
@@ -110,6 +134,7 @@ public class RelativeClauseExtractor {
 								String relClause = Sentence.listToString(t.getChild(i+2).getChild(0).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(1).yield()) + " .";
 								String relClauseToDelete = "";
 	
+								
 								if (i == t.getChildrenAsList().size()-3) {
 									relClauseToDelete = ", " + Sentence.listToString(t.getChild(i+2).yield());
 								}

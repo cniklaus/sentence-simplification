@@ -480,7 +480,8 @@ public class AppositivePhraseExtractor {
 					if (npCombination == true && isNNP == false) {
 						String phrase = Sentence.listToString(t.getChild(1).yield()) + " is " + Sentence.listToString(t.getChild(0).yield()) + " .";
 						String phraseToDelete = Sentence.listToString(t.getChild(0).yield());
-							
+						
+						
 						SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 						isSplit = true;
 					}

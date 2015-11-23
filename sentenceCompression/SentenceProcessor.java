@@ -93,7 +93,9 @@ public class SentenceProcessor {
 			if (contextNumber < 0) {
 				int[] del = SentenceProcessor.matchSentences(sentence, clauseToDelete);
 				if (relClause != null) {
-					SentenceProcessor.updateContext(relClause, coreContextSentence);
+					if (!relClause.equals("")) {
+						SentenceProcessor.updateContext(relClause, coreContextSentence);
+					}
 				}
 				
 				SentenceProcessor.updateDelete(del, coreContextSentence);
@@ -332,9 +334,9 @@ public class SentenceProcessor {
 			if (n < sentence.getContext().size()) {	
 				isPrunedNPPappositives = AppositivePhraseExtractor.extractNonRestrictiveAppositives(sentence, currentContext.get(n), false, n);
 			}
-			if (n < sentence.getContext().size()) {	
-				isPrunedIncluding = PrepositionalPhraseExtractor.extractIncluding(sentence, currentContext.get(n), false, n);
-			}
+			//if (n < sentence.getContext().size()) {	
+				//isPrunedIncluding = PrepositionalPhraseExtractor.extractIncluding(sentence, currentContext.get(n), false, n);
+			//}
 			
 			if (n < sentence.getContext().size()) {	
 				isPrunedProperNouns = AppositivePhraseExtractor.extractRestrictiveAppositives(sentence, currentContext.get(n), false, n);
@@ -345,9 +347,9 @@ public class SentenceProcessor {
 			if (n < sentence.getContext().size()) {	
 				isPrunedParentheses = Punctuation.extractParentheses(sentence, currentContext.get(n), false, n);
 			}
-		//	if (n < sentence.getContext().size()) {	
-				//isPrunedBrackets = Punctuation.removeBrackets(sentence, currentContext.get(n), false, n);
-			//}
+			if (n < sentence.getContext().size()) {	
+				isPrunedBrackets = Punctuation.removeBrackets(sentence, currentContext.get(n), false, n);
+			}
 			
 			if (isPrunedRelClauseNonRestrictive || isPrunedInitialPPs || isPrunedAppositivePPs || isPrunedADJPappositives ||
 					isPrunedNPappositives || isPrunedVPappositives || isPrunedAccording || isPrunedIncluding || isPrunedProperNouns ||
@@ -444,22 +446,20 @@ public class SentenceProcessor {
 	}
 
 
-	/**
+	
 	public static boolean pruneCoreSentences(CoreContextSentence sentence) {
 		int n = 0;
-		//ArrayList<Tree> currentCore = sentence.getCoreNew();
-		boolean[] isPruned = new boolean[sentence.getCoreNew().size()];
+		ArrayList<Tree> currentCore = sentence.getCoreNew();
+		boolean[] isPruned = new boolean[currentCore.size()];
 		boolean prune = false;
 		
 		boolean isPrunedRelClauseNonRestrictive = false;
-		boolean isPrunedRelClauseRestrictive = false;
 		boolean isPrunedInitialPPs = false;
 		boolean isPrunedAppositivePPs = false;
 		boolean isPrunedADJPappositives = false;
 		boolean isPrunedNPappositives = false;
 		boolean isPrunedVPappositives = false;
 		boolean isPrunedAccording = false;
-		boolean isPrunedGerundAfterNNP = false;
 		boolean isPrunedIncluding = false;
 		boolean isPrunedProperNouns = false;
 		boolean isPrunedInfixWhen = false;
@@ -484,124 +484,117 @@ public class SentenceProcessor {
 		boolean isPrunedBrackets = false;
 		boolean isPrunedIf = false;
 		boolean isPrunedFromTo = false;
+		boolean isPrunedSo = false;
+		boolean isPrunedToDo = false;
+		boolean isPrunedOr = false;
 		
-		while (n < sentence.getCoreNew().size()) {
-			//String str = Sentence.listToString(currentContext.get(n).yield());
-			//String[] toks = str.split(" ");
+		while (n < currentCore.size()) {
 			
-			//System.out.println(toks[0]);
-			//System.out.println(toks[1]);
-			
-			//if (!(toks[0].equals("It") && toks[1].equals("is/was"))) {
-			if (n < sentence.getCoreNew().size()) {
-				isPrunedRelClauseNonRestrictive = RelativeClauseExtractor.extractNonRestrictiveRelativeClauses(sentence, sentence.getCoreNew().get(n), true, n);
+			if (n < sentence.getContext().size()) {	
+				isPrunedRelClauseNonRestrictive = RelativeClauseExtractor.extractNonRestrictiveRelativeClauses(sentence, currentCore.get(n), true, n);
 			}
-				//isPrunedRelClauseRestrictive = RelativeClauseExtractor.extractRestrictiveRelativeClauses(sentence, currentContext.get(n), false, n);
-		//	}
-			
-			//if (!(toks[0].equals("This") && (toks[1].equals("is/was") || toks[1].equals("is") || toks[1].equals("was") || toks[1].equals("are") || toks[1].equals("were")))) {
-			if (n < sentence.getCoreNew().size()) {
-				isPrunedInfixWhen = ConjoinedPhrasesExtractor.infixWhenSplit(sentence, sentence.getCoreNew().get(n), true, n);
+			if (n < sentence.getContext().size()) {		
+				isPrunedInfixWhen = ConjoinedPhrasesExtractor.infixWhenSplit(sentence, currentCore.get(n), true, n);
 			}
-			if (n < sentence.getCoreNew().size()) {
-				isPrunedInfixAsSince = ConjoinedPhrasesExtractor.infixAsSinceSplit(sentence, sentence.getCoreNew().get(n), true, n);
-			}
-			if (n < sentence.getCoreNew().size()) {
-				isPrunedInfixCommaPPAfterBefore = ConjoinedPhrasesExtractor.infixCommaPPAfterBeforeSplit(sentence, sentence.getCoreNew().get(n), true, n);
-			}
-			if (n < sentence.getCoreNew().size()) {
-				isPrunedInfixPPAfterBefore = ConjoinedPhrasesExtractor.infixPPAfterBeforeSplit(sentence, sentence.getCoreNew().get(n), true, n);
-			}
-			if (n < sentence.getCoreNew().size()) {
-				isPrunedInfixPPSAfterBefore = ConjoinedPhrasesExtractor.infixPPSAfterBeforeSplit(sentence, sentence.getCoreNew().get(n), true, n);
-			}
-			if (n < sentence.getCoreNew().size()) {
-				isPrunedSBARAfterBefore = ConjoinedPhrasesExtractor.infixSBARAfterBeforeSplit(sentence, sentence.getCoreNew().get(n), true, n);
-			}
-			if (n < sentence.getCoreNew().size()) {
-				isPrunedInitialWhen = ConjoinedPhrasesExtractor.initialWhenSplit(sentence, sentence.getCoreNew().get(n), true, n);
-			}
-			if (n < sentence.getCoreNew().size()) {
-				isPrunedInitialThoughAlthoughBecause = ConjoinedPhrasesExtractor.initialThoughAlthoughBecauseSplit(sentence, sentence.getCoreNew().get(n), true, n);
-			}
-			if (n < sentence.getCoreNew().size()) {
-				isPrunedInfixBecauseThoughAlthough = ConjoinedPhrasesExtractor.infixBecauseThoughAlthoughSplit(sentence, sentence.getCoreNew().get(n), true, n);
-			}
-			if (n < sentence.getCoreNew().size()) {
-				isPrunedInfixAndOrBut = ConjoinedPhrasesExtractor.infixAndOrButSplit(sentence, sentence.getCoreNew().get(n), true, n);
-			}
-			if (n < sentence.getCoreNew().size()) {
-				isPrunedCommaAndOrBut = ConjoinedPhrasesExtractor.infixCommaAndOrButSplit(sentence, sentence.getCoreNew().get(n), true, n);
-			}
-			if (n < sentence.getCoreNew().size()) {
-				isPrunedIf = ConjoinedPhrasesExtractor.ifSplit(sentence, sentence.getCoreNew().get(n), true, n);
-			}
-				
-				if (n < sentence.getCoreNew().size()) {
-					isPrunedAccording = GerundClauseExtractor.extractAccording(sentence, sentence.getCoreNew().get(n), true, n);
-				}
-				if (n < sentence.getCoreNew().size()) {
-					isPrunedGerundAfterWhile = GerundClauseExtractor.extractGerundAfterWhile(sentence, sentence.getCoreNew().get(n), true, n);
-				}
-				if (n < sentence.getCoreNew().size()) {
-					isPrunedGerundAfterComma = GerundClauseExtractor.extractGerundAfterComma(sentence, sentence.getCoreNew().get(n), true, n);
-				}
-				if (n < sentence.getCoreNew().size()) {
-					isPrunedByGerund = GerundClauseExtractor.extractByGerund(sentence, sentence.getCoreNew().get(n), true, n);
-				}
+			//if (n < sentence.getContext().size()) {	
+				//isPrunedInfixAsSince = ConjoinedPhrasesExtractor.infixAsSinceSplit(sentence, currentContext.get(n), false, n);
 			//}
-				if (n < sentence.getCoreNew().size()) {
-					isPrunedInitialPPs = PrepositionalPhraseExtractor.extractInitialPPs(sentence, sentence.getCoreNew().get(n), true, n);
-				}
-				if (n < sentence.getCoreNew().size()) {
-					isPrunedFromTo = PrepositionalPhraseExtractor.extractFromTo(sentence, sentence.getCoreNew().get(n), true, n);
-				}
-				if (n < sentence.getCoreNew().size()) {
-					isPrunedAppositivePPs = PrepositionalPhraseExtractor.extractAppositivePPs(sentence, sentence.getCoreNew().get(n), true, n);
-				}
-				if (n < sentence.getCoreNew().size()) {
-					isPrunedADJPappositives = AppositivePhraseExtractor.extractAdjectivePhraseAppositives(sentence, sentence.getCoreNew().get(n), true, n);
-				}
+			if (n < sentence.getContext().size()) {	
+				isPrunedInfixCommaPPAfterBefore = ConjoinedPhrasesExtractor.infixCommaPPAfterBeforeSplit(sentence, currentCore.get(n), true, n);
+			}
+			if (n < sentence.getContext().size()) {	
+				isPrunedInfixPPAfterBefore = ConjoinedPhrasesExtractor.infixPPAfterBeforeSplit(sentence, currentCore.get(n), true, n);
+			}
+			if (n < sentence.getContext().size()) {	
+				isPrunedInfixPPSAfterBefore = ConjoinedPhrasesExtractor.infixPPSAfterBeforeSplit(sentence, currentCore.get(n), true, n);
+			}
+			if (n < sentence.getContext().size()) {	
+				isPrunedSBARAfterBefore = ConjoinedPhrasesExtractor.infixSBARAfterBeforeSplit(sentence, currentCore.get(n), true, n);
+			}
+			if (n < sentence.getContext().size()) {	
+				isPrunedInitialWhen = ConjoinedPhrasesExtractor.initialWhenSplit(sentence, currentCore.get(n), true, n);
+			}
+			if (n < sentence.getContext().size()) {	
+				isPrunedInitialThoughAlthoughBecause = ConjoinedPhrasesExtractor.initialThoughAlthoughBecauseSplit(sentence, currentCore.get(n), true, n);
+			}
+			if (n < sentence.getContext().size()) {	
+				isPrunedInfixBecauseThoughAlthough = ConjoinedPhrasesExtractor.infixBecauseThoughAlthoughSplit(sentence, currentCore.get(n), true, n);
+			}
+			if (n < sentence.getContext().size()) {	
+				isPrunedOr = ConjoinedPhrasesExtractor.or(sentence, currentCore.get(n), true, n);
+			}
+			if (n < sentence.getContext().size()) {	
+				isPrunedInfixAndOrBut = ConjoinedPhrasesExtractor.infixAndOrButSplit(sentence, currentCore.get(n), true, n);
+			}
+			if (n < sentence.getContext().size()) {	
+				isPrunedCommaAndOrBut = ConjoinedPhrasesExtractor.infixCommaAndOrButSplit(sentence, currentCore.get(n), true, n);
+			}
+			if (n < sentence.getContext().size()) {	
+				isPrunedIf = ConjoinedPhrasesExtractor.ifSplit(sentence, currentCore.get(n), true, n);
+			}
+			if (n < sentence.getContext().size()) {	
+				isPrunedSo = ConjoinedPhrasesExtractor.extractSo(sentence, currentCore.get(n), true, n);
+			}
 				
-			//isPrunedNPappositives = AppositivePhraseExtractor.extractNounPhraseAppositives(sentence, currentContext.get(n), false, n);
-				if (n < sentence.getCoreNew().size()) {
-					isPrunedVPappositives = AppositivePhraseExtractor.extractVerbPhraseAppositives(sentence, sentence.getCoreNew().get(n), true, n);
-				}
-				if (n < sentence.getCoreNew().size()) {
-					isPrunedADVPappositives = AppositivePhraseExtractor.extractAdverbialPhraseAppositives(sentence, sentence.getCoreNew().get(n), false, n);
-				}
-				if (n < sentence.getCoreNew().size()) {
-					isPrunedNPPappositives = AppositivePhraseExtractor.extractProperNounPhraseAppositives(sentence, sentence.getCoreNew().get(n), true, n);
-				}
-				if (n < sentence.getCoreNew().size()) {
-					isPrunedGerundAfterNNP = GerundClauseExtractor.extractGerundAfterNNP(sentence, sentence.getCoreNew().get(n), true, n);
-				}
-				if (n < sentence.getCoreNew().size()) {
-					isPrunedIncluding = GerundClauseExtractor.extractIncluding(sentence, sentence.getCoreNew().get(n), true, n);
-				}
-				if (n < sentence.getCoreNew().size()) {
-					isPrunedGerundSentenceStart = GerundClauseExtractor.extractGerundSentenceStart(sentence, sentence.getCoreNew().get(n), true, n);
-				}
-				if (n < sentence.getCoreNew().size()) {
-					isPrunedProperNouns = ProperNounsExtractor.extractAdjectivesNounsNNPs(sentence, sentence.getCoreNew().get(n), true, n);
-				}
-				if (n < sentence.getCoreNew().size()) {
-					isPrunedColon = Punctuation.splitAtColon(sentence, sentence.getCoreNew().get(n), true, n);
-				}
-				if (n < sentence.getCoreNew().size()) {
-					isPrunedParentheses = Punctuation.parentheses(sentence, sentence.getCoreNew().get(n), true, n);
-				}
-				if (n < sentence.getCoreNew().size()) {
-					isPrunedBrackets = Punctuation.removeBrackets(sentence, sentence.getCoreNew().get(n), true, n);
-				}
+			if (n < sentence.getContext().size()) {	
+				isPrunedAccording = PrepositionalPhraseExtractor.extractAccording(sentence, currentCore.get(n), true, n);
+			}
+			if (n < sentence.getContext().size()) {	
+				isPrunedGerundAfterWhile = ConjoinedPhrasesExtractor.extractWhilePlusParticiple(sentence, currentCore.get(n), true, n);
+			}
+
+			if (n < sentence.getContext().size()) {	
+				isPrunedToDo = PrepositionalPhraseExtractor.extractToDo(sentence, currentCore.get(n), true, n);
+			}
+			// initial PPs nicht in context sentences extrahieren (wegen rel clauses mit PP / anderes beispiel: in an effort to maintain ...)
+			if (n < sentence.getContext().size()) {	
+				isPrunedInitialPPs = PrepositionalPhraseExtractor.extractInitialPPs(sentence, currentCore.get(n), true, n);
+			}
+			if (n < sentence.getContext().size()) {	
+				isPrunedAppositivePPs = PrepositionalPhraseExtractor.extractInfixPPs(sentence, currentCore.get(n), true, n);
+			}
+			if (n < sentence.getContext().size()) {	
+				isPrunedFromTo = PrepositionalPhraseExtractor.extractFromTo(sentence, currentCore.get(n), true, n);
+			}
+			if (n < sentence.getContext().size()) {	
+				isPrunedADJPappositives = AdjectiveAdverbPhraseExtractor.extractAdjectivePhrases(sentence, currentCore.get(n), true, n);
+			}
+			if (n < sentence.getContext().size()) {	
+				isPrunedNPappositives = InitialNounPhraseExtractor.extractInitialParentheticalNounPhrases(sentence, currentCore.get(n), true, n);
+			}
+			if (n < sentence.getContext().size()) {	
+				isPrunedVPappositives = ParticipialPhraseExtractor.extractPresentAndPastParticiples(sentence, currentCore.get(n), true, n);
+			}
+			if (n < sentence.getContext().size()) {
+				isPrunedADVPappositives = AdjectiveAdverbPhraseExtractor.extractAdverbPhrases(sentence, currentCore.get(n), true, n);
+			}
+			if (n < sentence.getContext().size()) {	
+				isPrunedNPPappositives = AppositivePhraseExtractor.extractNonRestrictiveAppositives(sentence, currentCore.get(n), true, n);
+			}
+			//if (n < sentence.getContext().size()) {	
+				//isPrunedIncluding = PrepositionalPhraseExtractor.extractIncluding(sentence, currentCore.get(n), true, n);
+			//}
 			
-			if (isPrunedRelClauseNonRestrictive || isPrunedRelClauseRestrictive || isPrunedInitialPPs || isPrunedAppositivePPs || isPrunedADJPappositives ||
-					isPrunedNPappositives || isPrunedVPappositives || isPrunedAccording || isPrunedGerundAfterNNP || isPrunedIncluding || isPrunedProperNouns ||
+			if (n < sentence.getContext().size()) {	
+				isPrunedProperNouns = AppositivePhraseExtractor.extractRestrictiveAppositives(sentence, currentCore.get(n), true, n);
+			}
+			if (n < sentence.getContext().size()) {	
+				isPrunedColon = Punctuation.splitAtColon(sentence, currentCore.get(n), true, n);
+			}
+			if (n < sentence.getContext().size()) {	
+				isPrunedParentheses = Punctuation.extractParentheses(sentence, currentCore.get(n), true, n);
+			}
+			if (n < sentence.getContext().size()) {	
+				isPrunedBrackets = Punctuation.removeBrackets(sentence, currentCore.get(n), true, n);
+			}
+			
+			if (isPrunedRelClauseNonRestrictive || isPrunedInitialPPs || isPrunedAppositivePPs || isPrunedADJPappositives ||
+					isPrunedNPappositives || isPrunedVPappositives || isPrunedAccording || isPrunedIncluding || isPrunedProperNouns ||
 					isPrunedInfixWhen || isPrunedInfixAsSince || isPrunedInfixCommaPPAfterBefore || isPrunedInfixPPAfterBefore || isPrunedInfixPPSAfterBefore ||
 					isPrunedSBARAfterBefore || isPrunedInitialWhen || isPrunedInitialThoughAlthoughBecause || isPrunedInfixBecauseThoughAlthough || 
 					isPrunedInfixAndOrBut || isPrunedCommaAndOrBut || isPrunedADVPappositives || isPrunedNPPappositives || isPrunedGerundAfterWhile || 
 					isPrunedGerundAfterComma || isPrunedGerundSentenceStart || isPrunedByGerund || isPrunedColon || isPrunedParentheses || isPrunedBrackets || isPrunedIf
-					|| isPrunedFromTo) {
+					|| isPrunedFromTo || isPrunedSo || isPrunedToDo || isPrunedOr) {
 				isPruned[n] = true;
 			}
 			
@@ -618,9 +611,8 @@ public class SentenceProcessor {
 		}
 		
 		return prune;
-		
 	}
-	*/
+	
 	
 	
 	public static String collapseWhitespace(String value) {

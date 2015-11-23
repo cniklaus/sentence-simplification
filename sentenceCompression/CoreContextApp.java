@@ -58,7 +58,7 @@ public class CoreContextApp {
 				PrepositionalPhraseExtractor.extractInfixPPs(sentence, sentence.getOriginal(), true, -1);
 				PrepositionalPhraseExtractor.extractFromTo(sentence, sentence.getOriginal(), true, -1);
 				PrepositionalPhraseExtractor.extractAccording(sentence, sentence.getOriginal(), true, -1);
-				PrepositionalPhraseExtractor.extractIncluding(sentence, sentence.getOriginal(), true, -1);
+				//PrepositionalPhraseExtractor.extractIncluding(sentence, sentence.getOriginal(), true, -1);
 				PrepositionalPhraseExtractor.extractToDo(sentence, sentence.getOriginal(), true, -1);
 				
 				ParticipialPhraseExtractor.extractPresentAndPastParticiples(sentence, sentence.getOriginal(), true, -1);
@@ -97,7 +97,9 @@ public class CoreContextApp {
 					isContextPruned = SentenceProcessor.pruneContextSentences(sentence);
 				}
 				
-				/**
+				
+				
+				
 				boolean isCorePruned = SentenceProcessor.pruneCoreSentences(sentence);
 				//System.out.println(sentence.getCoreNew());
 				
@@ -127,7 +129,7 @@ public class CoreContextApp {
 					}
 					n++;
 				}
-				*/
+				
 				
 				ArrayList<String> contextSen = new ArrayList<String>();
 				int v = 0;
@@ -140,6 +142,10 @@ public class CoreContextApp {
 					}
 					if (str.endsWith(", . ''")) {
 						str = str.replace(", . ''", ".");
+						sentence.getContext().set(v, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
+					}
+					if (str.endsWith(": .")) {
+						str = str.replace(": .", ".");
 						sentence.getContext().set(v, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
 					}
 					contextSen.add(str);

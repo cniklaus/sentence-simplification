@@ -61,8 +61,11 @@ public class FileOperator {
 				}
 				
 				for (Tree t : s.getContext()) {
-					if (t != null) {
+					if (t != null ) {
+						
 						writer.write("context sentence: " + Sentence.listToString(t.yield()) + "\n");
+						
+						
 					}
 					
 				}

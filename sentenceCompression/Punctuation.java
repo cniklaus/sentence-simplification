@@ -15,7 +15,9 @@ public class Punctuation {
 		
 		for (Tree t : parse) {
 			if (t.getChildrenAsList().size() >= 3) {
+				
 				for (int i = 0; i < t.getChildrenAsList().size()-2; i++) {
+					/**
 					if (t.getChild(i).label().value().equals(":") && t.getChild(i+1).label().value().equals("CC") && t.getChild(i+2).label().value().equals("S")) {
 						String phrase1 = Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield());
 						String phraseToDeleteForPhrase2 = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield()) + " .";
@@ -54,9 +56,24 @@ public class Punctuation {
 						}
 						
 						isSplit = true;
-					}
+					}*/
+					if (t.getChild(i).label().value().equals("S") && t.getChild(i+1).label().value().equals(":") && t.getChild(i+2).label().value().equals("S")) {
+						//String phrase1 = Sentence.listToString(t.getChild(i).yield()) + " .";
+						String phrase2 = Sentence.listToString(t.getChild(i+2).yield()) + " .";
+						String phraseToDelete = Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield());
+						
+						//System.out.println(phrase1);
+						//System.out.println(phrase2);
+						
+						
+						//SentenceProcessor.addCore(phrase1, coreContextSentence);
+						SentenceProcessor.addCore(phrase2, coreContextSentence);
+						
+						SentenceProcessor.updateSentence("", phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+						//SentenceProcessor.updateSentence("", phrase1.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 				}	
 			}
+			/**
 			for (int i = 0; i < t.getChildrenAsList().size()-1; i++) {
 				if (t.getChild(i).label().value().equals(":") && t.getChild(i+1).label().value().equals("S")) {
 					String phrase1 = Sentence.listToString(t.getChild(i+1).yield());
@@ -94,6 +111,7 @@ public class Punctuation {
 					}
 					isSplit = true;
 				}
+				*/
 				/**
 				if (t.getChild(i).label().value().equals(":") && t.getChild(i).getChild(0).label().value().equals(":") && (t.getChild(i+1).label().value().equals("UCP") || t.getChild(i+1).label().value().equals("NP"))) {
 					
@@ -166,7 +184,8 @@ public class Punctuation {
 					String phrase = "This " + aux + Sentence.listToString(t.yield()) + " .";
 					phrase = phrase.replace("--", "");
 					String phraseToDelete = Sentence.listToString(t.yield());
-							
+					
+					
 					SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 					isSplit = true;
 				}
@@ -182,7 +201,53 @@ public class Punctuation {
 						}
 					}
 				}
+				if (t.getChild(0).label().value().equals(":") && t.getChild(1).label().value().equals("S")) {
+					String phrase = Sentence.listToString(t.yield()) + " .";
+					phrase = phrase.replace("--", "");
+					String phraseToDelete = Sentence.listToString(t.yield());
+					
+					//System.out.println("test phrase: " + phrase);
+					//System.out.println("test phraseToDelete: " + phraseToDelete);
+					
+					
+					SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+					isSplit = true;
+				}
 			}
+			
+			if (t.label().value().equals("NP")) {
+				if (t.getChildrenAsList().size() >= 2) {
+					if (t.getChild(0).label().value().equals("NP") && t.getChild(1).label().value().equals("PRN")) {
+						if (t.getChild(1).getChildrenAsList().size() >= 3) {
+							if (t.getChild(1).getChild(0).label().value().equals("-LRB-") && t.getChild(1).getChild(1).label().value().equals("CC") && t.getChild(1).getChild(1).getChild(0).label().value().equals("or")) {
+								String phrase = Sentence.listToString(t.getChild(0).yield()) + aux + Sentence.listToString(t.getChild(1).yield()) + " .";
+								phrase = phrase.replace("-LRB-", "");
+								phrase = phrase.replace("-RRB-", "");
+								phrase = phrase.replace("or", "");
+								String phraseToDelete = Sentence.listToString(t.getChild(1).yield());
+										
+								SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+								isSplit = true;
+							}
+							if (t.getChild(1).getChildrenAsList().size() >= 4) {
+								if (t.getChild(1).getChild(0).label().value().equals(",") && t.getChild(1).getChild(1).label().value().equals("CC") && t.getChild(1).getChild(1).getChild(0).label().value().equals("or") && t.getChild(1).getChild(2).label().value().equals("NP") && t.getChild(1).getChild(3).label().value().equals(",")) {
+									String phrase = Sentence.listToString(t.getChild(0).yield()) + aux + Sentence.listToString(t.getChild(1).yield()) + " .";
+									phrase = phrase.replace(",", "");
+									phrase = phrase.replace(",", "");
+									phrase = phrase.replace("or", "");
+									String phraseToDelete = Sentence.listToString(t.getChild(1).yield());
+											
+									SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+									isSplit = true;
+								}
+							}
+							
+						}
+					}
+					
+				}
+			}
+			
 			if (t.getChildrenAsList().size() >= 2) {
 				for (int i = 0; i < t.getChildrenAsList().size()-1; i++) {
 					
@@ -200,7 +265,10 @@ public class Punctuation {
 						
 						String phrase = "This " + aux + Sentence.listToString(t.getChild(i+1).yield()) + " " + ph + " .";
 						phrase = phrase.replace("--", "");
-						String phraseToDelete = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + ph.replace("--", "");
+						String phraseToDelete = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) ;
+						
+						//System.out.println("test phrase: " + phrase);
+						//System.out.println("test phraseToDelete: " + phraseToDelete);
 						
 						SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 						isSplit = true;
@@ -221,6 +289,9 @@ public class Punctuation {
 						String phrase = "This " + aux + "with " + Sentence.listToString(t.getChild(i+1).yield()) + " " + ph + " .";
 						phrase = phrase.replace("--", "");
 						String phraseToDelete = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + ph.replace("--", "");
+						
+						//System.out.println("test phrase: " + phrase);
+						//System.out.println("test phraseToDelete: " + phraseToDelete);
 						
 						SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 						isSplit = true;
@@ -259,16 +330,24 @@ public class Punctuation {
 						}
 						if (t.getChild(i+1).getChild(0).label().value().equals(":") && t.getChild(i+1).getChild(1).label().value().equals("SBAR")) {
 							if (t.getChild(i+1).getChild(1).getChild(0).label().value().equals("WHNP") && t.getChild(i+1).getChild(1).getChild(1).label().value().equals("S")) {
-								if (t.getChild(i+1).getChild(1).getChild(0).getChild(0).label().value().equals("WP") && (t.getChild(i+1).getChild(1).getChild(0).getChild(0).getChild(0).label().value().equals("who") || t.getChild(i+1).getChild(1).getChild(0).getChild(0).getChild(0).label().value().equals("which"))) {
-									List<LabeledWord> label = t.getChild(i).labeledYield();
-									boolean isSingular = SentenceProcessor.isSingular(label.get(label.size()-1));
-									String aux2 = SentenceProcessor.setAux(isSingular, isPresent);
-									String phrase = Sentence.listToString(t.getChild(i).yield()) + aux2 + Sentence.listToString(t.getChild(i+1).getChild(1).getChild(1).yield()) + " .";
+								if ((t.getChild(i+1).getChild(1).getChild(0).getChild(0).label().value().equals("WP") || t.getChild(i+1).getChild(1).getChild(0).getChild(0).label().value().equals("WDT")) && (t.getChild(i+1).getChild(1).getChild(0).getChild(0).getChild(0).label().value().equals("who") || t.getChild(i+1).getChild(1).getChild(0).getChild(0).getChild(0).label().value().equals("which"))) {
+								
+									String phrase = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).getChild(1).yield()) + " .";
 									String phraseToDelete = Sentence.listToString(t.getChild(i+1).yield());
 									
 									SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 									isSplit = true;
 								}
+								if (t.getChild(i+1).getChild(1).getChild(0).getChild(0).label().value().equals("WP") && t.getChild(i+1).getChild(1).getChild(0).getChild(0).getChild(0).label().value().equals("whom")) {
+									
+									String phrase = Sentence.listToString(t.getChild(i+1).getChild(1).getChild(1).yield()) + " " + Sentence.listToString(t.getChild(i).yield()) + " .";
+									String phraseToDelete = Sentence.listToString(t.getChild(i+1).yield());
+									
+									SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+									isSplit = true;
+									
+								}
+								
 								if (t.getChild(i+1).getChild(1).getChild(0).getChildrenAsList().size() >= 2) {
 									if (t.getChild(i+1).getChild(1).getChild(0).getChild(0).label().value().equals("DT") && t.getChild(i+1).getChild(1).getChild(0).getChild(1).label().value().equals("WHPP")) {
 										String phrase = Sentence.listToString(t.getChild(i+1).getChild(1).getChild(0).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).getChild(1).yield()) + " .";
@@ -352,8 +431,13 @@ public class Punctuation {
 							String phrase = "This " + aux + Sentence.listToString(t.getChild(i+1).yield()) + " .";
 							String phraseToDelete = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield());
 							
-							SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-							isSplit = true;
+							String phraseToCompare = Sentence.listToString(t.getChild(i+1).yield()) + " .";
+							//System.out.println(phraseToCompare);
+							
+							if (!sentence.equals("This is " + phraseToCompare.trim()) && !sentence.equals("This was " + phraseToCompare.trim())) {
+								SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+								isSplit = true;
+							}
 						}
 						if (t.getChild(i).label().value().equals("-LRB-") && (t.getChild(i+1).label().value().equals("ADVP") || t.getChild(i+1).label().value().equals("PP") || t.getChild(i+1).label().value().equals("VP"))) {
 							String phrase = "This " + aux + Sentence.listToString(t.yield()) + " .";
@@ -361,16 +445,24 @@ public class Punctuation {
 							phrase = phrase.replace("-RRB-", "");
 							String phraseToDelete = Sentence.listToString(t.yield());
 							
-							SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-							isSplit = true;
+							phrase = SentenceProcessor.collapseWhitespace(phrase);
+							
+							if (!sentence.equals(phrase)) {
+								SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+								isSplit = true;
+							}
 						}
 						if (t.getChild(i).label().value().equals("-LRB-") && t.getChild(i+1).label().value().equals("NP") && t.getChild(i+2).label().value().equals("-RRB-")) {
 							if (t.getChild(i+1).getChild(0).label().value().equals("CD") && t.getChild(i+1).getChildrenAsList().size()==1) {
 								String phrase = "This " + aux + " in " + Sentence.listToString(t.getChild(i+1).yield()) + " .";
 								String phraseToDelete = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield());
 								
-								SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-								isSplit = true;
+								phrase = SentenceProcessor.collapseWhitespace(phrase);
+								
+								if (!sentence.equals(phrase)) {
+									SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+									isSplit = true;
+								}
 							}			
 						}
 					}
@@ -385,8 +477,12 @@ public class Punctuation {
 							String phrase = "This " + aux + " as well as " + Sentence.listToString(t.getChild(i+3).yield()) + " .";
 							String phraseToDelete = Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield()) + " " + Sentence.listToString(t.getChild(i+4).yield());
 							
-							SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-							isSplit = true;
+							phrase = SentenceProcessor.collapseWhitespace(phrase);
+							
+							if (!sentence.equals(phrase)) {
+								SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+								isSplit = true;
+							}
 						}
 					}
 				}
