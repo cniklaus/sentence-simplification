@@ -6,7 +6,7 @@ import edu.stanford.nlp.ling.LabeledWord;
 import edu.stanford.nlp.ling.Sentence;
 import edu.stanford.nlp.trees.Tree;
 
-public class ConjoinedPhrasesExtractor {
+public class ConjoinedClausesExtractor {
 
 	
 	public static boolean infixAndOrButSplit(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
@@ -152,7 +152,7 @@ public class ConjoinedPhrasesExtractor {
 		return isSplit;
 	}
 	
-	
+	/**Achtung appositives!!!!!
 	public static boolean or(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());
@@ -166,7 +166,7 @@ public class ConjoinedPhrasesExtractor {
 							if (t.getChild(i+2).getChild(0).label().value().equals("or")) {
 								List<LabeledWord> label = t.getChild(i).labeledYield();
 								boolean singular = SentenceProcessor.isSingular(label.get(label.size()-1));
-								boolean present = SentenceProcessor.isPresent(parse);
+								boolean present = SentenceProcessor.isPresent(coreContextSentence.getOriginal());
 								String aux = SentenceProcessor.setAux(singular, present);
 								
 								String phrase = Sentence.listToString(t.getChild(i).yield()) + aux + Sentence.listToString(t.getChild(i+3).yield()) + " .";
@@ -186,7 +186,7 @@ public class ConjoinedPhrasesExtractor {
 							if (t.getChild(i+2).getChild(0).label().value().equals("or")) {
 								List<LabeledWord> label = t.getChild(i).labeledYield();
 								boolean singular = SentenceProcessor.isSingular(label.get(label.size()-1));
-								boolean present = SentenceProcessor.isPresent(parse);
+								boolean present = SentenceProcessor.isPresent(coreContextSentence.getOriginal());
 								String aux = SentenceProcessor.setAux(singular, present);
 								
 								String phrase = Sentence.listToString(t.getChild(i).yield()) + aux + Sentence.listToString(t.getChild(i+3).yield()) + " .";
@@ -202,13 +202,13 @@ public class ConjoinedPhrasesExtractor {
 		}
 	
 		return isSplit;
-	}
+	}*/
 	
 	public static boolean infixWhenSplit(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());
 		boolean isSplit = false;
-		boolean isPresent = SentenceProcessor.isPresent(parse);
+		boolean isPresent = SentenceProcessor.isPresent(coreContextSentence.getOriginal());
 		String aux2 = SentenceProcessor.setAux(true, isPresent);
 		
 		for (Tree t : parse) {
@@ -380,7 +380,7 @@ public class ConjoinedPhrasesExtractor {
 	public static boolean initialThoughAlthoughBecauseSplit(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());
-		boolean isPresent = SentenceProcessor.isPresent(parse);
+		boolean isPresent = SentenceProcessor.isPresent(coreContextSentence.getOriginal());
 		boolean isSplit = false;
 		
 		for (Tree t : parse) {
@@ -637,7 +637,7 @@ public class ConjoinedPhrasesExtractor {
 		
 		String sentence = Sentence.listToString(parse.yield());
 		boolean successful = false;
-		boolean isPresent = SentenceProcessor.isPresent(parse);
+		boolean isPresent = SentenceProcessor.isPresent(coreContextSentence.getOriginal());
 		boolean isSplit = false;
 		
 		for (Tree t : parse) {
@@ -719,7 +719,7 @@ public class ConjoinedPhrasesExtractor {
 	public static boolean infixAsSinceSplit(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());
-		boolean isPresent = SentenceProcessor.isPresent(parse);
+		boolean isPresent = SentenceProcessor.isPresent(coreContextSentence.getOriginal());
 		boolean isSplit = false;
 		
 		for (Tree t : parse) {
@@ -874,7 +874,7 @@ public class ConjoinedPhrasesExtractor {
 	public static boolean infixBecauseThoughAlthoughSplit(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());
-		boolean isPresent = SentenceProcessor.isPresent(parse);
+		boolean isPresent = SentenceProcessor.isPresent(coreContextSentence.getOriginal());
 		boolean isSplit = false;
 		
 		for (Tree t : parse) {
@@ -998,7 +998,7 @@ public class ConjoinedPhrasesExtractor {
 	public static boolean ifSplit(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());
-		boolean isPresent = SentenceProcessor.isPresent(parse);
+		boolean isPresent = SentenceProcessor.isPresent(coreContextSentence.getOriginal());
 		boolean isSplit = false;
 		
 		for (Tree t : parse) {
@@ -1122,7 +1122,7 @@ public class ConjoinedPhrasesExtractor {
 		
 		String sentence = Sentence.listToString(parse.yield());
 		boolean isSplit = false;
-		boolean isPresent = SentenceProcessor.isPresent(parse);
+		boolean isPresent = SentenceProcessor.isPresent(coreContextSentence.getOriginal());
 		String aux = SentenceProcessor.setAux(true, isPresent);
 		
 		for (Tree t : parse) {

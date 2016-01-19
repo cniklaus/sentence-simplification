@@ -9,25 +9,27 @@ import java.util.List;
 
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.Sentence;
+import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.TreePrint;
 
 public class CoreContextApp {
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, ClassCastException, ClassNotFoundException {
 		
-		String input = "data/Wikipedia/Eval/Mandela/semikolon";
-		String output = "data/Wikipedia/Eval/Mandela/semikolonResult";
+		String input = args[0];//"data/Wikipedia/Eval/baseball/bugs";
+		String output = args[1];//"data/Wikipedia/Eval/baseball/baseballResultBugs";
 		
 		ArrayList<CoreContextSentence> sen = new ArrayList<CoreContextSentence>();
 		
 		FileOperator fo = new FileOperator();
 		ArrayList<String> sentences = new ArrayList<String>();
-		
+		MaxentTagger tagger = new MaxentTagger("tagger/english-left3words-distsim.tagger");
+	
 		try {
 			sentences = fo.readFile(new File(input));
 			
-			File f = new File("data/Wikipedia/Eval/Mandela/semikolonParsed");
+			File f = new File("data/Wikipedia/Eval/Google/GoogleParsed");
 			PrintWriter pw = new PrintWriter(f);
 			TreePrint print = new TreePrint("penn");
 			int i = 0;
@@ -52,6 +54,9 @@ public class CoreContextApp {
 				System.out.println(i + " " + Sentence.listToString(sentence.getOriginal().yield()));
 				i++;
 				
+				
+				PrepositionalPhraseExtractor.extractToDo(sentence, sentence.getOriginal(), true, -1);
+				
 				RelativeClauseExtractor.extractNonRestrictiveRelativeClauses(sentence, sentence.getOriginal(), true, -1);
 				
 				PrepositionalPhraseExtractor.extractInitialPPs(sentence, sentence.getOriginal(), true, -1);
@@ -59,45 +64,47 @@ public class CoreContextApp {
 				PrepositionalPhraseExtractor.extractFromTo(sentence, sentence.getOriginal(), true, -1);
 				PrepositionalPhraseExtractor.extractAccording(sentence, sentence.getOriginal(), true, -1);
 				//PrepositionalPhraseExtractor.extractIncluding(sentence, sentence.getOriginal(), true, -1);
-				PrepositionalPhraseExtractor.extractToDo(sentence, sentence.getOriginal(), true, -1);
+				
+				
 				
 				ParticipialPhraseExtractor.extractPresentAndPastParticiples(sentence, sentence.getOriginal(), true, -1);
 				
 				InitialNounPhraseExtractor.extractInitialParentheticalNounPhrases(sentence, sentence.getOriginal(), true, -1);
 				
 				AdjectiveAdverbPhraseExtractor.extractAdjectivePhrases(sentence, sentence.getOriginal(), true, -1);
-				AdjectiveAdverbPhraseExtractor.extractAdverbPhrases(sentence, sentence.getOriginal(), true, -1);
+				
 				
 				AppositivePhraseExtractor.extractNonRestrictiveAppositives(sentence, sentence.getOriginal(), true, -1);
 				AppositivePhraseExtractor.extractRestrictiveAppositives(sentence, sentence.getOriginal(), true, -1);
 				
-				ConjoinedPhrasesExtractor.infixWhenSplit(sentence, sentence.getOriginal(), true, -1);
-				ConjoinedPhrasesExtractor.infixAsSinceSplit(sentence, sentence.getOriginal(), true, -1);
-				ConjoinedPhrasesExtractor.infixCommaPPAfterBeforeSplit(sentence, sentence.getOriginal(), true, -1);
-				ConjoinedPhrasesExtractor.infixPPAfterBeforeSplit(sentence, sentence.getOriginal(), true, -1);
-				ConjoinedPhrasesExtractor.infixPPSAfterBeforeSplit(sentence, sentence.getOriginal(), true, -1);
-				ConjoinedPhrasesExtractor.infixSBARAfterBeforeSplit(sentence, sentence.getOriginal(), true, -1);
-				ConjoinedPhrasesExtractor.initialWhenSplit(sentence, sentence.getOriginal(), true, -1);
-				ConjoinedPhrasesExtractor.initialThoughAlthoughBecauseSplit(sentence, sentence.getOriginal(), true, -1);
-				ConjoinedPhrasesExtractor.infixBecauseThoughAlthoughSplit(sentence, sentence.getOriginal(), true, -1);
-				ConjoinedPhrasesExtractor.infixAndOrButSplit(sentence, sentence.getOriginal(), true, -1);
-				ConjoinedPhrasesExtractor.infixCommaAndOrButSplit(sentence, sentence.getOriginal(), true, -1);
-				ConjoinedPhrasesExtractor.ifSplit(sentence, sentence.getOriginal(), true, -1);
-				ConjoinedPhrasesExtractor.extractWhilePlusParticiple(sentence, sentence.getOriginal(), true, -1);
-				ConjoinedPhrasesExtractor.extractSo(sentence, sentence.getOriginal(), true, -1);
-				ConjoinedPhrasesExtractor.or(sentence, sentence.getOriginal(), true, -1);
+				ConjoinedClausesExtractor.infixWhenSplit(sentence, sentence.getOriginal(), true, -1);
+				ConjoinedClausesExtractor.infixAsSinceSplit(sentence, sentence.getOriginal(), true, -1);
+				ConjoinedClausesExtractor.infixCommaPPAfterBeforeSplit(sentence, sentence.getOriginal(), true, -1);
+				ConjoinedClausesExtractor.infixPPAfterBeforeSplit(sentence, sentence.getOriginal(), true, -1);
+				ConjoinedClausesExtractor.infixPPSAfterBeforeSplit(sentence, sentence.getOriginal(), true, -1);
+				ConjoinedClausesExtractor.infixSBARAfterBeforeSplit(sentence, sentence.getOriginal(), true, -1);
+				ConjoinedClausesExtractor.initialWhenSplit(sentence, sentence.getOriginal(), true, -1);
+				ConjoinedClausesExtractor.initialThoughAlthoughBecauseSplit(sentence, sentence.getOriginal(), true, -1);
+				ConjoinedClausesExtractor.infixBecauseThoughAlthoughSplit(sentence, sentence.getOriginal(), true, -1);
+				ConjoinedClausesExtractor.infixAndOrButSplit(sentence, sentence.getOriginal(), true, -1);
+				ConjoinedClausesExtractor.infixCommaAndOrButSplit(sentence, sentence.getOriginal(), true, -1);
+				ConjoinedClausesExtractor.ifSplit(sentence, sentence.getOriginal(), true, -1);
+				ConjoinedClausesExtractor.extractWhilePlusParticiple(sentence, sentence.getOriginal(), true, -1);
+				ConjoinedClausesExtractor.extractSo(sentence, sentence.getOriginal(), true, -1);
+				//ConjoinedClausesExtractor.or(sentence, sentence.getOriginal(), true, -1);
 				
 				Punctuation.splitAtColon(sentence, sentence.getOriginal(), true, -1);
 				Punctuation.extractParentheses(sentence, sentence.getOriginal(), true, -1);
 				Punctuation.removeBrackets(sentence, sentence.getOriginal(), true, -1);
+				
+				
+				
 				
 				boolean isContextPruned = SentenceProcessor.pruneContextSentences(sentence);
 				
 				while (isContextPruned) {
 					isContextPruned = SentenceProcessor.pruneContextSentences(sentence);
 				}
-				
-				
 				
 				
 				boolean isCorePruned = SentenceProcessor.pruneCoreSentences(sentence);
@@ -110,6 +117,8 @@ public class CoreContextApp {
 						num++;
 					}
 				}
+				
+				AdjectiveAdverbPhraseExtractor.extractAdverbPhrases(sentence, sentence.getOriginal(), true, -1);
 				
 				ArrayList<String> coreSen = new ArrayList<String>();
 				for (Tree tree : sentence.getCoreNew()) {
@@ -148,6 +157,9 @@ public class CoreContextApp {
 						str = str.replace(": .", ".");
 						sentence.getContext().set(v, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
 					}
+					if (str.startsWith("This is .") || str.startsWith("This was .")) {
+						sentence.getContext().set(v, null);
+					}
 					contextSen.add(str);
 					//System.out.println(str);
 					v++;
@@ -158,13 +170,39 @@ public class CoreContextApp {
 				for (String str : contextSen) {
 					
 					for (int j = m+1; j < contextSen.size(); j++) {
-						
 						if (str.equals(contextSen.get(j))) {
 							sentence.getContext().set(m, null);
 						}
 					}
 					m++;
 				}
+				
+			
+				int z = 0;
+				for (String str : contextSen) {
+					
+					String[] toks = str.split(" ");
+					String cur = "";
+					for (int t = 2; t < toks.length; t++) {
+						cur = cur + toks[t] + " ";
+					}
+					cur = cur.trim();
+					//System.out.println(cur);
+					//System.out.println("cur: " + cur);
+					for (int u = z+1; u < contextSen.size(); u++) {
+						
+						//System.out.println("comp: " + contextSen.get(u));
+						if (contextSen.get(u).contains(cur)) {
+							sentence.getContext().set(z, null);
+						}
+						
+					}
+					
+					
+					z++;
+				}
+				
+				
 				
 				Tree original = sentence.getOriginal();
 				String inputSentence = Sentence.listToString(original.yield());
@@ -189,13 +227,14 @@ public class CoreContextApp {
 						}
 						if (!core.isEmpty()) {		
 							if (!core.matches(" .")) {
-								//System.out.println(core);
+								
 									if (core.endsWith(" .")) {
 										sentence.getCoreNew().add(SentenceProcessor.parse(SentenceProcessor.tokenize(core.trim())));
 									} else if (core.endsWith(",")) {
 										core = core.replace(" ,", "");
 										sentence.getCoreNew().add(SentenceProcessor.parse(SentenceProcessor.tokenize(core.trim() + " .")));
-									} else {
+									} 
+									else {
 										sentence.getCoreNew().add(SentenceProcessor.parse(SentenceProcessor.tokenize(core.trim() + " .")));
 									}
 								
@@ -210,11 +249,276 @@ public class CoreContextApp {
 						
 						y++;
 					}
+					
 				}
+				
 				SentenceProcessor.produceCore(sentence.getDelete(), sentence);
 				
-				sen.add(sentence);
+				ArrayList<Tree> c = sentence.getCore();
+				ArrayList<Tree> c2 = new ArrayList<Tree>();
+				ArrayList<String> st = new ArrayList<String>();
+				for (Tree t : c) {
+					String string = Sentence.listToString(t.yield());
+					st.add(string);
+				}
+				
+				for (String string : st) {
+					//System.out.println(string);
+					if (string.startsWith(", ")) {
+						string = string.replaceFirst(",", "");
+						
+					} 
+					c2.add(SentenceProcessor.parse(SentenceProcessor.tokenize(string.trim())));
+				}
+			
+				sentence.setCore(c2);
+				
+				ArrayList<Tree> contextSentences = sentence.getContext();
+				//System.out.println(contextSentences);
+				ArrayList<String> contextString = new ArrayList<String>();
+				
+				for (Tree tCon : contextSentences) {
+					if (tCon != null) {
+						//System.out.println(Sentence.listToString(tCon.yield()));
+						String stringC = Sentence.listToString(tCon.yield());
+						contextString.add(stringC);
+					}
+				}
+				
+				ArrayList<Tree> coreSentencesC = sentence.getCoreNew();
+				ArrayList<String> coreStringC = new ArrayList<String>();
+				
+				for (Tree tCore : coreSentencesC) {
+					if (tCore != null) {
+						//System.out.println(Sentence.listToString(tCon.yield()));
+						String stringC = Sentence.listToString(tCore.yield());
+						coreStringC.add(stringC);
+					}
+				}
+				//System.out.println(coreStringC);
+				
+				for (String coreS : coreStringC) {
+					int o = 0;
+					for (String coreS2 : coreStringC) {
+						if (!coreS2.equals(coreS)) {
+							if (coreS2.contains(coreS)) {
+								
+								coreS2 = coreS2.replace(coreS, "") + ".";
+								//System.out.println(coreS2);
+								if (coreS2.endsWith(", .")) {
+									coreS2 = coreS2.replace(", .", ".");
+								}
+								sentence.getCoreNew().set(o, SentenceProcessor.parse(SentenceProcessor.tokenize(coreS2)));
+							}
+						}
+						o++;
+					}
+				}
+				
+				for (String sCon : contextString) {
+					ArrayList<Tree> coreSentences = sentence.getCoreNew();
+					ArrayList<String> coreString = new ArrayList<String>();
+					
+					for (Tree tCore : coreSentences) {
+						if (tCore != null) {
+							//System.out.println(Sentence.listToString(tCon.yield()));
+							String stringC = Sentence.listToString(tCore.yield());
+							coreString.add(stringC);
+						}
+					}
+					//System.out.println(coreString);
+					
+					String taggedString = tagger.tagString(sCon);
+					String[] taggedStringTokens = taggedString.split(" ");
+					String[] tokensCon = sCon.split(" ");
+					
+					//System.out.println("toCompare: " + toCompare);
+					//System.out.println(taggedString);
+					if (taggedStringTokens[2].endsWith("_IN")) {
+						String toCompare = "";
+						for (int p = 2; p < tokensCon.length-1; p++) {
+							toCompare = toCompare + tokensCon[p] + " ";
+						}
+						int number = 0;
+						for (String coreS : coreString) {
+							if (coreS.contains(toCompare)) {
+								//System.out.println(toCompare);
+								String comma = toCompare + ",";
+								if (coreS.contains(comma)) {
+									coreS = coreS.replace(comma, "");
+								} else {
+									coreS = coreS.replace(toCompare, "");
+								}
+								if (coreS.endsWith(", .")) {
+									coreS = coreS.replace(", .", ".");
+								}
+								sentence.getCoreNew().set(number, SentenceProcessor.parse(SentenceProcessor.tokenize(coreS)));
+							}
+							number++;
+						}
+					}
+					if (taggedStringTokens[2].endsWith("_WRB")) {
+						String toCompare = "";
+						for (int p = 3; p < tokensCon.length-1; p++) {
+							toCompare = toCompare + tokensCon[p] + " ";
+							
+						}
+						//System.out.println(toCompare);
+						int number = 0;
+						for (String coreS : coreString) {
+							if (coreS.contains(toCompare)) {
+								
+								String comma = toCompare + ",";
+								if (coreS.contains(comma)) {
+									coreS = coreS.replace(comma, "");
+								} else {
+									coreS = coreS.replace(toCompare, "");
+								}
+								if (coreS.endsWith(", .")) {
+									coreS = coreS.replace(", .", ".");
+								}
+								sentence.getCoreNew().set(number, SentenceProcessor.parse(SentenceProcessor.tokenize(coreS)));
+							}
+							number++;
+						}
+					}
+					
+					if (taggedStringTokens.length > 4 && !taggedStringTokens[2].endsWith("_WRB") && !taggedStringTokens[2].endsWith("_IN")) {
+						String toCompare = "";
+						for (int p = 2; p < tokensCon.length-1; p++) {
+							toCompare = toCompare + tokensCon[p] + " ";
+						}
+						//System.out.println(toCompare);
+						
+						int number = 0;
+						for (String coreS : coreString) {
+							//System.out.println("core " + coreS);
+							if (coreS.contains(toCompare)) {
+								
+								String comma = toCompare + ",";
+								if (coreS.contains(comma)) {
+									coreS = coreS.replace(comma, "");
+								} else {
+									coreS = coreS.replace(toCompare, "");
+								}
+								if (coreS.endsWith(", .")) {
+									coreS = coreS.replace(", .", ".");
+								}
+								sentence.getCoreNew().set(number, SentenceProcessor.parse(SentenceProcessor.tokenize(coreS)));
+							}
+							number++;
+						}
+					}
+				}
+				
+				
+				
+			ArrayList<Tree> contextTrees = sentence.getContext();
+			ArrayList<String> contextStrings = new ArrayList<String>();
+			ArrayList<String> contextStrings2 = new ArrayList<String>();
+			int counterNull = 0;
+			
+			for (Tree contextTree : contextTrees) {
+				if (contextTree != null) {
+					String stringC = Sentence.listToString(contextTree.yield());
+					contextStrings.add(stringC);
+					contextStrings2.add(stringC);
+				} else {
+					counterNull++;
+				}
 			}
+			//System.out.println("counterNull: " + counterNull);
+			
+			for (String sContext : contextStrings) {
+				
+				if (sContext.startsWith("This is when")) {
+					sContext = sContext.replace("This is when ", "");
+				} else if (sContext.startsWith("This was when")) {
+					sContext = sContext.replace("This was when ", "");
+				} else if (sContext.startsWith("This is")) {
+					sContext = sContext.replace("This is ", "");
+				} else if (sContext.startsWith("This was")) {
+					sContext = sContext.replace("This was ", "");
+				}
+				//System.out.println("scontext: " + sContext);
+				
+				int q = 0;
+				for (String sContext2 : contextStrings2) {
+					//System.out.println("sContext2: " + sContext2);
+					if (sContext2.contains(sContext) && !(sContext2.equals("This is " + sContext) || sContext2.equals("This was " + sContext) || sContext2.equals("This is when " + sContext) || sContext2.equals("This was when " + sContext)) && !sContext2.equals(sContext)) {
+						//System.out.println("done: " + sContext2);
+						sContext2 = sContext2.replace(sContext, "") + ".";
+						if (sContext2.endsWith(", .")) {
+							sContext2 = sContext2.replace(", .", ".");
+						}
+						sentence.getContext().set(q, SentenceProcessor.parse(SentenceProcessor.tokenize(sContext2)));
+					}
+					
+					q++;
+				}
+				
+				
+			}
+				
+			
+			int r2 = 0;
+			for (String sContext : contextStrings) {
+				
+				
+				String taggedString = tagger.tagString(sContext);
+				String[] taggedStringTokens = taggedString.split(" ");
+				String[] tokensCon = sContext.split(" ");
+				
+				String originalSen = Sentence.listToString(sentence.getOriginal().yield());
+				String[] tokensO = originalSen.split(" ");
+				int coun = 0;
+				//System.out.println("con: " + tokensCon[2]);
+				for (int r = 0; r < tokensO.length; r++) {
+					
+					if (tokensO[r].equals(tokensCon[2])) {
+						//System.out.println("original: " + tokensO[r]);
+						coun++;
+					}
+					
+				}
+				
+				
+				if (coun == 1 && (sContext.startsWith("This is") || sContext.startsWith("This was"))) {
+					if (taggedStringTokens[2].endsWith("RB")) {
+						if (tokensCon.length == 4) {
+							
+							for (String sContext2 : contextStrings2) {
+								
+								if (sContext2.contains(tokensCon[2]) && !sContext2.equals("This is " + tokensCon[2] + " .") && !sContext2.equals("This was " + tokensCon[2] + " .")) {
+									//System.out.println("sContext: " + sContext);
+									//contextNew.add(sContext);
+									sentence.getContext().set(r2+counterNull, null);
+									
+								}
+								
+							}
+						}
+					}
+				} 
+				r2++;
+				
+			}
+			
+			ArrayList<Tree> core2 = sentence.getCoreNew();
+			ArrayList<String> coreString2 = new ArrayList<String>();
+			int r3 = 0;
+			for (Tree t2 : core2) {
+				String stringC = Sentence.listToString(t2.yield());
+				if (stringC.endsWith(", .")) {
+					stringC = stringC.replace(", .", ".");
+				}
+				coreString2.add(stringC);
+				//System.out.println(stringC);
+				sentence.getCoreNew().set(r3, SentenceProcessor.parse(SentenceProcessor.tokenize(stringC)));
+			}
+				
+			sen.add(sentence);
+		}
 			
 			fo.writeFile(sen, new File(output));
 			
@@ -224,5 +528,5 @@ public class CoreContextApp {
 		}
 
 	}
-
+	
 }

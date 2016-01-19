@@ -9,7 +9,7 @@ public class InitialNounPhraseExtractor {
 		
 		String sentence = Sentence.listToString(parse.yield());
 		boolean isSplit = false;
-		boolean isPresent = SentenceProcessor.isPresent(parse);
+		boolean isPresent = SentenceProcessor.isPresent(coreContextSentence.getOriginal());
 		String aux = SentenceProcessor.setAux(true, isPresent);
 		
 		for (Tree t : parse) {

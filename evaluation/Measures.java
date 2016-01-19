@@ -33,7 +33,7 @@ public class Measures {
 				
 		rate = (double) numberTokensCompressed / numberTokensOriginal;
 		//System.out.println(numberTokensCompressed + " " + numberTokensOriginal);
-		//System.out.println(rate);
+		System.out.println(rate);
 		  
 		return rate;
 	}

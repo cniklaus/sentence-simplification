@@ -175,7 +175,7 @@ public class Punctuation {
 	public static boolean extractParentheses(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		String sentence = Sentence.listToString(parse.yield());
 		boolean isSplit = false;
-		boolean isPresent = SentenceProcessor.isPresent(parse);
+		boolean isPresent = SentenceProcessor.isPresent(coreContextSentence.getOriginal());
 		String aux = SentenceProcessor.setAux(true, isPresent);
 		
 		for (Tree t : parse) {
@@ -229,6 +229,7 @@ public class Punctuation {
 								SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 								isSplit = true;
 							}
+							
 							if (t.getChild(1).getChildrenAsList().size() >= 4) {
 								if (t.getChild(1).getChild(0).label().value().equals(",") && t.getChild(1).getChild(1).label().value().equals("CC") && t.getChild(1).getChild(1).getChild(0).label().value().equals("or") && t.getChild(1).getChild(2).label().value().equals("NP") && t.getChild(1).getChild(3).label().value().equals(",")) {
 									String phrase = Sentence.listToString(t.getChild(0).yield()) + aux + Sentence.listToString(t.getChild(1).yield()) + " .";
@@ -381,6 +382,7 @@ public class Punctuation {
 							String aux2 = SentenceProcessor.setAux(isSingular, isPresent);
 						
 							String phrase = Sentence.listToString(t.getChild(i).yield()) + aux2 + Sentence.listToString(t.getChild(i+2).yield()) + " .";
+							
 							String phraseToDelete = Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield());
 						
 							SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
@@ -396,6 +398,7 @@ public class Punctuation {
 							String aux2 = SentenceProcessor.setAux(false, isPresent);
 							
 							String phrase = Sentence.listToString(t.getChild(i).yield()) + aux2 + Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield()) + " " + Sentence.listToString(t.getChild(i+4).yield()) + " .";
+							
 							String phraseToDelete = Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield()) + " " + Sentence.listToString(t.getChild(i+4).yield());
 							
 							SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
@@ -413,7 +416,7 @@ public class Punctuation {
 	public static boolean removeBrackets(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		String sentence = Sentence.listToString(parse.yield());
 		boolean isSplit = false;
-		boolean isPresent = SentenceProcessor.isPresent(parse);
+		boolean isPresent = SentenceProcessor.isPresent(coreContextSentence.getOriginal());
 		String aux = SentenceProcessor.setAux(true, isPresent);
 		
 		for (Tree t : parse) {

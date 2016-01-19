@@ -8,9 +8,9 @@ import java.util.ArrayList;
 
 public class SentenceExtractor {
 	public static void main(String[] args) throws IOException {
-		ArrayList<ArrayList<String>> coreFramework = extractCore("data/Wikipedia/Eval/Mandela/MandelaResult");
-		ArrayList<ArrayList<String>> coreGold = extractCore("data/Wikipedia/Eval/Mandela/gold");
-		ArrayList<String> original = extractOriginal("data/Wikipedia/Eval/Mandela/gold");
+		ArrayList<ArrayList<String>> coreFramework = extractCore("data/Wikipedia/Eval/Mandela/MandelaResult2");
+		ArrayList<ArrayList<String>> coreGold = extractCore("data/Wikipedia/Eval/Mandela/gold_annotatedContext");
+		ArrayList<String> original = extractOriginal("data/Wikipedia/Eval/Mandela/gold_annotatedContext");
 		
 		/**
 		int i = 0;
@@ -33,6 +33,7 @@ public class SentenceExtractor {
 		*/
 		
 		Measures.getCompressionRate(coreFramework, original);
+		Measures.getCompressionRate(coreGold, original);
 		Measures.getF1(coreFramework, coreGold);
 	}
 	

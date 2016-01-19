@@ -9,7 +9,7 @@ public class ParticipialPhraseExtractor {
 
 		String sentence = Sentence.listToString(parse.yield());
 		boolean isSplit = false;
-		boolean isPresent = SentenceProcessor.isPresent(parse);
+		boolean isPresent = SentenceProcessor.isPresent(coreContextSentence.getOriginal());
 		
 		for (Tree t : parse) {
 			if (t.label().value().equals("NP")) {

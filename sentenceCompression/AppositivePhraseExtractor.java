@@ -9,7 +9,7 @@ import edu.stanford.nlp.trees.Tree;
 public class AppositivePhraseExtractor {
 	
 	public static boolean extractNonRestrictiveAppositives(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
-		
+		boolean isPresent = SentenceProcessor.isPresent(coreContextSentence.getOriginal());
 		String sentence = Sentence.listToString(parse.yield());
 		boolean isSplit = false;
 		
@@ -24,8 +24,8 @@ public class AppositivePhraseExtractor {
 								if (t.getChild(i+2).getChild(0).label().value().equals("or")) {
 									List<LabeledWord> label = t.getChild(i).labeledYield();
 									boolean singular = SentenceProcessor.isSingular(label.get(label.size()-1));
-									boolean present = SentenceProcessor.isPresent(parse);
-									String aux = SentenceProcessor.setAux(singular, present);
+									
+									String aux = SentenceProcessor.setAux(singular, isPresent);
 									
 									String phrase = Sentence.listToString(t.getChild(i).yield()) + aux + Sentence.listToString(t.getChild(i+3).yield()) + " .";
 									String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield()) + " ,";
@@ -51,7 +51,9 @@ public class AppositivePhraseExtractor {
 							if (!isConjoinedNP) {
 								if (label.get(label.size()-1).tag().value().equals("NNP") || label.get(label.size()-1).tag().value().equals("NNPS")) {
 									String part1 = "";
-									String aux = getAux(label.get(label.size()-1).tag().value());
+									boolean number = SentenceProcessor.isSingular(label.get(label.size()-1));
+									String aux = SentenceProcessor.setAux(number, isPresent);
+								
 									
 									boolean isNPPP = false;
 									if (t.getChild(i).getChildrenAsList().size() >=2) {
@@ -77,7 +79,8 @@ public class AppositivePhraseExtractor {
 									if (!label.get(label.size()-1).tag().value().equals("CD")) {
 										List<LabeledWord> label2;
 											label2 = t.getChild(i+3).labeledYield();
-											String aux = getAux(label2.get(label2.size()-1).tag().value());
+											boolean number = SentenceProcessor.isSingular(label2.get(label2.size()-1));
+											String aux = SentenceProcessor.setAux(number, isPresent);
 											String part1 = Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield());
 											String phrase = Sentence.listToString(t.getChild(i).yield()) + aux + part1 + " .";
 											String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield()) + " ,";
@@ -102,7 +105,8 @@ public class AppositivePhraseExtractor {
 							
 								if (label.get(label.size()-1).tag().value().equals("NNP") || label.get(label.size()-1).tag().value().equals("NNPS")) {
 									String part1 = "";
-									String aux = getAux(label.get(label.size()-1).tag().value());
+									boolean number = SentenceProcessor.isSingular(label.get(label.size()-1));
+									String aux = SentenceProcessor.setAux(number, isPresent);
 									
 									boolean isNPPP = false;
 									if (t.getChild(i).getChildrenAsList().size() >=2) {
@@ -129,7 +133,8 @@ public class AppositivePhraseExtractor {
 										if (!label.get(label.size()-1).tag().value().equals("CD")) {
 										List<LabeledWord> label2;
 											label2 = t.getChild(i+3).labeledYield();
-											String aux = getAux(label2.get(label2.size()-1).tag().value());
+											boolean number = SentenceProcessor.isSingular(label2.get(label2.size()-1));
+											String aux = SentenceProcessor.setAux(number, isPresent);
 											String part1 = Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield());
 											String phrase = Sentence.listToString(t.getChild(i).yield()) + aux + part1 + " .";
 											String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield());
@@ -154,6 +159,7 @@ public class AppositivePhraseExtractor {
 							for (int j = i+3; j < t.getChildrenAsList().size(); j++) {
 								if (t.getChild(j).label().value().equals("CC") && (t.getChild(j).getChild(0).label().value().equals("and") || t.getChild(j).getChild(0).label().value().equals("or"))) {
 									isConjoinedNP = true;
+									//System.out.println("true");
 								}
 							}
 							
@@ -162,7 +168,8 @@ public class AppositivePhraseExtractor {
 							if (!isConjoinedNP) {
 								if (label.get(label.size()-1).tag().value().equals("NNP") || label.get(label.size()-1).tag().value().equals("NNPS") || label.get(label.size()-1).tag().value().equals("''")) {
 									String part1 = "";
-									String aux = getAux(label.get(label.size()-1).tag().value());
+									boolean number = SentenceProcessor.isSingular(label.get(label.size()-1));
+									String aux = SentenceProcessor.setAux(number, isPresent);
 									
 									boolean isNPPP = false;
 									if (t.getChild(i).getChildrenAsList().size() >=2) {
@@ -200,7 +207,9 @@ public class AppositivePhraseExtractor {
 											label2 = t.getChild(i+2).labeledYield();
 										//}
 										//if (label2.get(label2.size()-1).tag().value().equals("NNP") || label2.get(label2.size()-1).tag().value().equals("NNPS")) {				
-											String aux = getAux(label2.get(label2.size()-1).tag().value());
+											boolean number = SentenceProcessor.isSingular(label2.get(label2.size()-1));
+											String aux = SentenceProcessor.setAux(number, isPresent);
+											
 											String part1 = Sentence.listToString(t.getChild(i+2).yield());
 											String phrase = part1 + aux + Sentence.listToString(t.getChild(i).yield()) + " .";
 											String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+2).yield()) + " ,";
@@ -222,7 +231,8 @@ public class AppositivePhraseExtractor {
 							
 							if (label.get(label.size()-1).tag().value().equals("NNP") || label.get(label.size()-1).tag().value().equals("NNPS") || label.get(label.size()-1).tag().value().equals("''")) {
 								String part1 = "";
-								String aux = getAux(label.get(label.size()-1).tag().value());
+								boolean number = SentenceProcessor.isSingular(label.get(label.size()-1));
+								String aux = SentenceProcessor.setAux(number, isPresent);
 								
 								boolean isNPPP = false;
 								if (t.getChild(i).getChildrenAsList().size() >=2) {
@@ -261,7 +271,8 @@ public class AppositivePhraseExtractor {
 										label2 = t.getChild(i+2).labeledYield();
 									//}
 									if (label2.get(label2.size()-1).tag().value().equals("NNP") || label2.get(label2.size()-1).tag().value().equals("NNPS")) {
-										String aux = getAux(label2.get(label2.size()-1).tag().value());	
+										boolean number = SentenceProcessor.isSingular(label2.get(label2.size()-1));
+										String aux = SentenceProcessor.setAux(number, isPresent);	
 										String part1 = Sentence.listToString(t.getChild(i+2).yield());
 										String phrase = part1 + aux + Sentence.listToString(t.getChild(i).yield()) + " .";
 										String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+2).yield());
@@ -271,7 +282,8 @@ public class AppositivePhraseExtractor {
 									}
 									else {
 										String part1 = Sentence.listToString(t.getChild(i).yield());
-										String aux = getAux(label.get(label.size()-1).tag().value());
+										boolean number = SentenceProcessor.isSingular(label.get(label.size()-1));
+										String aux = SentenceProcessor.setAux(number, isPresent);
 										String phrase = part1 + aux + Sentence.listToString(t.getChild(i+2).yield()) + " .";
 										String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+2).yield());
 										
@@ -283,110 +295,6 @@ public class AppositivePhraseExtractor {
 						}
 					}
 				}
-				/**
-				if (t.getChildrenAsList().size() >= 6) {
-					for (int i = 0; i < t.getChildrenAsList().size()-5; i++) {
-
-						if (t.getChild(i).label().value().equals("NP") && t.getChild(i+1).label().value().equals(",") && t.getChild(i+2).label().value().equals("NP") && t.getChild(i+3).label().value().equals("CC") && t.getChild(i+4).label().value().equals("NP") && t.getChild(i+5).label().value().equals(",")) {
-							if (t.getChild(i+3).getChild(0).label().value().equals("and") || t.getChild(i+3).getChild(0).label().value().equals("or")) {
-								
-								List<LabeledWord> label = t.getChild(i).labeledYield();
-								if (!label.get(label.size()-1).tag().value().equals("NNP") && !label.get(label.size()-1).tag().value().equals("NNPS")) {
-									List<LabeledWord> label2 = t.getChild(i+2).labeledYield();
-									List<LabeledWord> label3 = t.getChild(i+4).labeledYield();
-									if ((label2.get(label2.size()-1).tag().value().equals("NNP") || label2.get(label2.size()-1).tag().value().equals("NNPS")) &&
-											(label3.get(label3.size()-1).tag().value().equals("NNP") || label3.get(label3.size()-1).tag().value().equals("NNPS"))) {
-										
-										String aux = " are ";
-										String part1 = Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield()) + " " + Sentence.listToString(t.getChild(i+4).yield());
-										String phrase = part1 + aux + Sentence.listToString(t.getChild(i).yield()) + " .";
-										String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield()) + " " + Sentence.listToString(t.getChild(i+4).yield()) + " ,";
-										
-										SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-										isSplit = true;
-									}
-								} else {
-									List<LabeledWord> label2 = t.getChild(i+2).labeledYield();
-									List<LabeledWord> label3 = t.getChild(i+4).labeledYield();
-									if ((!label2.get(label2.size()-1).tag().value().equals("NNP") && !label2.get(label2.size()-1).tag().value().equals("NNPS")) &&
-											(!label3.get(label3.size()-1).tag().value().equals("NNP") && !label3.get(label3.size()-1).tag().value().equals("NNPS"))) {
-										
-										String aux = getAux(label.get(label.size()-1).tag().value());
-										String phrase = Sentence.listToString(t.getChild(i).yield()) + aux + Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield()) + " " + Sentence.listToString(t.getChild(i+4).yield()) + " .";
-										String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield()) + " " + Sentence.listToString(t.getChild(i+4).yield()) + " ,";
-										
-										SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-										isSplit = true;
-									}
-								}
-							}
-						}
-						else if (t.getChild(i).label().value().equals("NP") && t.getChild(i+1).label().value().equals(",") && t.getChild(i+2).label().value().equals("``") && t.getChild(i+3).label().value().equals("NP") && t.getChild(i+4).label().value().equals("''") && t.getChild(i+5).label().value().equals(",")) {
-							List<LabeledWord> label1 = t.getChild(i).labeledYield();
-							List<LabeledWord> label2 = t.getChild(i+3).labeledYield();
-							if ((label1.get(label1.size()-1).tag().value().equals("NNP") || label1.get(label1.size()-1).tag().value().equals("NNPS")) &&  
-									(label2.get(label2.size()-1).tag().value().equals("NNP") || label2.get(label2.size()-1).tag().value().equals("NNPS"))) {
-								
-								String aux = getAux(label2.get(label2.size()-1).tag().value());
-								String phrase = Sentence.listToString(t.getChild(i+2).yield()) + Sentence.listToString(t.getChild(i+3).yield()) + " " + Sentence.listToString(t.getChild(i+4).yield()) + aux + Sentence.listToString(t.getChild(i).yield()) + " .";
-								String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield()) + " " + Sentence.listToString(t.getChild(i+4).yield()) + " ,";
-								
-								SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-								isSplit = true;
-							}
-						}
-					}
-				}
-				if (t.getChildrenAsList().size() >= 5) {
-					for (int i = 0; i < t.getChildrenAsList().size()-4; i++) {
-						if (t.getChild(i).label().value().equals("NP") && t.getChild(i+1).label().value().equals(",") && t.getChild(i+2).label().value().equals("NP") && t.getChild(i+3).label().value().equals("CC") && t.getChild(i+4).label().value().equals("NP") && i == t.getChildrenAsList().size()-5) {
-							if (t.getChild(i+3).getChild(0).label().value().equals("and") || t.getChild(i+3).getChild(0).label().value().equals("or")) {
-								List<LabeledWord> label = t.getChild(i).labeledYield();
-								if (!label.get(label.size()-1).tag().value().equals("NNP") && !label.get(label.size()-1).tag().value().equals("NNPS")) {
-									List<LabeledWord> label2 = t.getChild(i+2).labeledYield();
-									List<LabeledWord> label3 = t.getChild(i+4).labeledYield();
-									if ((label2.get(label2.size()-1).tag().value().equals("NNP") || label2.get(label2.size()-1).tag().value().equals("NNPS")) &&
-											(label3.get(label3.size()-1).tag().value().equals("NNP") || label3.get(label3.size()-1).tag().value().equals("NNPS"))) {
-										
-										String aux = " are ";
-										String part1 = Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield()) + " " + Sentence.listToString(t.getChild(i+4).yield());
-										String phrase = part1 + aux + Sentence.listToString(t.getChild(i).yield()) + " .";
-										String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield()) + " " + Sentence.listToString(t.getChild(i+4).yield());
-										
-										SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-										isSplit = true;
-									}
-								} else {
-									List<LabeledWord> label2 = t.getChild(i+2).labeledYield();
-									List<LabeledWord> label3 = t.getChild(i+4).labeledYield();
-									if ((!label2.get(label2.size()-1).tag().value().equals("NNP") && !label2.get(label2.size()-1).tag().value().equals("NNPS")) &&
-											(!label3.get(label3.size()-1).tag().value().equals("NNP") && !label3.get(label3.size()-1).tag().value().equals("NNPS"))) {
-										
-										String aux = getAux(label.get(label.size()-1).tag().value());
-										String phrase = Sentence.listToString(t.getChild(i).yield()) + aux + Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield()) + " " + Sentence.listToString(t.getChild(i+4).yield()) + " .";
-										String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield()) + " " + Sentence.listToString(t.getChild(i+4).yield());
-										
-										SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-										isSplit = true;
-									}
-								}
-							}
-						}
-						else if (t.getChild(i).label().value().equals("NP") && t.getChild(i+1).label().value().equals(",") && t.getChild(i+2).label().value().equals("``") && t.getChild(i+3).label().value().equals("NP") && t.getChild(i+4).label().value().equals("''") && i==t.getChildrenAsList().size()-5) {
-							List<LabeledWord> label1 = t.getChild(i).labeledYield();
-							List<LabeledWord> label2 = t.getChild(i+3).labeledYield();
-							if ((label1.get(label1.size()-1).tag().value().equals("NNP") || label1.get(label1.size()-1).tag().value().equals("NNPS")) &&  
-									(label2.get(label2.size()-1).tag().value().equals("NNP") || label2.get(label2.size()-1).tag().value().equals("NNPS"))) {
-								String aux = getAux(label2.get(label2.size()-1).tag().value());
-								String phrase = Sentence.listToString(t.getChild(i+2).yield()) + Sentence.listToString(t.getChild(i+3).yield()) + " " + Sentence.listToString(t.getChild(i+4).yield()) + aux + Sentence.listToString(t.getChild(i).yield()) + " .";
-								String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+2).yield()) + " " + Sentence.listToString(t.getChild(i+3).yield()) + " " + Sentence.listToString(t.getChild(i+4).yield());
-								
-								SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-								isSplit = true;
-							}
-						}
-					}
-				}*/
 			}
 		}
 		
@@ -439,9 +347,12 @@ public class AppositivePhraseExtractor {
 							while (m >= 0) {
 								rest = Sentence.listToString(t.getChild(m).yield()) + " " + rest;
 								//System.out.println(t.getChild(m).label().value());
-								if (!t.getChild(m).label().value().equals("DT") && !t.getChild(m).label().value().equals("PRP$")) {
-									isDetOrPronoun = false;
+								if (t.getChild(m).label().value().equals("DT") || t.getChild(m).label().value().equals("PRP$") || t.getChild(m).label().value().equals("POS")) {
+									
+									isDetOrPronoun = true;
+									
 								}
+								
 								m--;
 							}
 								
@@ -450,10 +361,18 @@ public class AppositivePhraseExtractor {
 							//System.out.println("rest: " + rest);
 							String det = "";
 							if (!isDetOrPronoun) {
-								det = " a ";
+								
+								if (rest.startsWith("a") || rest.startsWith("e") || rest.startsWith("i") || rest.startsWith("o") || rest.startsWith("u") ||
+										rest.startsWith("A") || rest.startsWith("E") || rest.startsWith("I") || rest.startsWith("O") || rest.startsWith("U")) {
+									det = " an ";
+								} else {
+									det = " a ";
+								}
 							}
 							
-							String phrase = nnp + " is " + det + " " + rest + " .";
+							boolean isPresent = SentenceProcessor.isPresent(coreContextSentence.getOriginal());
+							String aux = SentenceProcessor.setAux(true, isPresent);
+							String phrase = nnp + aux + det + " " + rest + " .";
 							String phraseToDelete = rest;
 								
 							SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
@@ -478,7 +397,9 @@ public class AppositivePhraseExtractor {
 						}
 					}
 					if (npCombination == true && isNNP == false) {
-						String phrase = Sentence.listToString(t.getChild(1).yield()) + " is " + Sentence.listToString(t.getChild(0).yield()) + " .";
+						boolean isPresent = SentenceProcessor.isPresent(coreContextSentence.getOriginal());
+						String aux = SentenceProcessor.setAux(true, isPresent);
+						String phrase = Sentence.listToString(t.getChild(1).yield()) + aux + Sentence.listToString(t.getChild(0).yield()) + " .";
 						String phraseToDelete = Sentence.listToString(t.getChild(0).yield());
 						
 						
@@ -491,17 +412,6 @@ public class AppositivePhraseExtractor {
 		
 		return isSplit;
 	}
-	
-	
-	private static String getAux(String aux) {
 
-		if (aux.equals("NNP") || aux.equals("NN")) {
-			aux = " is ";
-		} else {
-			aux = " are ";
-		}
-		
-		return aux;
-	}
 
 }

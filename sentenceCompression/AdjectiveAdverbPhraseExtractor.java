@@ -12,7 +12,7 @@ public class AdjectiveAdverbPhraseExtractor {
 		
 		String sentence = Sentence.listToString(parse.yield());
 		boolean isSplit = false;
-		boolean isPresent = SentenceProcessor.isPresent(parse);
+		boolean isPresent = SentenceProcessor.isPresent(coreContextSentence.getOriginal());
 		String aux2 = SentenceProcessor.setAux(true, isPresent);
 		
 		for (Tree t : parse) {
@@ -136,7 +136,7 @@ public class AdjectiveAdverbPhraseExtractor {
 		
 		String sentence = Sentence.listToString(parse.yield());
 		boolean isSplit = false;
-		boolean isPresent = SentenceProcessor.isPresent(parse);
+		boolean isPresent = SentenceProcessor.isPresent(coreContextSentence.getOriginal());
 		String aux = SentenceProcessor.setAux(true, isPresent);
 		
 		for (Tree t : parse) {
@@ -171,6 +171,44 @@ public class AdjectiveAdverbPhraseExtractor {
 					
 					SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 					isSplit = true;
+				}
+			}
+			
+			if (t.getChildrenAsList().size() >= 3) {
+				for (int i = 0; i < t.getChildrenAsList().size()-2; i++) {
+					if (t.getChild(i).label().value().equals("NP") && t.getChild(i+1).label().value().equals("ADVP") && t.getChild(i+2).label().value().equals("VP")) {
+						if (t.getChild(i+1).getChild(0).label().value().equals("RB")) {
+							String phrase = "This" + aux + Sentence.listToString(t.getChild(i+1).yield()) + " .";
+							String phraseToDelete = Sentence.listToString(t.getChild(i+1).yield());
+							
+							SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+							isSplit = true;
+						}
+					}
+				}
+			}
+			
+			if (!t.label().value().equals("SBAR"))	{
+				for (int j = 0; j < t.getChildrenAsList().size(); j++) {
+					if (t.getChild(j).getChildrenAsList().size() >= 2) {
+						for (int i = 0; i < t.getChild(j).getChildrenAsList().size()-1; i++) {
+							if (t.getChild(j).getChild(i).label().value().equals("NP") && t.getChild(j).getChild(i+1).label().value().equals("VP")) {							
+								if (t.getChild(j).getChild(i+1).getChildrenAsList().size() >= 3) {
+									if ((t.getChild(j).getChild(i+1).getChild(0).label().value().equals("VBD") || t.getChild(j).getChild(i+1).getChild(0).label().value().equals("VBZ")) && t.getChild(j).getChild(i+1).getChild(1).label().value().equals("ADVP") && t.getChild(j).getChild(i+1).getChild(2).label().value().equals("VP")) {
+										if (t.getChild(j).getChild(i+1).getChild(1).getChild(0).label().value().equals("RB")) {
+											//System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+											String phrase = "This" + aux + Sentence.listToString(t.getChild(j).getChild(i+1).getChild(1).yield()) + " .";
+											String phraseToDelete = Sentence.listToString(t.getChild(j).getChild(i+1).getChild(1).yield());
+												
+											SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+											isSplit = true;
+										}
+									}
+								}
+							}
+						}
+					}
+				
 				}
 			}
 		}

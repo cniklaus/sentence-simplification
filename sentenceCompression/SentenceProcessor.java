@@ -145,6 +145,7 @@ public class SentenceProcessor {
 	public static void addCore(String phrase, CoreContextSentence sen) {
 		phrase = phrase.replace(". .", ".");
 		phrase = phrase.replace("...", ".");
+		
 		Tree t = SentenceProcessor.parse(tokenize(phrase));
 		//sen.getCoreNew().add(t);
 		
@@ -162,6 +163,7 @@ public class SentenceProcessor {
 				included = true;
 				break;
 			}
+			
 		}
 		
 		if(!included) {
@@ -198,6 +200,7 @@ public class SentenceProcessor {
 			}
 			
 		}
+		
 		
 	}
 	
@@ -257,58 +260,58 @@ public class SentenceProcessor {
 				isPrunedRelClauseNonRestrictive = RelativeClauseExtractor.extractNonRestrictiveRelativeClauses(sentence, currentContext.get(n), false, n);
 			}
 			if (n < sentence.getContext().size()) {		
-				isPrunedInfixWhen = ConjoinedPhrasesExtractor.infixWhenSplit(sentence, currentContext.get(n), false, n);
+				isPrunedInfixWhen = ConjoinedClausesExtractor.infixWhenSplit(sentence, currentContext.get(n), false, n);
 			}
 			//if (n < sentence.getContext().size()) {	
 				//isPrunedInfixAsSince = ConjoinedPhrasesExtractor.infixAsSinceSplit(sentence, currentContext.get(n), false, n);
 			//}
 			if (n < sentence.getContext().size()) {	
-				isPrunedInfixCommaPPAfterBefore = ConjoinedPhrasesExtractor.infixCommaPPAfterBeforeSplit(sentence, currentContext.get(n), false, n);
+				isPrunedInfixCommaPPAfterBefore = ConjoinedClausesExtractor.infixCommaPPAfterBeforeSplit(sentence, currentContext.get(n), false, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedInfixPPAfterBefore = ConjoinedPhrasesExtractor.infixPPAfterBeforeSplit(sentence, currentContext.get(n), false, n);
+				isPrunedInfixPPAfterBefore = ConjoinedClausesExtractor.infixPPAfterBeforeSplit(sentence, currentContext.get(n), false, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedInfixPPSAfterBefore = ConjoinedPhrasesExtractor.infixPPSAfterBeforeSplit(sentence, currentContext.get(n), false, n);
+				isPrunedInfixPPSAfterBefore = ConjoinedClausesExtractor.infixPPSAfterBeforeSplit(sentence, currentContext.get(n), false, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedSBARAfterBefore = ConjoinedPhrasesExtractor.infixSBARAfterBeforeSplit(sentence, currentContext.get(n), false, n);
+				isPrunedSBARAfterBefore = ConjoinedClausesExtractor.infixSBARAfterBeforeSplit(sentence, currentContext.get(n), false, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedInitialWhen = ConjoinedPhrasesExtractor.initialWhenSplit(sentence, currentContext.get(n), false, n);
+				isPrunedInitialWhen = ConjoinedClausesExtractor.initialWhenSplit(sentence, currentContext.get(n), false, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedInitialThoughAlthoughBecause = ConjoinedPhrasesExtractor.initialThoughAlthoughBecauseSplit(sentence, currentContext.get(n), false, n);
+				isPrunedInitialThoughAlthoughBecause = ConjoinedClausesExtractor.initialThoughAlthoughBecauseSplit(sentence, currentContext.get(n), false, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedInfixBecauseThoughAlthough = ConjoinedPhrasesExtractor.infixBecauseThoughAlthoughSplit(sentence, currentContext.get(n), false, n);
+				isPrunedInfixBecauseThoughAlthough = ConjoinedClausesExtractor.infixBecauseThoughAlthoughSplit(sentence, currentContext.get(n), false, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedOr = ConjoinedPhrasesExtractor.or(sentence, currentContext.get(n), false, n);
+				//isPrunedOr = ConjoinedClausesExtractor.or(sentence, currentContext.get(n), false, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedInfixAndOrBut = ConjoinedPhrasesExtractor.infixAndOrButSplit(sentence, currentContext.get(n), false, n);
+				isPrunedInfixAndOrBut = ConjoinedClausesExtractor.infixAndOrButSplit(sentence, currentContext.get(n), false, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedCommaAndOrBut = ConjoinedPhrasesExtractor.infixCommaAndOrButSplit(sentence, currentContext.get(n), false, n);
+				isPrunedCommaAndOrBut = ConjoinedClausesExtractor.infixCommaAndOrButSplit(sentence, currentContext.get(n), false, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedIf = ConjoinedPhrasesExtractor.ifSplit(sentence, currentContext.get(n), false, n);
+				isPrunedIf = ConjoinedClausesExtractor.ifSplit(sentence, currentContext.get(n), false, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedSo = ConjoinedPhrasesExtractor.extractSo(sentence, currentContext.get(n), false, n);
+				isPrunedSo = ConjoinedClausesExtractor.extractSo(sentence, currentContext.get(n), false, n);
 			}
 				
 			if (n < sentence.getContext().size()) {	
 				isPrunedAccording = PrepositionalPhraseExtractor.extractAccording(sentence, currentContext.get(n), false, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedGerundAfterWhile = ConjoinedPhrasesExtractor.extractWhilePlusParticiple(sentence, currentContext.get(n), false, n);
+				isPrunedGerundAfterWhile = ConjoinedClausesExtractor.extractWhilePlusParticiple(sentence, currentContext.get(n), false, n);
 			}
 
-			if (n < sentence.getContext().size()) {	
-				isPrunedToDo = PrepositionalPhraseExtractor.extractToDo(sentence, currentContext.get(n), false, n);
-			}
+			//if (n < sentence.getContext().size()) {	
+				//isPrunedToDo = PrepositionalPhraseExtractor.extractToDo(sentence, currentContext.get(n), false, n);
+			//}
 			// initial PPs nicht in context sentences extrahieren (wegen rel clauses mit PP / anderes beispiel: in an effort to maintain ...)
 			//if (n < sentence.getContext().size()) {	
 				//isPrunedInitialPPs = PrepositionalPhraseExtractor.extractInitialPPs(sentence, currentContext.get(n), false, n);
@@ -326,11 +329,11 @@ public class SentenceProcessor {
 				isPrunedNPappositives = InitialNounPhraseExtractor.extractInitialParentheticalNounPhrases(sentence, currentContext.get(n), false, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedVPappositives = ParticipialPhraseExtractor.extractPresentAndPastParticiples(sentence, currentContext.get(n), false, n);
+				//isPrunedVPappositives = ParticipialPhraseExtractor.extractPresentAndPastParticiples(sentence, currentContext.get(n), false, n);
 			}
-			if (n < sentence.getContext().size()) {
-				isPrunedADVPappositives = AdjectiveAdverbPhraseExtractor.extractAdverbPhrases(sentence, currentContext.get(n), false, n);
-			}
+			//if (n < sentence.getContext().size()) {
+				//isPrunedADVPappositives = AdjectiveAdverbPhraseExtractor.extractAdverbPhrases(sentence, currentContext.get(n), false, n);
+			//}
 			if (n < sentence.getContext().size()) {	
 				isPrunedNPPappositives = AppositivePhraseExtractor.extractNonRestrictiveAppositives(sentence, currentContext.get(n), false, n);
 			}
@@ -381,40 +384,82 @@ public class SentenceProcessor {
 	public static boolean isPresent(Tree tree) {
 		
 		for (Tree t : tree) {
-			if (t.label().value().equals("S")) {
-				for (int i = 0; i < t.getChildrenAsList().size()-1; i++) {
-					if (t.getChild(i).label().value().equals("NP") && t.getChild(i+1).label().value().equals("VP")) {
-						if (t.getChild(i+1).getChild(0).label().value().equals("VBP") || t.getChild(i+1).getChild(0).label().value().equals("VBZ")) {
+			if (t.label().value().equals("S") || t.label().value().equals("SINV")) {
+				
+				for (int i = 0; i < t.getChildrenAsList().size(); i++) {
+					if (t.getChild(i).label().value().equals("VP")) {
+						if (t.getChild(i).getChild(0).label().value().equals("VBZ") || t.getChild(i).getChild(0).label().value().equals("VBP")) {
+							//System.out.println(t.getChild(i).getChild(0).label().value());
+							if (t.getChild(i).getChild(0).label().value().equals("VBP")) {
+								if (t.getChild(i).getChildrenAsList().size() >= 2) {
+									if (t.getChild(i).getChild(1).label().value().equals("VP") && t.getChild(i).getChild(1).getChild(0).label().value().equals("VBN")) {
+										return false;
+									}
+								}
+							}
 							return true;
+						}
+						if (t.getChild(i).getChild(0).label().value().equals("VBD")) {
+							return false;
+						}
+						if (t.getChild(i).getChild(0).label().value().equals("VP")) {
+							if (t.getChild(i).getChild(0).getChild(0).label().value().equals("VBZ") || t.getChild(i).getChild(0).getChild(0).label().value().equals("VBP")) {
+								//System.out.println(t.getChild(i).getChild(0).getChild(0).label().value());
+								if (t.getChild(i).getChild(0).getChild(0).label().value().equals("VBP")) {
+									if (t.getChild(i).getChild(0).getChildrenAsList().size() >= 1) {
+										if (t.getChild(i).getChild(0).getChild(1).label().value().equals("VP") && t.getChild(i).getChild(0).getChild(1).getChild(0).label().value().equals("VBN")) {
+											return false;
+										}
+									}
+								}
+								return true;
+							}
+							if (t.getChild(i).getChild(0).getChild(0).label().value().equals("VBD")) {
+								return false;
+							}
 						}
 					}
 				}
-				for (int i = 0; i < t.getChildrenAsList().size()-2; i++) {
-					if (t.getChild(i).label().value().equals("NP") && t.getChild(i+2).label().value().equals("VP")) {
-						if (t.getChild(i+2).getChild(0).label().value().equals("VBP") || t.getChild(i+2).getChild(0).label().value().equals("VBZ")) {
-							return true;
-						}
-					}
-				}
-			}
-			else if (t.label().value().equals("SINV")) {
-				for (int i = 0; i < t.getChildrenAsList().size()-1; i++) {
-					if (t.getChild(i).label().value().equals("VP") && t.getChild(i+1).label().value().equals("NP")) {
-						if (t.getChild(i).getChild(0).label().value().equals("VBP") || t.getChild(i).getChild(0).label().value().equals("VBZ")) {
-							return true;
-						}
-					}
-				}
-				for (int i = 0; i < t.getChildrenAsList().size()-2; i++) {
-					if (t.getChild(i).label().value().equals("VP") && t.getChild(i+2).label().value().equals("NP")) {
-						if (t.getChild(i).getChild(0).label().value().equals("VBP") || t.getChild(i).getChild(0).label().value().equals("VBZ")) {
-							return true;
+				if (t.getChild(0).label().value().equals("S") || t.getChild(0).label().value().equals("SINV")) {
+					for (int i = 0; i < t.getChild(0).getChildrenAsList().size(); i++) {
+						if (t.getChild(0).getChild(i).label().value().equals("VP")) {
+							if (t.getChild(0).getChild(i).getChild(0).label().value().equals("VBZ") || t.getChild(0).getChild(i).getChild(0).label().value().equals("VBP")) {
+								//System.out.println(t.getChild(0).getChild(i).getChild(0).label().value());
+								if (t.getChild(0).getChild(i).getChild(0).label().value().equals("VBP")) {
+									if (t.getChild(0).getChild(i).getChildrenAsList().size() >= 2) {
+										//System.out.println(t.getChild(0).getChild(i).getChild(1).label().value());
+										if (t.getChild(0).getChild(i).getChild(1).label().value().equals("VP") && t.getChild(0).getChild(i).getChild(1).getChild(0).label().value().equals("VBN")) {
+											return false;
+										}
+									}
+								}
+								return true;
+							}
+							if (t.getChild(0).getChild(i).getChild(0).label().value().equals("VBD")) {
+								return false;
+							}
+							if (t.getChild(0).getChild(i).getChild(0).label().value().equals("VP")) {
+								if (t.getChild(0).getChild(i).getChild(0).getChild(0).label().value().equals("VBZ") || t.getChild(0).getChild(i).getChild(0).getChild(0).label().value().equals("VBP")) {
+									//System.out.println(t.getChild(0).getChild(i).getChild(0).getChild(0).label().value());
+									if (t.getChild(0).getChild(i).getChild(0).getChild(0).label().value().equals("VBP")) {
+										if (t.getChild(0).getChild(i).getChild(0).getChildrenAsList().size() >= 2) {
+											if (t.getChild(0).getChild(i).getChild(0).getChild(1).label().value().equals("VP") && t.getChild(0).getChild(i).getChild(0).getChild(1).getChild(0).label().value().equals("VBN")) {
+												return false;
+											}
+										}
+									}
+									return true;
+								}
+								if (t.getChild(0).getChild(i).getChild(0).getChild(0).label().value().equals("VBD")) {
+									return false;
+								}
+							}
 						}
 					}
 				}
 			}
 		}
-		
+		//System.out.println("false");
 		return false;
 	}
 	
@@ -450,6 +495,22 @@ public class SentenceProcessor {
 	public static boolean pruneCoreSentences(CoreContextSentence sentence) {
 		int n = 0;
 		ArrayList<Tree> currentCore = sentence.getCoreNew();
+		
+		ArrayList<String> s = new ArrayList<String>();
+		
+		for (Tree t : currentCore) {
+			s.add(Sentence.listToString(t.yield()));
+		}
+		int m = 0;
+		for (String string : s) {
+			//System.out.println("phrase: " + string);
+			if (string.startsWith(", ")) {
+				string = string.replaceFirst(",", "");
+				currentCore.set(m, SentenceProcessor.parse(tokenize(string)));
+			} 
+			m++;
+		}
+		
 		boolean[] isPruned = new boolean[currentCore.size()];
 		boolean prune = false;
 		
@@ -494,53 +555,53 @@ public class SentenceProcessor {
 				isPrunedRelClauseNonRestrictive = RelativeClauseExtractor.extractNonRestrictiveRelativeClauses(sentence, currentCore.get(n), true, n);
 			}
 			if (n < sentence.getContext().size()) {		
-				isPrunedInfixWhen = ConjoinedPhrasesExtractor.infixWhenSplit(sentence, currentCore.get(n), true, n);
+				isPrunedInfixWhen = ConjoinedClausesExtractor.infixWhenSplit(sentence, currentCore.get(n), true, n);
 			}
 			//if (n < sentence.getContext().size()) {	
 				//isPrunedInfixAsSince = ConjoinedPhrasesExtractor.infixAsSinceSplit(sentence, currentContext.get(n), false, n);
 			//}
 			if (n < sentence.getContext().size()) {	
-				isPrunedInfixCommaPPAfterBefore = ConjoinedPhrasesExtractor.infixCommaPPAfterBeforeSplit(sentence, currentCore.get(n), true, n);
+				isPrunedInfixCommaPPAfterBefore = ConjoinedClausesExtractor.infixCommaPPAfterBeforeSplit(sentence, currentCore.get(n), true, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedInfixPPAfterBefore = ConjoinedPhrasesExtractor.infixPPAfterBeforeSplit(sentence, currentCore.get(n), true, n);
+				isPrunedInfixPPAfterBefore = ConjoinedClausesExtractor.infixPPAfterBeforeSplit(sentence, currentCore.get(n), true, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedInfixPPSAfterBefore = ConjoinedPhrasesExtractor.infixPPSAfterBeforeSplit(sentence, currentCore.get(n), true, n);
+				isPrunedInfixPPSAfterBefore = ConjoinedClausesExtractor.infixPPSAfterBeforeSplit(sentence, currentCore.get(n), true, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedSBARAfterBefore = ConjoinedPhrasesExtractor.infixSBARAfterBeforeSplit(sentence, currentCore.get(n), true, n);
+				isPrunedSBARAfterBefore = ConjoinedClausesExtractor.infixSBARAfterBeforeSplit(sentence, currentCore.get(n), true, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedInitialWhen = ConjoinedPhrasesExtractor.initialWhenSplit(sentence, currentCore.get(n), true, n);
+				isPrunedInitialWhen = ConjoinedClausesExtractor.initialWhenSplit(sentence, currentCore.get(n), true, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedInitialThoughAlthoughBecause = ConjoinedPhrasesExtractor.initialThoughAlthoughBecauseSplit(sentence, currentCore.get(n), true, n);
+				isPrunedInitialThoughAlthoughBecause = ConjoinedClausesExtractor.initialThoughAlthoughBecauseSplit(sentence, currentCore.get(n), true, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedInfixBecauseThoughAlthough = ConjoinedPhrasesExtractor.infixBecauseThoughAlthoughSplit(sentence, currentCore.get(n), true, n);
+				isPrunedInfixBecauseThoughAlthough = ConjoinedClausesExtractor.infixBecauseThoughAlthoughSplit(sentence, currentCore.get(n), true, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedOr = ConjoinedPhrasesExtractor.or(sentence, currentCore.get(n), true, n);
+				//isPrunedOr = ConjoinedClausesExtractor.or(sentence, currentCore.get(n), true, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedInfixAndOrBut = ConjoinedPhrasesExtractor.infixAndOrButSplit(sentence, currentCore.get(n), true, n);
+				isPrunedInfixAndOrBut = ConjoinedClausesExtractor.infixAndOrButSplit(sentence, currentCore.get(n), true, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedCommaAndOrBut = ConjoinedPhrasesExtractor.infixCommaAndOrButSplit(sentence, currentCore.get(n), true, n);
+				isPrunedCommaAndOrBut = ConjoinedClausesExtractor.infixCommaAndOrButSplit(sentence, currentCore.get(n), true, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedIf = ConjoinedPhrasesExtractor.ifSplit(sentence, currentCore.get(n), true, n);
+				isPrunedIf = ConjoinedClausesExtractor.ifSplit(sentence, currentCore.get(n), true, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedSo = ConjoinedPhrasesExtractor.extractSo(sentence, currentCore.get(n), true, n);
+				isPrunedSo = ConjoinedClausesExtractor.extractSo(sentence, currentCore.get(n), true, n);
 			}
 				
 			if (n < sentence.getContext().size()) {	
 				isPrunedAccording = PrepositionalPhraseExtractor.extractAccording(sentence, currentCore.get(n), true, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedGerundAfterWhile = ConjoinedPhrasesExtractor.extractWhilePlusParticiple(sentence, currentCore.get(n), true, n);
+				isPrunedGerundAfterWhile = ConjoinedClausesExtractor.extractWhilePlusParticiple(sentence, currentCore.get(n), true, n);
 			}
 
 			if (n < sentence.getContext().size()) {	

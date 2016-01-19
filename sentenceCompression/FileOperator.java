@@ -51,21 +51,22 @@ public class FileOperator {
 				
 				for (Tree t : s.getCore()) {
 					if (!Sentence.listToString(t.yield()).equals("If")) {
-						writer.write("core sentence: " + Sentence.listToString(t.yield()) + "\n");
+						String str = Sentence.listToString(t.yield());
+						writer.write("core sentence: " + str.substring(0, 1).toUpperCase() + str.substring(1) + "\n");
 					}
 					
 				}
 				Collections.reverse(s.getCoreNew());
 				for (Tree t : s.getCoreNew()) {
-					writer.write("core sentence: " + Sentence.listToString(t.yield()) + "\n");
+					
+					String str = Sentence.listToString(t.yield());
+					writer.write("core sentence: " + str.substring(0, 1).toUpperCase() + str.substring(1) + "\n");
 				}
 				
 				for (Tree t : s.getContext()) {
 					if (t != null ) {
-						
-						writer.write("context sentence: " + Sentence.listToString(t.yield()) + "\n");
-						
-						
+						String str = Sentence.listToString(t.yield());
+						writer.write("context sentence: " + str.substring(0, 1).toUpperCase() + str.substring(1) + "\n");
 					}
 					
 				}
