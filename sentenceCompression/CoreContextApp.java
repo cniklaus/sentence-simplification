@@ -25,7 +25,6 @@ public class CoreContextApp {
         String wordNetDirectory = "WordNet-3.0";
         String path = wordNetDirectory + File.separator + "dict";
         URL url = new URL("file", null, path);      
-
         //construct the Dictionary object and open it
         IDictionary dict = new Dictionary(url);
         dict.open();
@@ -79,7 +78,7 @@ public class CoreContextApp {
 		try {
 			sentences = fo.readFile(new File(input));
 			
-			File f = new File("data/Wikipedia/Eval/Mandela/MandelaBugParsed");
+			File f = new File("data/Wikipedia/Eval/baseball/attributionsParsed");
 			PrintWriter pw = new PrintWriter(f);
 			TreePrint print = new TreePrint("penn");
 			int i = 0;
@@ -246,6 +245,17 @@ public class CoreContextApp {
 					i++;
 					
 					
+					ArrayList<String> delPhrase = IntraSententialAttribution.extractIntraSententialAttributions(sentence, sentence.getOriginal(), true, -1);
+						
+					for (Tree trAttr : sentence.getAttribution()) {
+						sentence.getContext().add(trAttr);
+					}
+					 
+					System.out.println(delPhrase);
+					
+					//Punctuation.splitAtColon(sentence, sentence.getOriginal(), true, -1);
+					ConjoinedClausesExtractor.infixAndOrButSplit(sentence, sentence.getOriginal(), true, -1);
+					
 					PrepositionalPhraseExtractor.extractToDo(sentence, sentence.getOriginal(), true, -1);
 					
 					RelativeClauseExtractor.extractNonRestrictiveRelativeClauses(sentence, sentence.getOriginal(), true, -1);
@@ -277,7 +287,7 @@ public class CoreContextApp {
 					ConjoinedClausesExtractor.initialWhenSplit(sentence, sentence.getOriginal(), true, -1);
 					ConjoinedClausesExtractor.initialThoughAlthoughBecauseSplit(sentence, sentence.getOriginal(), true, -1);
 					ConjoinedClausesExtractor.infixBecauseThoughAlthoughSplit(sentence, sentence.getOriginal(), true, -1);
-					ConjoinedClausesExtractor.infixAndOrButSplit(sentence, sentence.getOriginal(), true, -1);
+					
 					ConjoinedClausesExtractor.infixCommaAndOrButSplit(sentence, sentence.getOriginal(), true, -1);
 					ConjoinedClausesExtractor.ifSplit(sentence, sentence.getOriginal(), true, -1);
 					ConjoinedClausesExtractor.extractWhilePlusParticiple(sentence, sentence.getOriginal(), true, -1);
@@ -742,15 +752,38 @@ public class CoreContextApp {
 				}
 			}
 			
-			for (Tree t : coreFinal) {
-				IntraSententialAttribution.extractIntraSententialAttributions(sentence, t);
+			int r4 = 0;
+			for (String s1 : coreFinalString) {
 				
+				for (String s3 : delPhrase) {
+					if (s1.contains(s3)) {
+						s1 = s1.replace(s3, "");
+						sentence.getCoreNew().set(r4, SentenceProcessor.parse(SentenceProcessor.tokenize(s1)));
+					}
+					
+				}
+				r4++;
 			}
 			
-			for (Tree t : coreNewFinal) {
-				IntraSententialAttribution.extractIntraSententialAttributions(sentence, t);
+			int r5 = 0;
+			for (String s2 : coreNewFinalString) {
+				for (String s3 : delPhrase) {
+					if (s2.contains(s3)) {
+						s2 = s2.replace(s3, "");
+						sentence.getCoreNew().set(r5, SentenceProcessor.parse(SentenceProcessor.tokenize(s2)));
+					}
+				}
 				
+				r5++;
 			}
+			
+			
+			
+			/**
+			for (Tree trAttr : sentence.getAttribution()) {
+				sentence.getContext().add(trAttr);
+			}
+			*/
 			
 			ArrayList<Tree> coreFinal2 = sentence.getCore();
 			ArrayList<Tree> coreNewFinal2 = sentence.getCoreNew();

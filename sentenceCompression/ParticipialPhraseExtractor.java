@@ -1,5 +1,7 @@
 package sentenceCompression;
 
+import java.util.ArrayList;
+
 import edu.stanford.nlp.ling.Sentence;
 import edu.stanford.nlp.trees.Tree;
 
@@ -23,8 +25,11 @@ public class ParticipialPhraseExtractor {
 									String phrase = Sentence.listToString(t.getChild(i).yield()) + aux + Sentence.listToString(t.getChild(i+2).yield()) + " .";
 									String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+2).yield());
 									
-									SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-									isSplit = true;
+									
+										SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+										isSplit = true;
+									
+									
 								}
 							//}
 						}	
@@ -42,8 +47,12 @@ public class ParticipialPhraseExtractor {
 									String phrase = Sentence.listToString(t.getChild(i).yield()) + aux + Sentence.listToString(t.getChild(i+2).yield()) + " .";
 									String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+2).yield()) + " ,";
 										
-									SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-									isSplit = true;
+									
+									
+										SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+										isSplit = true;
+									
+									
 								}
 							//}
 							
@@ -56,8 +65,11 @@ public class ParticipialPhraseExtractor {
 									String phrase = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + aux + Sentence.listToString(t.getChild(i+2).yield()) + " .";
 									String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+3).yield());
 								
-									SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-									isSplit = true;
+									
+										SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+										isSplit = true;
+									
+									
 								}
 							//}
 						}
@@ -71,8 +83,12 @@ public class ParticipialPhraseExtractor {
 									String phrase = "This" + aux + "when being " + Sentence.listToString(t.getChild(i+3).yield()) + " .";
 									String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+3).yield());
 								
-									SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-									isSplit = true;
+									
+									
+										SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+										isSplit = true;
+									
+									
 								}
 							//}
 						}
@@ -89,8 +105,10 @@ public class ParticipialPhraseExtractor {
 									String phrase = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + aux + Sentence.listToString(t.getChild(i+3).yield()) + " .";
 									String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+3).yield()) + " ,";
 									
-									SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-									isSplit = true;
+									
+										SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+										isSplit = true;
+									
 								}
 							//}
 							
@@ -104,8 +122,11 @@ public class ParticipialPhraseExtractor {
 									String phrase = "This" + aux + "when being " + Sentence.listToString(t.getChild(i+3).yield()) + " .";
 									String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+3).yield()) + " ,";
 									
-									SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-									isSplit = true;
+									
+										SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+										isSplit = true;
+									
+									
 								}
 							//}
 							
@@ -150,8 +171,11 @@ public class ParticipialPhraseExtractor {
 								String phrase = "This" + aux + "when " + Sentence.listToString(t.getChild(i+1).yield()) + " .";
 								String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+1).yield());
 						
-								SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-								isSplit = true;
+								
+									SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+									isSplit = true;
+								
+								
 							}
 							for (int j = i+1; j < t.getChildrenAsList().size()-3; j++) {
 								if (!(t.getChild(j+1).label().value().equals(",") && t.getChild(j+2).label().value().equals("CC") && t.getChild(j+3).label().value().equals("VP"))) {
@@ -159,9 +183,9 @@ public class ParticipialPhraseExtractor {
 									String phrase = "This" + aux + "when " + Sentence.listToString(t.getChild(i+1).yield()) + " .";
 									String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+1).yield());
 							
-							
-									SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-									isSplit = true;
+										SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+										isSplit = true;
+									
 								}
 								
 							}
@@ -175,8 +199,11 @@ public class ParticipialPhraseExtractor {
 							String phrase = "This" + aux + "when " + Sentence.listToString(t.getChild(i+1).yield()) + " .";
 							String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+1).yield());
 							
-							SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-							isSplit = true;
+							
+								SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+								isSplit = true;
+							
+							
 						}
 						if (t.getChild(i+1).getChildrenAsList().size() >= 2) {
 							if (t.getChild(i+1).getChild(0).label().value().equals("ADVP") && t.getChild(i+1).getChild(1).label().value().equals("VP")) {
@@ -185,8 +212,10 @@ public class ParticipialPhraseExtractor {
 									String phrase = "This" + aux + "when " + Sentence.listToString(t.getChild(i+1).yield()) + " .";
 									String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+1).yield());
 									
-									SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-									isSplit = true;
+									
+										SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+										isSplit = true;
+									
 								}
 							}
 						}
@@ -198,8 +227,11 @@ public class ParticipialPhraseExtractor {
 									String phrase = "This" + aux + "when " + Sentence.listToString(t.getChild(i+1).yield()) + " .";
 									String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+1).yield());
 									
-									SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-									isSplit = true;
+									
+										SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+										isSplit = true;
+									
+									
 								}
 								
 							}
@@ -212,8 +244,11 @@ public class ParticipialPhraseExtractor {
 										String phrase = "This" + aux + "when " + Sentence.listToString(t.getChild(i+1).yield()) + " .";
 										String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+1).yield());
 										
-										SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-										isSplit = true;
+										
+											SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+											isSplit = true;
+										
+										
 									}
 								}
 							}
@@ -224,8 +259,11 @@ public class ParticipialPhraseExtractor {
 										String phrase = "This" + aux + "when " + Sentence.listToString(t.getChild(i+1).yield()) + " .";
 										String phraseToDelete = Sentence.listToString(t.getChild(i+1).yield());
 										
-										SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-										isSplit = true;
+										
+											SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+											isSplit = true;
+										
+										
 									}
 								}
 							}
@@ -236,8 +274,11 @@ public class ParticipialPhraseExtractor {
 										String phrase = "This" + aux + "when " + Sentence.listToString(t.getChild(i+1).yield()) + " .";
 										String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+1).yield());
 										
-										SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-										isSplit = true;
+										
+											SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+											isSplit = true;
+										
+										
 									}
 								}
 							}
@@ -265,7 +306,22 @@ public class ParticipialPhraseExtractor {
 						int tokensToDeleteCount = tokensToDelete.length;
 						int tokensCount = tokens.length;
 						
-						if (tokensCount - tokensToDeleteCount > 4) {
+						boolean extract = true;
+						ArrayList<Tree> a = coreContextSentence.getAttribution();
+						for (Tree tr : a) {
+							String attr = Sentence.listToString(tr.yield());
+							//System.out.println("sfaf " + attr);
+							
+							String ph = Sentence.listToString(t.getChild(0).yield());
+							//System.out.println("afsdf" + ph);
+							if (attr.contains(ph)) {
+								extract = false;
+								//System.out.println("yay");
+							}
+						}
+						
+						
+						if (extract && (tokensCount - tokensToDeleteCount > 4)) {
 							SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 							isSplit = true;
 						}
@@ -286,7 +342,22 @@ public class ParticipialPhraseExtractor {
 						int tokensToDeleteCount = tokensToDelete.length;
 						int tokensCount = tokens.length;
 						
-						if (tokensCount - tokensToDeleteCount > 4) {
+						boolean extract = true;
+						ArrayList<Tree> a = coreContextSentence.getAttribution();
+						for (Tree tr : a) {
+							String attr = Sentence.listToString(tr.yield());
+							//System.out.println("sfaf " + attr);
+							
+							String ph = Sentence.listToString(t.getChild(0).yield());
+							//System.out.println("afsdf" + ph);
+							if (attr.contains(ph)) {
+								extract = false;
+								//System.out.println("yay");
+							}
+						}
+						
+						
+						if (extract && (tokensCount - tokensToDeleteCount > 4)) {
 							SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 							isSplit = true;
 						}
@@ -312,7 +383,23 @@ public class ParticipialPhraseExtractor {
 						int tokensToDeleteCount = tokensToDelete.length;
 						int tokensCount = tokens.length;
 						
-						if (tokensCount - tokensToDeleteCount > 4) {
+						
+						boolean extract = true;
+						ArrayList<Tree> a = coreContextSentence.getAttribution();
+						for (Tree tr : a) {
+							String attr = Sentence.listToString(tr.yield());
+							//System.out.println("sfaf " + attr);
+							
+							String ph = Sentence.listToString(t.getChild(0).yield());
+							//System.out.println("afsdf" + ph);
+							if (attr.contains(ph)) {
+								extract = false;
+								//System.out.println("yay");
+							}
+						}
+						
+						
+						if (extract && (tokensCount - tokensToDeleteCount > 4)) {
 							SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 							isSplit = true;
 						}
@@ -334,7 +421,23 @@ public class ParticipialPhraseExtractor {
 							int tokensToDeleteCount = tokensToDelete.length;
 							int tokensCount = tokens.length;
 							
-							if (tokensCount - tokensToDeleteCount > 5) {
+							
+							boolean extract = true;
+							ArrayList<Tree> a = coreContextSentence.getAttribution();
+							for (Tree tr : a) {
+								String attr = Sentence.listToString(tr.yield());
+								//System.out.println("sfaf " + attr);
+								
+								String ph = Sentence.listToString(t.getChild(0).yield());
+								//System.out.println("afsdf" + ph);
+								if (attr.contains(ph)) {
+									extract = false;
+									//System.out.println("yay");
+								}
+							}
+							
+							
+							if (extract && (tokensCount - tokensToDeleteCount > 5)) {
 								SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 								isSplit = true;
 							}
@@ -356,7 +459,22 @@ public class ParticipialPhraseExtractor {
 						int tokensToDeleteCount = tokensToDelete.length;
 						int tokensCount = tokens.length;
 						
-						if (tokensCount - tokensToDeleteCount > 4) {
+						boolean extract = true;
+						ArrayList<Tree> a = coreContextSentence.getAttribution();
+						for (Tree tr : a) {
+							String attr = Sentence.listToString(tr.yield());
+							//System.out.println("sfaf " + attr);
+							
+							String ph = Sentence.listToString(t.getChild(0).yield());
+							//System.out.println("afsdf" + ph);
+							if (attr.contains(ph)) {
+								extract = false;
+								//System.out.println("yay");
+							}
+						}
+						
+						
+						if (extract && (tokensCount - tokensToDeleteCount > 4)) {
 							SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 							isSplit = true;
 						}
@@ -379,7 +497,22 @@ public class ParticipialPhraseExtractor {
 								int tokensToDeleteCount = tokensToDelete.length;
 								int tokensCount = tokens.length;
 								
-								if (tokensCount - tokensToDeleteCount > 4) {
+								boolean extract = true;
+								ArrayList<Tree> a = coreContextSentence.getAttribution();
+								for (Tree tr : a) {
+									String attr = Sentence.listToString(tr.yield());
+									//System.out.println("sfaf " + attr);
+									
+									String ph = Sentence.listToString(t.getChild(0).yield());
+									//System.out.println("afsdf" + ph);
+									if (attr.contains(ph)) {
+										extract = false;
+										//System.out.println("yay");
+									}
+								}
+								
+								
+								if (extract && (tokensCount - tokensToDeleteCount > 4)) {
 									SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 									isSplit = true;
 								}
@@ -395,7 +528,21 @@ public class ParticipialPhraseExtractor {
 								int tokensToDeleteCount = tokensToDelete.length;
 								int tokensCount = tokens.length;
 								
-								if (tokensCount - tokensToDeleteCount > 5) {
+								boolean extract = true;
+								ArrayList<Tree> a = coreContextSentence.getAttribution();
+								for (Tree tr : a) {
+									String attr = Sentence.listToString(tr.yield());
+									//System.out.println("sfaf " + attr);
+									
+									String ph = Sentence.listToString(t.getChild(0).yield());
+									//System.out.println("afsdf" + ph);
+									if (attr.contains(ph)) {
+										extract = false;
+										//System.out.println("yay");
+									}
+								}
+								
+								if (extract && (tokensCount - tokensToDeleteCount > 5)) {
 									SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 									isSplit = true;
 								}
@@ -415,7 +562,21 @@ public class ParticipialPhraseExtractor {
 								int tokensToDeleteCount = tokensToDelete.length;
 								int tokensCount = tokens.length;
 								
-								if (tokensCount - tokensToDeleteCount > 4) {
+								boolean extract = true;
+								ArrayList<Tree> a = coreContextSentence.getAttribution();
+								for (Tree tr : a) {
+									String attr = Sentence.listToString(tr.yield());
+									//System.out.println("sfaf " + attr);
+									
+									String ph = Sentence.listToString(t.getChild(0).yield());
+									//System.out.println("afsdf" + ph);
+									if (attr.contains(ph)) {
+										extract = false;
+										//System.out.println("yay");
+									}
+								}
+								
+								if (extract && (tokensCount - tokensToDeleteCount > 4)) {
 									SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 									isSplit = true;
 								}
@@ -431,7 +592,21 @@ public class ParticipialPhraseExtractor {
 								int tokensToDeleteCount = tokensToDelete.length;
 								int tokensCount = tokens.length;
 								
-								if (tokensCount - tokensToDeleteCount > 5) {
+								boolean extract = true;
+								ArrayList<Tree> a = coreContextSentence.getAttribution();
+								for (Tree tr : a) {
+									String attr = Sentence.listToString(tr.yield());
+									//System.out.println("sfaf " + attr);
+									
+									String ph = Sentence.listToString(t.getChild(0).yield());
+									//System.out.println("afsdf" + ph);
+									if (attr.contains(ph)) {
+										extract = false;
+										//System.out.println("yay");
+									}
+								}
+								
+								if (extract && (tokensCount - tokensToDeleteCount > 5)) {
 									SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 									isSplit = true;
 								}

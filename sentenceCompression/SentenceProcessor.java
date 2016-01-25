@@ -345,7 +345,7 @@ public class SentenceProcessor {
 				isPrunedProperNouns = AppositivePhraseExtractor.extractRestrictiveAppositives(sentence, currentContext.get(n), false, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedColon = Punctuation.splitAtColon(sentence, currentContext.get(n), false, n);
+				//isPrunedColon = Punctuation.splitAtColon(sentence, currentContext.get(n), false, n);
 			}
 			if (n < sentence.getContext().size()) {	
 				isPrunedParentheses = Punctuation.extractParentheses(sentence, currentContext.get(n), false, n);
@@ -640,7 +640,7 @@ public class SentenceProcessor {
 				isPrunedProperNouns = AppositivePhraseExtractor.extractRestrictiveAppositives(sentence, currentCore.get(n), true, n);
 			}
 			if (n < sentence.getContext().size()) {	
-				isPrunedColon = Punctuation.splitAtColon(sentence, currentCore.get(n), true, n);
+				//isPrunedColon = Punctuation.splitAtColon(sentence, currentCore.get(n), true, n);
 			}
 			if (n < sentence.getContext().size()) {	
 				isPrunedParentheses = Punctuation.extractParentheses(sentence, currentCore.get(n), true, n);

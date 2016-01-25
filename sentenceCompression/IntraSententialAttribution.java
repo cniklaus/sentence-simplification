@@ -10,15 +10,23 @@ import edu.stanford.nlp.trees.Tree;
 public class IntraSententialAttribution {
 
 	
-	public static void extractIntraSententialAttributions(CoreContextSentence coreContextSentence, Tree tree) {
+	public static ArrayList<String> extractIntraSententialAttributions(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		boolean isPresent = SentenceProcessor.isPresent(coreContextSentence.getOriginal());
+		String sentence = Sentence.listToString(parse.yield());
 		
-		for (Tree t : tree) {
-			if (t.getChildrenAsList().size() >= 2) {
+		String aux = SentenceProcessor.setAux(true, isPresent);
+		String phrase = "";
+		String phraseToDelete = "";
+		ArrayList<String> del = new ArrayList<String>();
+		
+		
+		for (Tree t : parse) {
+			if (t.getChildrenAsList().size() >= 2 && t.label().value().equals("S") && !t.ancestor(1, parse).label().value().equals("SBAR")) {
 				for (int i = 0; i < t.getChildrenAsList().size()-1; i++) {
 					if (t.getChild(i).label().value().equals("NP") &&
 							t.getChild(i+1).label().value().equals("VP")) {
+						
 						boolean noun = false;
 						List<LabeledWord> label = t.getChild(i).labeledYield();
 						for (LabeledWord l : label) {
@@ -37,50 +45,99 @@ public class IntraSententialAttribution {
 									if (t.getChild(i+1).getChild(1).label().value().equals("SBAR")) {
 										if (t.getChild(i+1).getChild(1).getChild(0).label().value().equals("IN")) {
 											if (t.getChild(i+1).getChild(1).getChild(0).getChild(0).label().value().equals("that")) {
-												System.out.println("......................................................");
-												String aux = SentenceProcessor.setAux(true, isPresent);
-												String phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " .";
-												String phraseToDelete = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " that";
-												//System.out.println(phraseToDelete);
-												//System.out.println("success1: " + phraseToDelete);
-												coreContextSentence.getContext().add(SentenceProcessor.parse(SentenceProcessor.tokenize(phrase)));
+												//System.out.println("......................................................");
 												
-												ArrayList<Tree> core = coreContextSentence.getCore();
-												ArrayList<Tree> coreNew = coreContextSentence.getCoreNew();
+												boolean pp = false;
+												boolean vp = false;
 												
-												ArrayList<String> coreString = new ArrayList<String>();
-												ArrayList<String> coreNewString = new ArrayList<String>();
-												
-												for (Tree tr : core) {
-													String s = Sentence.listToString(tr.yield());
-													coreString.add(s);
-												}
-												
-												for (Tree tr : coreNew) {
-													String s = Sentence.listToString(tr.yield());
-													coreNewString.add(s);
-												}
-												
-												int n = 0;
-												for (String str : coreString) {
-													if (str.contains(phraseToDelete)) {
-														str = str.replace(phraseToDelete, "");
-														coreContextSentence.getCore().set(n, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
+												if (i > 1) {
+													if (t.getChild(i-2).label().value().equals("PP") &&
+															t.getChild(i-1).label().value().equals(",")) {
+														pp = true;
 													}
-													n++;
+													if (t.getChild(i-2).label().value().equals("S") &&
+															t.getChild(i-1).label().value().equals(",")) {
+														if (t.getChild(i-2).getChild(0).label().value().equals("VP")) {
+															if (t.getChild(i-2).getChild(0).getChild(0).label().value().equals("VBN") ||
+																	t.getChild(i-2).getChild(0).getChild(0).label().value().equals("VBG")) {
+																vp = true;
+															}
+														}
+													}
 												}
 												
-												int m = 0;
-												for (String str : coreNewString) {
-													if (str.contains(phraseToDelete)) {
-														str = str.replace(phraseToDelete, "");
-														coreContextSentence.getCoreNew().set(m, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
+												
+												if (pp) {
+													phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i-2).yield()) + " .";
+													phraseToDelete = Sentence.listToString(t.getChild(i-2).yield()) + " , " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " that";
+												} else if (vp) {
+													phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " when " + Sentence.listToString(t.getChild(i-2).yield()) + " .";
+													phraseToDelete = Sentence.listToString(t.getChild(i-2).yield()) + " , " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " that";
+												} else {
+													phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " .";
+													phraseToDelete = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " that";
+												}
+												
+												
+												
+												coreContextSentence.getAttribution().add(SentenceProcessor.parse(SentenceProcessor.tokenize(phrase)));
+												SentenceProcessor.updateSentence(null, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+											    del.add(phraseToDelete);
+												}
+											
+										}
+									}
+									
+									if (t.getChild(i+1).getChildrenAsList().size() >= 4) {
+										if (t.getChild(i+1).getChild(0).label().value().equals("VBD") ||
+												t.getChild(i+1).getChild(0).label().value().equals("VBP") ||
+												t.getChild(i+1).getChild(0).label().value().equals("VBZ")) {
+											if (t.getChild(i+1).getChild(1).label().value().equals(",")) {
+												if (t.getChild(i+1).getChild(2).label().value().equals("``")) {
+													if (t.getChild(i+1).getChild(3).label().value().equals("S")) {
+														boolean pp = false;
+														boolean vp = false;
+														
+														if (i > 1) {
+															if (t.getChild(i-2).label().value().equals("PP") &&
+																	t.getChild(i-1).label().value().equals(",")) {
+																pp = true;
+															}
+															if (t.getChild(i-2).label().value().equals("S") &&
+																	t.getChild(i-1).label().value().equals(",")) {
+																if (t.getChild(i-2).getChild(0).label().value().equals("VP")) {
+																	if (t.getChild(i-2).getChild(0).getChild(0).label().value().equals("VBN") ||
+																			t.getChild(i-2).getChild(0).getChild(0).label().value().equals("VBG")) {
+																		vp = true;
+																	}
+																}
+															}
+														}
+														
+														
+														if (pp) {
+															phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i-2).yield()) + " .";
+															phraseToDelete = Sentence.listToString(t.getChild(i-2).yield()) + " , " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield());
+														} else if (vp) {
+															phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " when " + Sentence.listToString(t.getChild(i-2).yield()) + " .";
+															phraseToDelete = Sentence.listToString(t.getChild(i-2).yield()) + " , " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield());
+														} else {
+															phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " .";
+															phraseToDelete = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " that";
+														}
+														
+														//System.out.println(phraseToDelete);
+														
+														coreContextSentence.getAttribution().add(SentenceProcessor.parse(SentenceProcessor.tokenize(phrase)));
+														SentenceProcessor.updateSentence(null, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+													    del.add(phraseToDelete);
+														
 													}
-													m++;
 												}
 											}
 										}
 									}
+									
 									if (t.getChild(i+1).getChild(1).getChildrenAsList().size() >= 4) {
 										if (t.getChild(i+1).getChild(1).getChild(0).label().value().equals("SBAR") &&
 												t.getChild(i+1).getChild(1).getChild(1).label().value().equals(",") &&
@@ -90,56 +147,49 @@ public class IntraSententialAttribution {
 												if (t.getChild(i+1).getChild(1).getChild(0).getChild(0).getChild(0).label().value().equals("that")) {
 													if (t.getChild(i+1).getChild(1).getChild(3).getChild(0).label().value().equals("IN")) {
 														if (t.getChild(i+1).getChild(1).getChild(3).getChild(0).getChild(0).label().value().equals("that")) {
-															System.out.println("......................................................");
-															String aux = SentenceProcessor.setAux(true, isPresent);
-															String phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " .";
+															//System.out.println("......................................................");
 															
-															String phraseToDelete = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " that";
 															String phraseToDelete2 = " , " + Sentence.listToString(t.getChild(i+1).getChild(1).getChild(2).getChild(0).yield()) + " that " + Sentence.listToString(t.getChild(i+1).getChild(1).getChild(3).getChild(1).yield()) + " .";
 															
-															String core2 = Sentence.listToString(t.getChild(i+1).getChild(1).getChild(2).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).getChild(3).getChild(1).yield()) + " .";
-															coreContextSentence.getCoreNew().add(SentenceProcessor.parse(SentenceProcessor.tokenize(core2)));
+															boolean pp = false;
+															boolean vp = false;
 															
-															System.out.println(phraseToDelete2);
-															//System.out.println("success1: " + phraseToDelete);
-															coreContextSentence.getContext().add(SentenceProcessor.parse(SentenceProcessor.tokenize(phrase)));
-															
-															ArrayList<Tree> core = coreContextSentence.getCore();
-															ArrayList<Tree> coreNew = coreContextSentence.getCoreNew();
-															
-															ArrayList<String> coreString = new ArrayList<String>();
-															ArrayList<String> coreNewString = new ArrayList<String>();
-															
-															for (Tree tr : core) {
-																String s = Sentence.listToString(tr.yield());
-																coreString.add(s);
-															}
-															
-															for (Tree tr : coreNew) {
-																String s = Sentence.listToString(tr.yield());
-																coreNewString.add(s);
-															}
-															
-															int n = 0;
-															for (String str : coreString) {
-																if (str.contains(phraseToDelete)) {
-																	str = str.replace(phraseToDelete, "");
-																	str = str.replace(phraseToDelete2, "");
-																	str = str + " .";
-																	coreContextSentence.getCore().set(n, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
+															if (i > 1) {
+																if (t.getChild(i-2).label().value().equals("PP") &&
+																		t.getChild(i-1).label().value().equals(",")) {
+																	pp = true;
 																}
-																n++;
+																if (t.getChild(i-2).label().value().equals("S") &&
+																		t.getChild(i-1).label().value().equals(",")) {
+																	if (t.getChild(i-2).getChild(0).label().value().equals("VP")) {
+																		if (t.getChild(i-2).getChild(0).getChild(0).label().value().equals("VBN") ||
+																				t.getChild(i-2).getChild(0).getChild(0).label().value().equals("VBG")) {
+																			vp = true;
+																		}
+																	}
+																}
 															}
 															
-															int m = 0;
-															for (String str : coreNewString) {
-																if (str.contains(phraseToDelete)) {
-																	str = str.replace(phraseToDelete, "");
-																	str = str.replace(phraseToDelete2, "");
-																	coreContextSentence.getCoreNew().set(m, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
-																}
-																m++;
+															String phrase2 = Sentence.listToString(t.getChild(i+1).getChild(1).getChild(2).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).getChild(3).getChild(1).yield()) + " .";
+															
+															if (pp) {
+																phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i-2).yield()) + " .";
+																phraseToDelete = Sentence.listToString(t.getChild(i-2).yield()) + " , " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " that";
+															} else if (vp) {
+																phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " when " + Sentence.listToString(t.getChild(i-2).yield()) + " .";
+																phraseToDelete = Sentence.listToString(t.getChild(i-2).yield()) + " , " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " that";
+															} else {
+																 phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " .";	
+																 phraseToDelete = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " that";
 															}
+															
+															SentenceProcessor.addCore(phrase2, coreContextSentence);
+															
+															coreContextSentence.getAttribution().add(SentenceProcessor.parse(SentenceProcessor.tokenize(phrase)));
+															SentenceProcessor.updateSentence(null, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+															SentenceProcessor.updateSentence(null, phraseToDelete2.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+															 del.add(phraseToDelete);
+															
 														}
 													}
 												}
@@ -154,53 +204,57 @@ public class IntraSententialAttribution {
 												t.getChild(i+1).getChild(1).getChild(1).label().value().equals("SBAR")) {
 											if (t.getChild(i+1).getChild(1).getChild(1).getChild(0).label().value().equals("IN")) {
 												if (t.getChild(i+1).getChild(1).getChild(1).getChild(0).getChild(0).label().value().equals("that")) {
-													System.out.println("......................................................");
-													String aux = SentenceProcessor.setAux(true, isPresent);
-													String phrase = "";
-													if (noun) {
-														phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).getChild(0).yield()) + " .";
-													} else {
-														phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).getChild(0).yield()) + " .";
-													}
+													//System.out.println("......................................................");
+													
 													 
-													String phraseToDelete = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).getChild(0).yield()) + " that";
-													System.out.println(phraseToDelete);
-													//System.out.println("success1: " + phraseToDelete);
-													coreContextSentence.getContext().add(SentenceProcessor.parse(SentenceProcessor.tokenize(phrase)));
-													
-													ArrayList<Tree> core = coreContextSentence.getCore();
-													ArrayList<Tree> coreNew = coreContextSentence.getCoreNew();
-													
-													ArrayList<String> coreString = new ArrayList<String>();
-													ArrayList<String> coreNewString = new ArrayList<String>();
-													
-													for (Tree tr : core) {
-														String s = Sentence.listToString(tr.yield());
-														coreString.add(s);
-													}
-													
-													for (Tree tr : coreNew) {
-														String s = Sentence.listToString(tr.yield());
-														coreNewString.add(s);
-													}
-													
-													int n = 0;
-													for (String str : coreString) {
-														if (str.contains(phraseToDelete)) {
-															str = str.replace(phraseToDelete, "");
-															coreContextSentence.getCore().set(n, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
+													 boolean pp = false;
+														boolean vp = false;
+														
+														if (i > 1) {
+															if (t.getChild(i-2).label().value().equals("PP") &&
+																	t.getChild(i-1).label().value().equals(",")) {
+																pp = true;
+															}
+															if (t.getChild(i-2).label().value().equals("S") &&
+																	t.getChild(i-1).label().value().equals(",")) {
+																if (t.getChild(i-2).getChild(0).label().value().equals("VP")) {
+																	if (t.getChild(i-2).getChild(0).getChild(0).label().value().equals("VBN") ||
+																			t.getChild(i-2).getChild(0).getChild(0).label().value().equals("VBG")) {
+																		vp = true;
+																	}
+																}
+															}
 														}
-														n++;
-													}
-													
-													int m = 0;
-													for (String str : coreNewString) {
-														if (str.contains(phraseToDelete)) {
-															str = str.replace(phraseToDelete, "");
-															coreContextSentence.getCoreNew().set(m, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
+														
+														
+														if (pp) {
+															if (noun) {
+																phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i-2).yield()) + " .";
+															} else {
+																phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i-2).yield()) + " .";
+															}
+															phraseToDelete = Sentence.listToString(t.getChild(i-2).yield()) + " , " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).getChild(0).yield()) + " that";
+														} else if (vp) {
+															if (noun) {
+																phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).getChild(0).yield()) + " when " + Sentence.listToString(t.getChild(i-2).yield()) + " .";
+															} else {
+																phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).getChild(0).yield()) + " when " + Sentence.listToString(t.getChild(i-2).yield()) + " .";
+															}
+															phraseToDelete = Sentence.listToString(t.getChild(i-2).yield()) + " , " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).getChild(0).yield()) + " that";
+														} else {
+															if (noun) {
+																phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).getChild(0).yield()) + " .";
+															} else {
+																phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).getChild(0).yield()) + " .";
+															}
+															 phraseToDelete = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).getChild(0).yield()) + " that";
+																
 														}
-														m++;
-													}
+														
+														
+														coreContextSentence.getAttribution().add(SentenceProcessor.parse(SentenceProcessor.tokenize(phrase)));
+														SentenceProcessor.updateSentence(null, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+														 del.add(phraseToDelete);
 												}
 											}
 										}
@@ -217,52 +271,147 @@ public class IntraSententialAttribution {
 									if (t.getChild(i+1).getChild(2).label().value().equals("SBAR")) {
 										if (t.getChild(i+1).getChild(2).getChild(0).label().value().equals("IN")) {
 											if (t.getChild(i+1).getChild(2).getChild(0).getChild(0).label().value().equals("that")) {
-												System.out.println("......................................................");
-												String aux = SentenceProcessor.setAux(true, isPresent);
-												String phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).yield())  + " .";
-												String phraseToDelete = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).yield()) + " that";
-												//System.out.println(phraseToDelete);
-												//System.out.println("success1: " + phraseToDelete);
-												coreContextSentence.getContext().add(SentenceProcessor.parse(SentenceProcessor.tokenize(phrase)));
+												//System.out.println("......................................................");
 												
-												ArrayList<Tree> core = coreContextSentence.getCore();
-												ArrayList<Tree> coreNew = coreContextSentence.getCoreNew();
 												
-												ArrayList<String> coreString = new ArrayList<String>();
-												ArrayList<String> coreNewString = new ArrayList<String>();
 												
-												for (Tree tr : core) {
-													String s = Sentence.listToString(tr.yield());
-													coreString.add(s);
-												}
+												boolean pp = false;
+												boolean vp = false;
 												
-												for (Tree tr : coreNew) {
-													String s = Sentence.listToString(tr.yield());
-													coreNewString.add(s);
-												}
-												
-												int n = 0;
-												for (String str : coreString) {
-													if (str.contains(phraseToDelete)) {
-														str = str.replace(phraseToDelete, "");
-														coreContextSentence.getCore().set(n, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
+												if (i > 1) {
+													if (t.getChild(i-2).label().value().equals("PP") &&
+															t.getChild(i-1).label().value().equals(",")) {
+														pp = true;
 													}
-													n++;
-												}
-												
-												int m = 0;
-												for (String str : coreNewString) {
-													if (str.contains(phraseToDelete)) {
-														str = str.replace(phraseToDelete, "");
-														coreContextSentence.getCoreNew().set(m, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
+													if (t.getChild(i-2).label().value().equals("S") &&
+															t.getChild(i-1).label().value().equals(",")) {
+														if (t.getChild(i-2).getChild(0).label().value().equals("VP")) {
+															if (t.getChild(i-2).getChild(0).getChild(0).label().value().equals("VBN") ||
+																	t.getChild(i-2).getChild(0).getChild(0).label().value().equals("VBG")) {
+																vp = true;
+															}
+														}
 													}
-													m++;
 												}
+													
+													
+												if (pp) {
+													phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).yield()) + " " + Sentence.listToString(t.getChild(i-2).yield()) + " .";
+													phraseToDelete = Sentence.listToString(t.getChild(i-2).yield()) + " , " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).yield()) + " that";
+												} else if (vp) {
+													phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).yield()) + " when " + Sentence.listToString(t.getChild(i-2).yield()) + " .";
+													phraseToDelete = Sentence.listToString(t.getChild(i-2).yield()) + " , " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).yield()) + " that";
+												} else {
+													phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).yield())  + " .";
+													phraseToDelete = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).yield()) + " that";
+												}	
+													
+												coreContextSentence.getAttribution().add(SentenceProcessor.parse(SentenceProcessor.tokenize(phrase)));
+												SentenceProcessor.updateSentence(null, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+												
+												 del.add(phraseToDelete);	
 											}
 										}
 										
 									}
+									if (t.getChild(i+1).getChild(2).label().value().equals("VP")) {
+										if (t.getChild(i+1).getChild(2).getChild(0).label().value().equals("VBN") &&
+												t.getChild(i+1).getChild(2).getChild(1).label().value().equals("SBAR")) {
+											if (t.getChild(i+1).getChild(2).getChild(1).getChild(0).label().value().equals("IN")) {
+												if (t.getChild(i+1).getChild(2).getChild(1).getChild(0).getChild(0).label().value().equals("that")) {
+
+													boolean pp = false;
+													boolean vp = false;
+													
+													if (i > 1) {
+														if (t.getChild(i-2).label().value().equals("PP") &&
+																t.getChild(i-1).label().value().equals(",")) {
+															pp = true;
+														}
+														if (t.getChild(i-2).label().value().equals("S") &&
+																t.getChild(i-1).label().value().equals(",")) {
+															if (t.getChild(i-2).getChild(0).label().value().equals("VP")) {
+																if (t.getChild(i-2).getChild(0).getChild(0).label().value().equals("VBN") ||
+																		t.getChild(i-2).getChild(0).getChild(0).label().value().equals("VBG")) {
+																	vp = true;
+																}
+															}
+														}
+													}
+														
+														
+													if (pp) {
+														phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(2).getChild(0).yield())  + " " + Sentence.listToString(t.getChild(i-2).yield()) + " .";
+														phraseToDelete = Sentence.listToString(t.getChild(i-2).yield()) + " , " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).yield())  + " " + Sentence.listToString(t.getChild(i+1).getChild(2).getChild(0).yield())  + " that";
+													} else if (vp) {
+														phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(2).getChild(0).yield())  + " when " + Sentence.listToString(t.getChild(i-2).yield()) + " .";
+														phraseToDelete = Sentence.listToString(t.getChild(i-2).yield()) + " , " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(2).getChild(0).yield())  + " that";
+													} else {
+														phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(2).getChild(0).yield())  + " .";
+														phraseToDelete = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(2).getChild(0).yield())  + " that";
+													}	
+														
+													coreContextSentence.getAttribution().add(SentenceProcessor.parse(SentenceProcessor.tokenize(phrase)));
+													SentenceProcessor.updateSentence(null, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+													
+													 del.add(phraseToDelete);
+												}
+											}
+										}
+									}
 									
+								}
+							}
+						}
+						
+						if (t.getChild(i+1).getChild(0).label().value().equals("ADVP")) {
+							if (t.getChild(i+1).getChild(1).label().value().equals("VBD") ||
+									t.getChild(i+1).getChild(1).label().value().equals("VBZ") ||
+									t.getChild(i+1).getChild(1).label().value().equals("VBP")) {
+								if (t.getChild(i+1).getChild(2).label().value().equals("SBAR")) {
+									if (t.getChild(i+1).getChild(2).getChild(0).label().value().equals("IN")) {
+										if (t.getChild(i+1).getChild(2).getChild(0).getChild(0).label().value().equals("that")) {
+											//System.out.println("......................................................");
+											
+											
+											
+											boolean pp = false;
+											boolean vp = false;
+											
+											if (i > 1) {
+												if (t.getChild(i-2).label().value().equals("PP") &&
+														t.getChild(i-1).label().value().equals(",")) {
+													pp = true;
+												}
+												if (t.getChild(i-2).label().value().equals("S") &&
+														t.getChild(i-1).label().value().equals(",")) {
+													if (t.getChild(i-2).getChild(0).label().value().equals("VP")) {
+														if (t.getChild(i-2).getChild(0).getChild(0).label().value().equals("VBN") ||
+																t.getChild(i-2).getChild(0).getChild(0).label().value().equals("VBG")) {
+															vp = true;
+														}
+													}
+												}
+											}
+												
+												
+											if (pp) {
+												phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).yield()) + " " + Sentence.listToString(t.getChild(i-2).yield()) + " .";
+												phraseToDelete = Sentence.listToString(t.getChild(i-2).yield()) + " , " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).yield()) + " that";
+											} else if (vp) {
+												phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).yield()) + " when " + Sentence.listToString(t.getChild(i-2).yield()) + " .";
+												phraseToDelete = Sentence.listToString(t.getChild(i-2).yield()) + " , " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).yield()) + " that";
+											} else {
+												phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).yield())  + " .";
+												phraseToDelete = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+1).getChild(1).yield()) + " that";
+											}	
+												
+											coreContextSentence.getAttribution().add(SentenceProcessor.parse(SentenceProcessor.tokenize(phrase)));
+											SentenceProcessor.updateSentence(null, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+											
+											 del.add(phraseToDelete);	
+										}
+									}
 								}
 							}
 						}
@@ -294,47 +443,47 @@ public class IntraSententialAttribution {
 									if (t.getChild(i+2).getChild(1).label().value().equals("SBAR")) {
 										if (t.getChild(i+2).getChild(1).getChild(0).label().value().equals("IN")) {
 											if (t.getChild(i+2).getChild(1).getChild(0).getChild(0).label().value().equals("that")) {
-												System.out.println("......................................................");
-												String aux = SentenceProcessor.setAux(true, isPresent);
-												String phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(0).yield())  + " .";
-												String phraseToDelete = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(0).yield()) + " that";
-												//System.out.println(phraseToDelete);
-												//System.out.println("success1: " + phraseToDelete);
-												coreContextSentence.getContext().add(SentenceProcessor.parse(SentenceProcessor.tokenize(phrase)));
-																
-												ArrayList<Tree> core = coreContextSentence.getCore();
-												ArrayList<Tree> coreNew = coreContextSentence.getCoreNew();
+												//System.out.println("......................................................");
 												
-												ArrayList<String> coreString = new ArrayList<String>();
-												ArrayList<String> coreNewString = new ArrayList<String>();
-																
-												for (Tree tr : core) {
-													String s = Sentence.listToString(tr.yield());
-													coreString.add(s);
-												}
 												
-												for (Tree tr : coreNew) {
-													String s = Sentence.listToString(tr.yield());
-													coreNewString.add(s);
-												}
-												
-												int n = 0;
-												for (String str : coreString) {
-													if (str.contains(phraseToDelete)) {
-														str = str.replace(phraseToDelete, "");
-														coreContextSentence.getCore().set(n, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
+
+													boolean pp = false;
+													boolean vp = false;
+													
+													if (i > 1) {
+														if (t.getChild(i-2).label().value().equals("PP") &&
+																t.getChild(i-1).label().value().equals(",")) {
+															pp = true;
+														}
+														if (t.getChild(i-2).label().value().equals("S") &&
+																t.getChild(i-1).label().value().equals(",")) {
+															if (t.getChild(i-2).getChild(0).label().value().equals("VP")) {
+																if (t.getChild(i-2).getChild(0).getChild(0).label().value().equals("VBN") ||
+																		t.getChild(i-2).getChild(0).getChild(0).label().value().equals("VBG")) {
+																	vp = true;
+																}
+															}
+														}
 													}
-													n++;
-												}
-																
-												int m = 0;
-												for (String str : coreNewString) {
-													if (str.contains(phraseToDelete)) {
-														str = str.replace(phraseToDelete, "");
-														coreContextSentence.getCoreNew().set(m, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
-													}
-													m++;
-												}
+														
+														
+													if (pp) {
+														phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i-2).yield()) + " .";
+														phraseToDelete = Sentence.listToString(t.getChild(i-2).yield()) + " , " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(0).yield()) + " that";
+													} else if (vp) {
+														phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(0).yield()) + " when " + Sentence.listToString(t.getChild(i-2).yield()) + " .";
+														phraseToDelete = Sentence.listToString(t.getChild(i-2).yield()) + " , " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(0).yield()) + " that";
+													} else {
+														phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(0).yield())  + " .";
+														phraseToDelete = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(0).yield()) + " that";
+												
+													}	
+														
+													coreContextSentence.getAttribution().add(SentenceProcessor.parse(SentenceProcessor.tokenize(phrase)));
+													SentenceProcessor.updateSentence(null, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+													
+													 del.add(phraseToDelete);	
+												
 											}
 										}
 									}
@@ -347,56 +496,52 @@ public class IntraSententialAttribution {
 												if (t.getChild(i+2).getChild(1).getChild(0).getChild(0).getChild(0).label().value().equals("that")) {
 													if (t.getChild(i+2).getChild(1).getChild(3).getChild(0).label().value().equals("IN")) {
 														if (t.getChild(i+2).getChild(1).getChild(3).getChild(0).getChild(0).label().value().equals("that")) {
-															System.out.println("......................................................");
-															String aux = SentenceProcessor.setAux(true, isPresent);
-															String phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(0).yield()) + " .";
+															//System.out.println("......................................................");
 															
-															String phraseToDelete = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(0).yield()) + " that";
 															String phraseToDelete2 = " , " + Sentence.listToString(t.getChild(i+2).getChild(1).getChild(2).getChild(0).yield()) + " that " + Sentence.listToString(t.getChild(i+2).getChild(1).getChild(3).getChild(1).yield()) + " .";
 															
-															String core2 = Sentence.listToString(t.getChild(i+2).getChild(1).getChild(2).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(1).getChild(3).getChild(1).yield()) + " .";
-															coreContextSentence.getCoreNew().add(SentenceProcessor.parse(SentenceProcessor.tokenize(core2)));
+															boolean pp = false;
+															boolean vp = false;
 															
+															if (i > 1) {
+																if (t.getChild(i-2).label().value().equals("PP") &&
+																		t.getChild(i-1).label().value().equals(",")) {
+																	pp = true;
+																}
+																if (t.getChild(i-2).label().value().equals("S") &&
+																		t.getChild(i-1).label().value().equals(",")) {
+																	if (t.getChild(i-2).getChild(0).label().value().equals("VP")) {
+																		if (t.getChild(i-2).getChild(0).getChild(0).label().value().equals("VBN") ||
+																				t.getChild(i-2).getChild(0).getChild(0).label().value().equals("VBG")) {
+																			vp = true;
+																		}
+																	}
+																}
+															}
+																
+															String phrase2 = Sentence.listToString(t.getChild(i+2).getChild(1).getChild(2).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(1).getChild(3).getChild(1).yield()) + " .";	
+															
+															if (pp) {
+																phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i-2).yield()) + " .";
+																phraseToDelete = Sentence.listToString(t.getChild(i-2).yield()) + " , " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(0).yield()) + " that";
+															} else if (vp) {
+																phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(0).yield()) + " when " + Sentence.listToString(t.getChild(i-2).yield()) + " .";
+																phraseToDelete = Sentence.listToString(t.getChild(i-2).yield()) + " , " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(0).yield()) + " that";
+															} else {
+																 phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(0).yield()) + " .";
+																 phraseToDelete = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(0).yield()) + " that";
+																
+															}	
+																
+															
+															//System.out.println(phrase2);
 															//System.out.println(phraseToDelete2);
-															//System.out.println("success1: " + phraseToDelete);
-															coreContextSentence.getContext().add(SentenceProcessor.parse(SentenceProcessor.tokenize(phrase)));
 															
-															ArrayList<Tree> core = coreContextSentence.getCore();
-															ArrayList<Tree> coreNew = coreContextSentence.getCoreNew();
-															
-															ArrayList<String> coreString = new ArrayList<String>();
-															ArrayList<String> coreNewString = new ArrayList<String>();
-															
-															for (Tree tr : core) {
-																String s = Sentence.listToString(tr.yield());
-																coreString.add(s);
-															}
-															
-															for (Tree tr : coreNew) {
-																String s = Sentence.listToString(tr.yield());
-																coreNewString.add(s);
-															}
-															
-															int n = 0;
-															for (String str : coreString) {
-																if (str.contains(phraseToDelete)) {
-																	str = str.replace(phraseToDelete, "");
-																	str = str.replace(phraseToDelete2, "");
-																	str = str + " .";
-																	coreContextSentence.getCore().set(n, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
-																}
-																n++;
-															}
-															
-															int m = 0;
-															for (String str : coreNewString) {
-																if (str.contains(phraseToDelete)) {
-																	str = str.replace(phraseToDelete, "");
-																	str = str.replace(phraseToDelete2, "");
-																	coreContextSentence.getCoreNew().set(m, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
-																}
-																m++;
-															}
+															coreContextSentence.getAttribution().add(SentenceProcessor.parse(SentenceProcessor.tokenize(phrase)));
+															SentenceProcessor.addCore(phrase2, coreContextSentence);
+															SentenceProcessor.updateSentence(null, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+															SentenceProcessor.updateSentence(null, phraseToDelete2.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+															 del.add(phraseToDelete);
 														}
 													}
 												}
@@ -416,47 +561,46 @@ public class IntraSententialAttribution {
 									if (t.getChild(i+2).getChild(2).label().value().equals("SBAR")) {
 										if (t.getChild(i+2).getChild(2).getChild(0).label().value().equals("IN")) {
 											if (t.getChild(i+2).getChild(2).getChild(0).getChild(0).label().value().equals("that")) {
-												System.out.println("......................................................");
-												String aux = SentenceProcessor.setAux(true, isPresent);
-												String phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(1).yield())  + " .";
-												String phraseToDelete = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(1).yield()) + " that";
-												//System.out.println(phraseToDelete);
-												//System.out.println("success1: " + phraseToDelete);
-												coreContextSentence.getContext().add(SentenceProcessor.parse(SentenceProcessor.tokenize(phrase)));
+												//System.out.println("......................................................");
 												
-												ArrayList<Tree> core = coreContextSentence.getCore();
-												ArrayList<Tree> coreNew = coreContextSentence.getCoreNew();
-												
-												ArrayList<String> coreString = new ArrayList<String>();
-												ArrayList<String> coreNewString = new ArrayList<String>();
-												
-												for (Tree tr : core) {
-													String s = Sentence.listToString(tr.yield());
-													coreString.add(s);
-												}
-												
-												for (Tree tr : coreNew) {
-													String s = Sentence.listToString(tr.yield());
-													coreNewString.add(s);
-												}
-												
-												int n = 0;
-												for (String str : coreString) {
-													if (str.contains(phraseToDelete)) {
-														str = str.replace(phraseToDelete, "");
-														coreContextSentence.getCore().set(n, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
+													
+												 boolean pp = false;
+													boolean vp = false;
+													
+													if (i > 1) {
+														if (t.getChild(i-2).label().value().equals("PP") &&
+																t.getChild(i-1).label().value().equals(",")) {
+															pp = true;
+														}
+														if (t.getChild(i-2).label().value().equals("S") &&
+																t.getChild(i-1).label().value().equals(",")) {
+															if (t.getChild(i-2).getChild(0).label().value().equals("VP")) {
+																if (t.getChild(i-2).getChild(0).getChild(0).label().value().equals("VBN") ||
+																		t.getChild(i-2).getChild(0).getChild(0).label().value().equals("VBG")) {
+																	vp = true;
+																}
+															}
+														}
 													}
-													n++;
-												}
-												
-												int m = 0;
-												for (String str : coreNewString) {
-													if (str.contains(phraseToDelete)) {
-														str = str.replace(phraseToDelete, "");
-														coreContextSentence.getCoreNew().set(m, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
-													}
-													m++;
-												}
+														
+														
+													if (pp) {
+														phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(1).yield()) + " " + Sentence.listToString(t.getChild(i-2).yield()) + " .";
+														phraseToDelete = Sentence.listToString(t.getChild(i-2).yield()) + " , " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(1).yield()) + " that";
+													} else if (vp) {
+														phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(1).yield()) + " when " + Sentence.listToString(t.getChild(i-2).yield()) + " .";
+														phraseToDelete = Sentence.listToString(t.getChild(i-2).yield()) + " , " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(1).yield()) + " that";
+													} else {
+														 phrase = "This" + aux + " what " + Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(1).yield())  + " .";
+														 phraseToDelete = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(0).yield()) + " " + Sentence.listToString(t.getChild(i+2).getChild(1).yield()) + " that";
+											
+													}	
+														
+													coreContextSentence.getAttribution().add(SentenceProcessor.parse(SentenceProcessor.tokenize(phrase)));
+													SentenceProcessor.updateSentence(null, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+													
+													 del.add(phraseToDelete);
+												 
 											}
 										}
 										
@@ -467,7 +611,9 @@ public class IntraSententialAttribution {
 					}
 				}
 			}
+			
 		}
 		
+		return del;
 	}
 }

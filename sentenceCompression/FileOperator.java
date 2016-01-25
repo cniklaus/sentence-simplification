@@ -51,7 +51,13 @@ public class FileOperator {
 				
 				for (Tree t : s.getCore()) {
 					if (!Sentence.listToString(t.yield()).equals("If")) {
-						String str = Sentence.listToString(t.yield());
+						String str = "";
+						if (!Sentence.listToString(t.yield()).endsWith(".")) {
+							str = Sentence.listToString(t.yield()) + " .";
+						} else {
+							str = Sentence.listToString(t.yield());
+						}
+						
 						writer.write("core sentence: " + str.substring(0, 1).toUpperCase() + str.substring(1) + "\n");
 					}
 					

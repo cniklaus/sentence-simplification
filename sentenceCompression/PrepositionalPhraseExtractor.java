@@ -1,6 +1,7 @@
 package sentenceCompression;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.stanford.nlp.ling.LabeledWord;
@@ -26,9 +27,23 @@ public class PrepositionalPhraseExtractor {
 						String PPphraseToDelete = Sentence.listToString(t.getChild(0).yield());
 						
 						String phraseToCompare = Sentence.listToString(t.getChild(0).yield()) + " .";
-						System.out.println(phraseToCompare);
+						//System.out.println(phraseToCompare);
 						
-						if (!sentence.equals("This is " + phraseToCompare.trim()) && !sentence.equals("This was " + phraseToCompare.trim())) {
+						boolean extract = true;
+						ArrayList<Tree> a = coreContextSentence.getAttribution();
+						for (Tree tr : a) {
+							String attr = Sentence.listToString(tr.yield());
+							//System.out.println("sfaf " + attr);
+							
+							String ph = Sentence.listToString(t.getChild(0).yield());
+							//System.out.println("afsdf" + ph);
+							if (attr.contains(ph)) {
+								extract = false;
+								//System.out.println("yay");
+							}
+						}
+						
+						if (extract && !sentence.equals("This is " + phraseToCompare.trim()) && !sentence.equals("This was " + phraseToCompare.trim())) {
 							SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 							isSplit = true;
 						}
@@ -48,7 +63,22 @@ public class PrepositionalPhraseExtractor {
 							String phraseToCompare = Sentence.listToString(t.getChild(0).yield()) + " .";
 							//System.out.println(phraseToCompare);
 							
-							if (!sentence.equals("This is " + phraseToCompare.trim()) && !sentence.equals("This was " + phraseToCompare.trim())) {
+							boolean extract = true;
+							ArrayList<Tree> a = coreContextSentence.getAttribution();
+							for (Tree tr : a) {
+								String attr = Sentence.listToString(tr.yield());
+								//System.out.println("sfaf " + attr);
+								
+								String ph = Sentence.listToString(t.getChild(0).yield());
+								//System.out.println("afsdf" + ph);
+								if (attr.contains(ph)) {
+									extract = false;
+									//System.out.println("yay");
+								}
+							}
+							
+							
+							if (extract && !sentence.equals("This is " + phraseToCompare.trim()) && !sentence.equals("This was " + phraseToCompare.trim())) {
 								SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 								isSplit = true;
 							}
@@ -65,7 +95,22 @@ public class PrepositionalPhraseExtractor {
 							String phraseToCompare = Sentence.listToString(t.getChild(0).yield()) + " .";
 							//System.out.println(phraseToCompare);
 							
-							if (!sentence.equals("This is " + phraseToCompare.trim()) && !sentence.equals("This was " + phraseToCompare.trim())) {
+							boolean extract = true;
+							ArrayList<Tree> a = coreContextSentence.getAttribution();
+							for (Tree tr : a) {
+								String attr = Sentence.listToString(tr.yield());
+								//System.out.println("sfaf " + attr);
+								
+								String ph = Sentence.listToString(t.getChild(0).yield());
+								//System.out.println("afsdf" + ph);
+								if (attr.contains(ph)) {
+									extract = false;
+									//System.out.println("yay");
+								}
+							}
+							//System.out.println(extract);
+							
+							if (extract && !sentence.equals("This is " + phraseToCompare.trim()) && !sentence.equals("This was " + phraseToCompare.trim())) {
 								SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 								isSplit = true;
 							}
@@ -84,8 +129,21 @@ public class PrepositionalPhraseExtractor {
 									String phraseToCompare = Sentence.listToString(t.getChild(i+1).yield()) + " .";
 									//System.out.println(phraseToCompare);
 									//System.out.println(PPphrase);
+									boolean extract = true;
+									ArrayList<Tree> a = coreContextSentence.getAttribution();
+									for (Tree tr : a) {
+										String attr = Sentence.listToString(tr.yield());
+										//System.out.println("sfaf " + attr);
+										
+										String ph = Sentence.listToString(t.getChild(0).yield());
+										//System.out.println("afsdf" + ph);
+										if (attr.contains(ph)) {
+											extract = false;
+											//System.out.println("yay");
+										}
+									}
 									
-									if (!sentence.equals("This is " + phraseToCompare.trim()) && !sentence.equals("This was " + phraseToCompare.trim())) {
+									if (extract && !sentence.equals("This is " + phraseToCompare.trim()) && !sentence.equals("This was " + phraseToCompare.trim())) {
 										SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 										isSplit = true;
 									}
@@ -103,7 +161,23 @@ public class PrepositionalPhraseExtractor {
 								//System.out.println("This is " + phraseToCompare.trim());
 								//System.out.println("pp " + PPphrase);
 								
-								if (!sentence.equals("This is " + phraseToCompare.trim()) && !sentence.equals("This was " + phraseToCompare.trim())) {
+								boolean extract = true;
+								ArrayList<Tree> a = coreContextSentence.getAttribution();
+								for (Tree tr : a) {
+									String attr = Sentence.listToString(tr.yield());
+									//System.out.println("sfaf " + attr);
+									
+									String ph = Sentence.listToString(t.getChild(0).yield());
+									//System.out.println("afsdf" + ph);
+									if (attr.contains(ph)) {
+										extract = false;
+										//System.out.println("yay");
+									}
+								}
+								//System.out.println(extract);
+								
+								
+								if (extract && !sentence.equals("This is " + phraseToCompare.trim()) && !sentence.equals("This was " + phraseToCompare.trim())) {
 									SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 									isSplit = true;
 								}
@@ -116,7 +190,21 @@ public class PrepositionalPhraseExtractor {
 								String phraseToCompare = Sentence.listToString(t.getChild(0).yield()) + " .";
 								//System.out.println(phraseToCompare);
 								
-								if (!sentence.equals("This is " + phraseToCompare.trim()) && !sentence.equals("This was " + phraseToCompare.trim())) {
+								boolean extract = true;
+								ArrayList<Tree> a = coreContextSentence.getAttribution();
+								for (Tree tr : a) {
+									String attr = Sentence.listToString(tr.yield());
+									//System.out.println("sfaf " + attr);
+									
+									String ph = Sentence.listToString(t.getChild(0).yield());
+									//System.out.println("afsdf" + ph);
+									if (attr.contains(ph)) {
+										extract = false;
+										//System.out.println("yay");
+									}
+								}
+								
+								if (extract && !sentence.equals("This is " + phraseToCompare.trim()) && !sentence.equals("This was " + phraseToCompare.trim())) {
 									SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 									isSplit = true;
 								}
@@ -129,7 +217,22 @@ public class PrepositionalPhraseExtractor {
 								String phraseToCompare = Sentence.listToString(t.getChild(0).yield()) + " .";
 								//System.out.println(phraseToCompare);
 								
-								if (!sentence.equals("This is " + phraseToCompare.trim()) && !sentence.equals("This was " + phraseToCompare.trim())) {
+								boolean extract = true;
+								ArrayList<Tree> a = coreContextSentence.getAttribution();
+								for (Tree tr : a) {
+									String attr = Sentence.listToString(tr.yield());
+									//System.out.println("sfaf " + attr);
+									
+									String ph = Sentence.listToString(t.getChild(0).yield());
+									//System.out.println("afsdf" + ph);
+									if (attr.contains(ph)) {
+										extract = false;
+										//System.out.println("yay");
+									}
+								}
+								
+								
+								if (extract && !sentence.equals("This is " + phraseToCompare.trim()) && !sentence.equals("This was " + phraseToCompare.trim())) {
 									SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 									isSplit = true;
 								}
@@ -146,7 +249,21 @@ public class PrepositionalPhraseExtractor {
 							String phraseToCompare = Sentence.listToString(t.getChild(0).yield()) + " " + Sentence.listToString(t.getChild(1).yield()) + " .";
 							//System.out.println(phraseToCompare);
 							
-							if (!sentence.equals("This is " + phraseToCompare.trim()) && !sentence.equals("This was " + phraseToCompare.trim())) {
+							boolean extract = true;
+							ArrayList<Tree> a = coreContextSentence.getAttribution();
+							for (Tree tr : a) {
+								String attr = Sentence.listToString(tr.yield());
+								//System.out.println("sfaf " + attr);
+								
+								String ph = Sentence.listToString(t.getChild(0).yield());
+								//System.out.println("afsdf" + ph);
+								if (attr.contains(ph)) {
+									extract = false;
+									//System.out.println("yay");
+								}
+							}
+							
+							if (extract && !sentence.equals("This is " + phraseToCompare.trim()) && !sentence.equals("This was " + phraseToCompare.trim())) {
 								SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 								isSplit = true;
 							}
@@ -166,7 +283,22 @@ public class PrepositionalPhraseExtractor {
 									String phraseToCompare = Sentence.listToString(t.getChild(0).yield()) + " .";
 									//System.out.println(phraseToCompare);
 									
-									if (!sentence.equals("This is " + phraseToCompare.trim()) && !sentence.equals("This was " + phraseToCompare.trim())) {
+									
+									boolean extract = true;
+									ArrayList<Tree> a = coreContextSentence.getAttribution();
+									for (Tree tr : a) {
+										String attr = Sentence.listToString(tr.yield());
+										//System.out.println("sfaf " + attr);
+										
+										String ph = Sentence.listToString(t.getChild(0).yield());
+										//System.out.println("afsdf" + ph);
+										if (attr.contains(ph)) {
+											extract = false;
+											//System.out.println("yay");
+										}
+									}
+									
+									if (extract && !sentence.equals("This is " + phraseToCompare.trim()) && !sentence.equals("This was " + phraseToCompare.trim())) {
 										SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 										isSplit = true;
 									}
@@ -183,7 +315,22 @@ public class PrepositionalPhraseExtractor {
 									String phraseToCompare = Sentence.listToString(t.getChild(0).yield()) + " .";
 									//System.out.println(phraseToCompare);
 									
-									if (!sentence.equals("This is " + phraseToCompare.trim()) && !sentence.equals("This was " + phraseToCompare.trim())) {
+									boolean extract = true;
+									ArrayList<Tree> a = coreContextSentence.getAttribution();
+									for (Tree tr : a) {
+										String attr = Sentence.listToString(tr.yield());
+										//System.out.println("sfaf " + attr);
+										
+										String ph = Sentence.listToString(t.getChild(0).yield());
+										//System.out.println("afsdf" + ph);
+										if (attr.contains(ph)) {
+											extract = false;
+											//System.out.println("yay");
+										}
+									}
+									
+									
+									if (extract && !sentence.equals("This is " + phraseToCompare.trim()) && !sentence.equals("This was " + phraseToCompare.trim())) {
 										SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 										isSplit = true;
 									}
@@ -204,7 +351,21 @@ public class PrepositionalPhraseExtractor {
 									String phraseToCompare = Sentence.listToString(t.getChild(0).yield()) + " " + Sentence.listToString(t.getChild(1).yield()) + " .";
 									//System.out.println(phraseToCompare);
 									
-									if (!sentence.equals("This is " + phraseToCompare.trim()) && !sentence.equals("This was " + phraseToCompare.trim())) {
+									boolean extract = true;
+									ArrayList<Tree> a = coreContextSentence.getAttribution();
+									for (Tree tr : a) {
+										String attr = Sentence.listToString(tr.yield());
+										//System.out.println("sfaf " + attr);
+										
+										String ph = Sentence.listToString(t.getChild(0).yield());
+										//System.out.println("afsdf" + ph);
+										if (attr.contains(ph)) {
+											extract = false;
+											//System.out.println("yay");
+										}
+									}
+									
+									if (extract && !sentence.equals("This is " + phraseToCompare.trim()) && !sentence.equals("This was " + phraseToCompare.trim())) {
 										SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 										isSplit = true;
 									}
@@ -236,8 +397,11 @@ public class PrepositionalPhraseExtractor {
 						String PPphrase = "This" + aux + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield()) + " .";
 						String PPphraseToDelete = " , " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield()) + " ,";
 						
-						SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-						isSplit = true;
+						
+							SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+							isSplit = true;
+						
+						
 					//}
 				}
 				if (t.getChild(i).label().value().equals(",") && t.getChild(i+1).label().value().equals("ADVP") && t.getChild(i+2).label().value().equals("PP") && t.getChild(i+3).label().value().equals(",")) {
@@ -248,8 +412,11 @@ public class PrepositionalPhraseExtractor {
 						String PPphrase = "This" + aux + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield()) + " .";
 						String PPphraseToDelete = " , " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield()) + " ,";
 						
-						SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-						isSplit = true;
+						
+							SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+							isSplit = true;
+						
+						
 					//}
 				}
 			}
@@ -262,8 +429,11 @@ public class PrepositionalPhraseExtractor {
 						String PPphrase = "This" + aux + Sentence.listToString(t.getChild(i+1).yield()) + " .";
 						String PPphraseToDelete = " , " + Sentence.listToString(t.getChild(i+1).yield()) + " ,";
 						
-						SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-						isSplit = true;
+						
+							SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+							isSplit = true;
+						
+						
 					//}
 				}
 				if (t.getChild(i).label().value().equals(",") && t.getChild(i+1).label().value().equals("SBAR") && t.getChild(i+2).label().value().equals(",")) {
@@ -276,8 +446,11 @@ public class PrepositionalPhraseExtractor {
 						String PPphrase = "This" + aux + Sentence.listToString(t.getChild(i+1).yield()) + " .";
 						String PPphraseToDelete = " , " + Sentence.listToString(t.getChild(i+1).yield()) + " ,";
 
-						SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-						isSplit = true;
+						
+							SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+							isSplit = true;
+						
+						
 					}
 				}
 					
@@ -288,9 +461,12 @@ public class PrepositionalPhraseExtractor {
 						
 						String PPphrase = "This" + aux + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield()) + " .";
 						String PPphraseToDelete = " , " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield());
-							
-						SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-						isSplit = true;
+						
+						
+							SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+							isSplit = true;
+						
+						
 					//}
 				}
 				
@@ -302,8 +478,11 @@ public class PrepositionalPhraseExtractor {
 						String PPphrase = "This" + aux + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield()) + " .";
 						String PPphraseToDelete = " , " + Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield());
 							
-						SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-						isSplit = true;
+						
+							SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+							isSplit = true;
+						
+						
 					//}
 				}
 			}
@@ -316,9 +495,11 @@ public class PrepositionalPhraseExtractor {
 						
 						String PPphrase = "This" + aux + Sentence.listToString(t.getChild(i+1).yield()) + " .";
 						String PPphraseToDelete = " , " + Sentence.listToString(t.getChild(i+1).yield());
-							
-						SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-						isSplit = true;
+						
+							SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+							isSplit = true;
+					
+						
 					//}
 				}
 					
@@ -336,8 +517,11 @@ public class PrepositionalPhraseExtractor {
 							//System.out.println(PPphrase);
 							//System.out.println(PPphraseToDelete);
 							
-							SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-							isSplit = true;
+							
+								SentenceProcessor.updateSentence(PPphrase, PPphraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+								isSplit = true;
+							
+							
 						}
 					}
 				}
