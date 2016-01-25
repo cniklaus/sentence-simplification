@@ -7,6 +7,7 @@ import edu.stanford.nlp.trees.Tree;
 public class CoreContextSentence {
 
 	private Tree original;
+	private String input;
 	private ArrayList<Tree> core = new ArrayList<Tree>();
 	private ArrayList<Tree> context = new ArrayList<Tree>();
 	private ArrayList<Tree> coreNew = new ArrayList<Tree>();
@@ -30,6 +31,10 @@ public class CoreContextSentence {
 		this.original = original;
 	}
 	
+	public void setInput(String input) {
+		this.input = input;
+	}
+	
 	public void setCore(ArrayList<Tree> core) {
 		this.core = core;
 	}
@@ -44,6 +49,10 @@ public class CoreContextSentence {
 	
 	public Tree getOriginal() {
 		return this.original;
+	}
+	
+	public String getInput() {
+		return this.input;
 	}
 	
 	public ArrayList<Tree> getCore() {

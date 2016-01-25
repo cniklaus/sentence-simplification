@@ -47,7 +47,7 @@ public class FileOperator {
 			
 			try {
 			
-				writer.write("original sentence: " + Sentence.listToString(s.getOriginal().yield()) + "\n");
+				writer.write("original sentence: " + s.getInput() + "\n");
 				
 				for (Tree t : s.getCore()) {
 					if (!Sentence.listToString(t.yield()).equals("If")) {

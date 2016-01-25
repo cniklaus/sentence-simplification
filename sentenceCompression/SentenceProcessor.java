@@ -627,7 +627,7 @@ public class SentenceProcessor {
 				isPrunedVPappositives = ParticipialPhraseExtractor.extractPresentAndPastParticiples(sentence, currentCore.get(n), true, n);
 			}
 			if (n < sentence.getContext().size()) {
-				isPrunedADVPappositives = AdjectiveAdverbPhraseExtractor.extractAdverbPhrases(sentence, currentCore.get(n), true, n);
+				//isPrunedADVPappositives = AdjectiveAdverbPhraseExtractor.extractAdverbPhrases(sentence, currentCore.get(n), true, n);
 			}
 			if (n < sentence.getContext().size()) {	
 				isPrunedNPPappositives = AppositivePhraseExtractor.extractNonRestrictiveAppositives(sentence, currentCore.get(n), true, n);

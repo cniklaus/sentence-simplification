@@ -1,8 +1,6 @@
 package sentenceCompression;
 
-import java.util.List;
 
-import edu.stanford.nlp.ling.LabeledWord;
 import edu.stanford.nlp.ling.Sentence;
 import edu.stanford.nlp.trees.Tree;
 
