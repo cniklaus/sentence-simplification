@@ -5,7 +5,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.Sentence;
@@ -15,7 +23,6 @@ import edu.stanford.nlp.trees.TreePrint;
 
 
 public class CoreContextApp {
-	
 		
 	public static void main(String[] args) throws IOException, ClassCastException, ClassNotFoundException {
 		
@@ -78,17 +85,46 @@ public class CoreContextApp {
 		try {
 			sentences = fo.readFile(new File(input));
 			
-			File f = new File("data/Wikipedia/Eval/baseball/attributionsParsed");
+			File f = new File("data/Wikipedia/Eval/Mandela/MandelaParsed");
 			PrintWriter pw = new PrintWriter(f);
 			TreePrint print = new TreePrint("penn");
 			int i = 0;
+			ArrayList<Boolean> severalCores = new ArrayList<Boolean>();
+			int boolNum = 0; 
 			
 			for (String s : sentences) {
+				severalCores.add(false);
+				SentenceProcessor.positions.clear();
+				
 				Core.getStart().clear();
 				Core.getEnd().clear();
 				Core.getPrefix().clear();
 				Core.getPostfix().clear();
 				String inputS = s;
+				
+				
+				
+				
+				
+				
+				
+				String nerString = SentenceProcessor.ner(s);
+				String[] sentenceTokens = s.split(" "); 
+				String[] nerTokens = nerString.split(" ");
+				//System.out.println(nerString);
+				if (!nerTokens[0].endsWith("/ORGANIZATION") && !nerTokens[0].endsWith("/PERSON") && !nerTokens[0].endsWith("/LOCATION") &&
+						!sentenceTokens[0].equals("I")) {
+					sentenceTokens[0] = sentenceTokens[0].toLowerCase();
+					//System.out.println("yay");
+					String sentenceNew = "";
+					for (int counter = 0; counter < sentenceTokens.length; counter++) {
+						sentenceNew = sentenceNew + " " + sentenceTokens[counter];
+					}
+					s = sentenceNew.trim();
+				}
+				
+				//System.out.println(s);
+				
 				
 				if (s.contains("-LRB-") && s.contains("-RRB-")) {
 					
@@ -211,7 +247,7 @@ public class CoreContextApp {
 				}
 				String contextPP = "";
 				if (printPP && !ppString.equals("")) {
-					System.out.println("ppppppppppppppppppppppppppppppppp " + pString);
+					//System.out.println("ppppppppppppppppppppppppppppppppp " + pString);
 					//System.out.println(ppString);
 					boolean tense = SentenceProcessor.isPresent(parse);
 					String aux = SentenceProcessor.setAux(true, tense);
@@ -222,8 +258,8 @@ public class CoreContextApp {
 					s = s.replace(", , ", ",");
 					tokens = SentenceProcessor.tokenize(s);
 					parse = SentenceProcessor.parse(tokens);
-					System.out.println(contextPP);
-					System.out.println(s);
+					//System.out.println(contextPP);
+					//System.out.println(s);
 				}
 				
 				
@@ -233,17 +269,38 @@ public class CoreContextApp {
 					if (!contextPP.equals("")) {
 						sentence.getContext().add(SentenceProcessor.parse(SentenceProcessor.tokenize(contextPP)));
 					}
+					
 					sentence.setInput(inputS);
+					
+					System.out.println(i + " " + inputS);
+					i++;
+					
+					
 					sentence.setOriginal(parse);
 					boolean[] delete = new boolean[tokens.size()];
 					sentence.setDelete(delete);
 					
 					print.printTree(sentence.getOriginal(),pw); 
 					
+					int counterSplit = 0;
+					while (counterSplit < 5) {
+						
+						 Punctuation.splitAtColon(sentence, sentence.getOriginal(), true, -1);
+						 ConjoinedClausesExtractor.infixAndOrButSplit(sentence, sentence.getOriginal(), true, -1);
+						 ConjoinedClausesExtractor.infixCommaAndOrButSplit(sentence, sentence.getOriginal(), true, -1);
+						
+						counterSplit++;
+					}
 					
-					System.out.println(i + " " + Sentence.listToString(sentence.getOriginal().yield()));
-					i++;
+					Set<Integer> setItems = new LinkedHashSet<Integer>(SentenceProcessor.positions);
+					SentenceProcessor.positions.clear();
+					SentenceProcessor.positions.addAll(setItems);
 					
+					Collections.sort(SentenceProcessor.positions);
+					
+					if (!SentenceProcessor.positions.isEmpty()) {
+						System.out.println(SentenceProcessor.positions);
+					}
 					
 					ArrayList<String> delPhrase = IntraSententialAttribution.extractIntraSententialAttributions(sentence, sentence.getOriginal(), true, -1);
 						
@@ -251,10 +308,8 @@ public class CoreContextApp {
 						sentence.getContext().add(trAttr);
 					}
 					 
-					System.out.println(delPhrase);
 					
-					//Punctuation.splitAtColon(sentence, sentence.getOriginal(), true, -1);
-					ConjoinedClausesExtractor.infixAndOrButSplit(sentence, sentence.getOriginal(), true, -1);
+					
 					
 					PrepositionalPhraseExtractor.extractToDo(sentence, sentence.getOriginal(), true, -1);
 					
@@ -288,13 +343,13 @@ public class CoreContextApp {
 					ConjoinedClausesExtractor.initialThoughAlthoughBecauseSplit(sentence, sentence.getOriginal(), true, -1);
 					ConjoinedClausesExtractor.infixBecauseThoughAlthoughSplit(sentence, sentence.getOriginal(), true, -1);
 					
-					ConjoinedClausesExtractor.infixCommaAndOrButSplit(sentence, sentence.getOriginal(), true, -1);
+					
 					ConjoinedClausesExtractor.ifSplit(sentence, sentence.getOriginal(), true, -1);
 					ConjoinedClausesExtractor.extractWhilePlusParticiple(sentence, sentence.getOriginal(), true, -1);
 					ConjoinedClausesExtractor.extractSo(sentence, sentence.getOriginal(), true, -1);
 					//ConjoinedClausesExtractor.or(sentence, sentence.getOriginal(), true, -1);
 					
-					Punctuation.splitAtColon(sentence, sentence.getOriginal(), true, -1);
+					
 					Punctuation.extractParentheses(sentence, sentence.getOriginal(), true, -1);
 					Punctuation.removeBrackets(sentence, sentence.getOriginal(), true, -1);
 					
@@ -318,6 +373,7 @@ public class CoreContextApp {
 						num++;
 					}
 				}
+				
 				
 				//AdjectiveAdverbPhraseExtractor.extractAdverbPhrases(sentence, sentence.getOriginal(), true, -1);
 				
@@ -738,7 +794,7 @@ public class CoreContextApp {
 				String taggedCore = tagger.tagString(s1);
 				String[] taggedCoreTokens = taggedCore.split(" ");
 				if ((taggedCoreTokens[0].endsWith("_VBG") || taggedCoreTokens[0].endsWith("VBN"))) {
-					System.out.println("............................");
+					//System.out.println("............................");
 					sentence.setInput("");
 				}
 			}
@@ -747,7 +803,7 @@ public class CoreContextApp {
 				String taggedCore = tagger.tagString(s2);
 				String[] taggedCoreTokens = taggedCore.split(" ");
 				if ((taggedCoreTokens[0].endsWith("_VBG") || taggedCoreTokens[0].endsWith("VBN"))) {
-					System.out.println("............................");
+					//System.out.println("............................");
 					sentence.setInput("");
 				}
 			}
@@ -777,6 +833,125 @@ public class CoreContextApp {
 				r5++;
 			}
 			
+			ArrayList<Tree> contextFinal = sentence.getContext();
+			ArrayList<String> contextFinalString = new ArrayList<String>();
+			int[] contexts = new int[contextFinal.size()];
+			
+			if (SentenceProcessor.positions.isEmpty() && !sentence.getInput().equals("")) {
+				//System.out.println("1 core");
+				
+				for (Tree treeCon : contextFinal) {
+					if (treeCon != null) {
+						contextFinalString.add(Sentence.listToString(treeCon.yield()));
+					}
+					
+				}
+				
+				
+				for (String stringCon : contextFinalString) {
+					stringCon = stringCon + " 0";
+					sentence.getConWithNumber().add(stringCon);
+				}
+				
+				
+			}
+			
+			if (!SentenceProcessor.positions.isEmpty() && !sentence.getInput().equals("")) {
+				//severalCores.set(boolNum, true);
+				for (Tree treeCon : contextFinal) {
+					if (treeCon != null) {
+						contextFinalString.add(Sentence.listToString(treeCon.yield()));
+					}
+					
+				}
+				
+				String originalString = Sentence.listToString(sentence.getOriginal().yield());
+				String[] tokensOriginal2 = originalString.split(" ");
+				
+				int tracker = 0;
+				Integer posStart = 0;
+				ArrayList<String> cores = new ArrayList<String>();
+				SentenceProcessor.positions.add(tokensOriginal2.length);
+				
+				for (Integer positions : SentenceProcessor.positions) {
+						
+					String phr = "";
+					//System.out.println("size " + SentenceProcessor.positions.size());
+					//for (int c3 = 0; c3 < SentenceProcessor.positions.size()-1; c3++) {
+						
+					for (int c4 = posStart; c4 < positions; c4++) {
+						//System.out.println(posStart);
+						phr = phr + " " + tokensOriginal2[c4];
+						tracker = c4;
+					}
+					if (!phr.isEmpty()) {
+						cores.add(phr);
+					}
+					//System.out.println("pos " + positions);
+					//System.out.println("c4" + tracker);
+					posStart = tracker+2;
+						
+						
+					}
+				
+					for (String stringCo : cores) {
+						//System.out.println(stringCo);
+					}
+					
+					
+					
+				int counterCon = 0;
+				
+				for (String stringCon : contextFinalString) {
+					//System.out.println(stringCon);
+					String[] stringConTokens = stringCon.split(" ");
+					int length = stringConTokens.length;
+					int len = 0;
+					if (length > 7) {
+						len = 3;
+					} else if (length > 6) {
+						len = 2;
+					} else {
+						len = 1;
+					}
+					String rest = "";
+					ArrayList<String> restSen = new ArrayList<String>();
+					for (int le = length-1-len; le < length-1; le++) {
+						rest = rest + " " + stringConTokens[le];
+					
+					}
+					//System.out.println("rest " + rest);
+					restSen.add(rest);
+					
+					
+					
+					int counterContext = 0;
+					for (String strCores : cores) {
+						
+							//System.out.println("cores " + strCores);
+							for (String r : restSen) {
+								if (strCores.contains(r)) {
+									//System.out.println(r + " " + counterContext);
+									contexts[counterCon] = counterContext;
+								}
+							}
+							counterContext++;
+						
+						
+					}
+					//System.out.println(stringCon + contexts[counterCon]);
+					sentence.getConWithNumber().add(stringCon + " " + contexts[counterCon]);
+					counterCon++;
+				}
+				
+				
+				
+			}
+			/**
+			for (String numCon : sentence.getConWithNumber()) {
+				System.out.println(numCon);
+			}*/
+			
 			
 			
 			/**
@@ -787,6 +962,7 @@ public class CoreContextApp {
 			
 			ArrayList<Tree> coreFinal2 = sentence.getCore();
 			ArrayList<Tree> coreNewFinal2 = sentence.getCoreNew();
+			
 			
 			for (Tree t : coreFinal2) {
 				//System.out.println("xx1: " + Sentence.listToString(t.yield()));
@@ -803,9 +979,12 @@ public class CoreContextApp {
 				sen.add(sentence);
 			}
 			
+			
 		}
-			fo.writeFile(sen, new File(output));
+				boolNum++;
 			}
+			fo.writeFile(sen, new File(output));
+			
 			
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block

@@ -191,6 +191,7 @@ public class AdjectiveAdverbPhraseExtractor {
 				}
 			}
 			
+			/**
 			for (int i = 0; i < t.getChildrenAsList().size()-2; i++) {
 				if (t.getChild(i).label().value().equals(",") && t.getChild(i+1).label().value().equals("ADVP") && t.getChild(i+2).label().value().equals(",")) {
 					String phrase = "This" + aux + Sentence.listToString(t.getChild(i+1).yield()) + " .";
@@ -388,7 +389,7 @@ public class AdjectiveAdverbPhraseExtractor {
 					}
 				
 				}
-			}
+			}*/
 		}
 		
 		

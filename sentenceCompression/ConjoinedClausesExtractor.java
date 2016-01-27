@@ -60,13 +60,18 @@ public class ConjoinedClausesExtractor {
 									//System.out.println(phrase1);
 									//System.out.println(phrase2);
 									
-									
+									String orig = Sentence.listToString(parse.yield());
 									//SentenceProcessor.addCore(phrase1, coreContextSentence);
 									SentenceProcessor.addCore(phrase2, coreContextSentence);
 									
+									String phrase1 = orig.replace(phraseToDelete, "");
+									String[] phrase1Tokens = phrase1.split(" ");
+									Integer pos = phrase1Tokens.length;
+									SentenceProcessor.pos(pos-2);
+									
 									SentenceProcessor.updateSentence("", phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 									//SentenceProcessor.updateSentence("", phrase1.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-								
+								isSplit = true;
 								
 							}
 						}
@@ -132,13 +137,19 @@ public class ConjoinedClausesExtractor {
 								//System.out.println(phrase1);
 								//System.out.println(phrase2);
 								
-								
+								String orig = Sentence.listToString(parse.yield());
 								//SentenceProcessor.addCore(phrase1, coreContextSentence);
 								SentenceProcessor.addCore(phrase2, coreContextSentence);
+								
+								String phrase1 = orig.replace(phraseToDelete, "");
+								String[] phrase1Tokens = phrase1.split(" ");
+								Integer pos = phrase1Tokens.length;
+								SentenceProcessor.pos(pos-2);
 								
 								SentenceProcessor.updateSentence("", phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 								//SentenceProcessor.updateSentence("", phrase1.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 							
+								isSplit = true;
 							
 							}
 						}

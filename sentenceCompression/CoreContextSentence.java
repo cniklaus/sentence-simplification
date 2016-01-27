@@ -12,6 +12,7 @@ public class CoreContextSentence {
 	private ArrayList<Tree> context = new ArrayList<Tree>();
 	private ArrayList<Tree> coreNew = new ArrayList<Tree>();
 	private ArrayList<Tree> attribution = new ArrayList<Tree>();
+	private ArrayList<String> contextWithNumber = new ArrayList<String>();
 	
 	//private String originalYield;
 	//private ArrayList<String> coreYield = new ArrayList<String>();
@@ -52,6 +53,10 @@ public class CoreContextSentence {
 		this.attribution = attribution;
 	}
 	
+	public void setConWithNumber(ArrayList<String> contextWithNumber) {
+		this.contextWithNumber = contextWithNumber;
+	}
+	
 	public Tree getOriginal() {
 		return this.original;
 	}
@@ -74,5 +79,9 @@ public class CoreContextSentence {
 	
 	public ArrayList<Tree> getAttribution() {
 		return this.attribution;
+	}
+	
+	public ArrayList<String> getConWithNumber() {
+		return this.contextWithNumber;
 	}
 }

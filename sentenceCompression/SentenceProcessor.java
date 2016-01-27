@@ -4,6 +4,9 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.stanford.nlp.ie.AbstractSequenceClassifier;
+import edu.stanford.nlp.ie.crf.CRFClassifier;
+import edu.stanford.nlp.ling.CoreAnnotations.AnswerAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.LabeledWord;
 import edu.stanford.nlp.ling.Sentence;
@@ -12,7 +15,9 @@ import edu.stanford.nlp.process.CoreLabelTokenFactory;
 import edu.stanford.nlp.process.PTBTokenizer;
 import edu.stanford.nlp.process.Tokenizer;
 import edu.stanford.nlp.process.TokenizerFactory;
+import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 import edu.stanford.nlp.trees.Tree;
+import edu.stanford.nlp.util.StringUtils;
 
 public class SentenceProcessor {
 	
@@ -21,9 +26,14 @@ public class SentenceProcessor {
 	private static final String pluralPresent = " are ";
 	private static final String pluralPast = " were ";
 	
+	static MaxentTagger tagger = new MaxentTagger("tagger/english-left3words-distsim.tagger");
+	public static ArrayList<Integer> positions = new ArrayList<Integer>();
+	
 	private static TokenizerFactory<CoreLabel> tokenizerFactory = PTBTokenizer.factory(new CoreLabelTokenFactory(), "");  
 	private static LexicalizedParser parser = LexicalizedParser.loadModel("edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz");
 	
+	private static String serializedClassifier = "classifiers/english.all.3class.distsim.crf.ser.gz";
+	private static AbstractSequenceClassifier classifier = CRFClassifier.getClassifierNoExceptions(serializedClassifier);
 	
 	public static List<CoreLabel> tokenize(String sentence) {
 		
@@ -676,9 +686,20 @@ public class SentenceProcessor {
 	
 	
 	
+	public static String ner(String s) {
+		
+		return classifier.classifyToString(s);
+	}
+	
+	
 	public static String collapseWhitespace(String value) {
 		// Replace all whitespace blocks with single spaces.
 		return value.replaceAll("\\s+", " ");
+	}
+		
+	
+	public static void pos(Integer i) {
+		positions.add(i);
 	}
 	
 	

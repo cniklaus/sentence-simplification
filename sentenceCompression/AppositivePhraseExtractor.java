@@ -4,9 +4,13 @@ import java.util.List;
 
 import edu.stanford.nlp.ling.LabeledWord;
 import edu.stanford.nlp.ling.Sentence;
+import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 import edu.stanford.nlp.trees.Tree;
 
 public class AppositivePhraseExtractor {
+	
+	static MaxentTagger tagger = new MaxentTagger("tagger/english-left3words-distsim.tagger");
+	
 	
 	public static boolean extractNonRestrictiveAppositives(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		boolean isPresent = SentenceProcessor.isPresent(coreContextSentence.getOriginal());
@@ -306,7 +310,8 @@ public class AppositivePhraseExtractor {
 		
 		String sentence = Sentence.listToString(parse.yield());
 		boolean isSplit = false;
-				
+		
+		/**
 		for (Tree t : parse) {	
 			if (t.label().value().equals("NP")) {
 				if (t.getChildrenAsList().size()>=3) {
@@ -409,6 +414,99 @@ public class AppositivePhraseExtractor {
 				}
 			}
 		}
+		*/
+		
+		String nerString = SentenceProcessor.ner(Sentence.listToString(parse.yield()));
+		//System.out.println(nerString);
+		String taggedString = tagger.tagString(Sentence.listToString(parse.yield()));
+		String[] tagTokens = taggedString.split(" ");
+		//System.out.println(taggedString);
+		//System.out.println();
+		String input = Sentence.listToString(parse.yield());
+		String[] inputTokens = input.split(" ");
+		
+		boolean isPresent = SentenceProcessor.isPresent(parse);
+		String aux = SentenceProcessor.setAux(true, isPresent);
+		
+		String[] nerTokens = nerString.split(" ");
+		for (int nerCounter = 0; nerCounter < nerTokens.length; nerCounter++) {
+			int[] person = new int[2];
+			if (nerTokens[nerCounter].endsWith("/PERSON")) {
+				person[0] = nerCounter;
+				nerCounter++;
+				while (nerTokens[nerCounter].endsWith("/PERSON")) {
+					nerCounter++;
+				}
+				person[1] = nerCounter-1;
+			}
+			//System.out.println(person[0] + " " + person[1]);
+			
+			if (person[0] > 0 &&
+					(tagTokens[person[0]-1].endsWith("_NN") || tagTokens[person[0]-1].endsWith("_NNP"))) {
+				int tagEnd = person[0]-1;
+				int tagStart = tagEnd;
+				while (tagStart >= 0 && (tagTokens[tagStart].endsWith("_NN") || tagTokens[tagStart].endsWith("_NNS") || tagTokens[tagStart].endsWith("_NNP") || tagTokens[tagStart].endsWith("_NNPS") || tagTokens[tagStart].equals("of_IN")
+						|| tagTokens[tagStart].equals("'s_POS"))) {	
+					tagStart--;
+					
+				}
+				
+				if (tagStart > 0) {
+					if (tagTokens[tagStart].equals("and_CC")) {
+						if (!nerTokens[tagStart-1].endsWith("/PERSON")) {
+							while (tagStart >= 0 && (tagTokens[tagStart].endsWith("_NN") || tagTokens[tagStart].endsWith("_NNS") || tagTokens[tagStart].endsWith("_NNP") || tagTokens[tagStart].endsWith("_NNPS") || tagTokens[tagStart].equals("of_IN")
+									|| tagTokens[tagStart].equals("'s_POS") || tagTokens[tagStart].equals("and_CC"))) {	
+								tagStart--;
+							}
+						}
+					}
+				}
+				
+				
+				while (tagStart >= 0 && (tagTokens[tagStart].endsWith("_JJ") || tagTokens[tagStart].endsWith("_DT"))) {
+					tagStart--;
+				}
+				
+				
+				tagStart++;
+				//System.out.println("start: " + tagStart);
+				//System.out.println("end: " + tagEnd);
+				for (int c = tagStart; c < tagEnd; c++) {
+					//System.out.println(tagTokens[c]);
+					if (tagTokens[tagStart].equals("of_IN")) {
+						tagStart++;
+					} else {
+						if (tagTokens[c].equals("of_IN") && (tagTokens[c-1].endsWith("_NN") || tagTokens[c-1].endsWith("_NNS"))) {
+							tagStart = c+1;
+						}
+					}
+					
+				}
+					
+					
+				String sen = "";
+				for (int c = person[0]; c <= person[1]; c++) {
+					sen = sen + " " + inputTokens[c];
+				}
+				sen = sen + aux;
+				String phraseToDelete = ""; 
+				for (int c = tagStart; c <= tagEnd; c++) {
+					sen = sen + " " + inputTokens[c];
+					phraseToDelete = phraseToDelete + " " + inputTokens[c];
+				}
+				sen = sen.replace("  ", " ");
+				sen.trim();
+				sen = sen + " .";
+				//System.out.println("xxxxxxxxxxxxxxxxxx: " + sen.trim());
+				
+				String phrase = sen;
+				
+				SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+				isSplit = true;
+			}
+			
+		}
+		
 		
 		return isSplit;
 	}

@@ -43,46 +43,123 @@ public class FileOperator {
 		FileWriter writer = new FileWriter(file);
 		
 				
+		
+		int boolNum = 0;
 		for (CoreContextSentence s : sentences) {
 			
 			try {
 			
 				writer.write("original sentence: " + s.getInput() + "\n");
 				
-				for (Tree t : s.getCore()) {
-					if (!Sentence.listToString(t.yield()).equals("If")) {
-						String str = "";
-						if (!Sentence.listToString(t.yield()).endsWith(".")) {
-							str = Sentence.listToString(t.yield()) + " .";
-						} else {
-							str = Sentence.listToString(t.yield());
+				/**
+				//if (!severalCores.get(boolNum)) {
+					
+					for (Tree t : s.getCore()) {
+						if (!Sentence.listToString(t.yield()).equals("If")) {
+							String str = "";
+							if (!Sentence.listToString(t.yield()).endsWith(".")) {
+								str = Sentence.listToString(t.yield()) + " .";
+							} else {
+								str = Sentence.listToString(t.yield());
+							}
+							System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+							writer.write("core sentence: " + str.substring(0, 1).toUpperCase() + str.substring(1) + "\n");
 						}
 						
+					}
+					Collections.reverse(s.getCoreNew());
+					for (Tree t : s.getCoreNew()) {
+						
+						String str = Sentence.listToString(t.yield());
 						writer.write("core sentence: " + str.substring(0, 1).toUpperCase() + str.substring(1) + "\n");
 					}
 					
-				}
-				Collections.reverse(s.getCoreNew());
-				for (Tree t : s.getCoreNew()) {
-					
-					String str = Sentence.listToString(t.yield());
-					writer.write("core sentence: " + str.substring(0, 1).toUpperCase() + str.substring(1) + "\n");
-				}
-				
-				for (Tree t : s.getContext()) {
-					if (t != null ) {
-						String str = Sentence.listToString(t.yield());
-						writer.write("context sentence: " + str.substring(0, 1).toUpperCase() + str.substring(1) + "\n");
+					for (Tree t : s.getContext()) {
+						if (t != null ) {
+							
+							String str = Sentence.listToString(t.yield());
+							//System.out.println(str);
+							writer.write("context sentence: " + str.substring(0, 1).toUpperCase() + str.substring(1) + "\n");
+						}
+						
 					}
 					
-				}
+					writer.write("\n");
+					writer.write("\n");
+				//}
+				*/
 				
-				writer.write("\n");
-				writer.write("\n");
+				
+				//if (severalCores.get(boolNum)) {
+					int counterCore = 0;
+					for (Tree t : s.getCore()) {
+						
+						if (!Sentence.listToString(t.yield()).equals("If")) {
+							String str = "";
+							if (!Sentence.listToString(t.yield()).endsWith(".")) {
+								str = Sentence.listToString(t.yield()) + " .";
+							} else {
+								str = Sentence.listToString(t.yield());
+							}
+							
+							//System.out.println("core 0: " + str);
+							writer.write("core sentence: " + str.substring(0, 1).toUpperCase() + str.substring(1) + "\n");
+							for (String tCon : s.getConWithNumber()) {
+								if (tCon != null) {
+									
+									String strCon = tCon;
+									String cStr = "" + counterCore;
+									//System.out.println(cStr);
+									//System.out.println(strCon);
+									if (strCon.endsWith(cStr)) {
+										
+										if (tCon != null ) {
+											//System.out.println("..................................");
+										    tCon = tCon.replace(". " + cStr, ".");
+											writer.write("context sentence: " + tCon.substring(0, 1).toUpperCase() + tCon.substring(1) + "\n");
+										}
+									}
+								}
+								
+							}
+						}
+						
+					}
+					Collections.reverse(s.getCoreNew());
+					int counter = 1;
+					for (Tree t : s.getCoreNew()) {
+						
+						String str = Sentence.listToString(t.yield());
+						writer.write("core sentence: " + str.substring(0, 1).toUpperCase() + str.substring(1) + "\n");
+						
+						for (String tCon : s.getConWithNumber()) {
+							if (tCon != null) {
+								String strCon = tCon;
+								String cStr = "" + counter;
+								if (strCon.endsWith(cStr)) {
+									if (tCon != null ) {
+									    tCon = tCon.replace(". " + cStr, ". ");
+										writer.write("context sentence: " + tCon.substring(0, 1).toUpperCase() + tCon.substring(1) + "\n");
+									}
+								}
+							}
+							
+						}
+						counter++;
+						
+						
+					}
+					writer.write("\n");
+					writer.write("\n");
+					
+					
+				//}
 								
 			} catch (IOException e) {
 				e.printStackTrace();
-			}	 
+			}
+			
+			boolNum++;
 		}
 		writer.flush();
 		writer.close();	

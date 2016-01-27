@@ -62,15 +62,22 @@ public class Punctuation {
 						String phrase2 = Sentence.listToString(t.getChild(i+2).yield()) + " .";
 						String phraseToDelete = Sentence.listToString(t.getChild(i+1).yield()) + " " + Sentence.listToString(t.getChild(i+2).yield());
 						
+						String orig = Sentence.listToString(parse.yield());
 						//System.out.println(phrase1);
 						//System.out.println(phrase2);
-						
+						//System.out.println(phraseToDelete);
 						
 						//SentenceProcessor.addCore(phrase1, coreContextSentence);
 						SentenceProcessor.addCore(phrase2, coreContextSentence);
+						String phrase1 = orig.replace(phraseToDelete, "");
+						String[] phrase1Tokens = phrase1.split(" ");
+						Integer pos = phrase1Tokens.length;
+						SentenceProcessor.pos(pos-2);
+						
 						
 						SentenceProcessor.updateSentence("", phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
 						//SentenceProcessor.updateSentence("", phrase1.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+						isSplit = true;
 				}	
 			}
 			/**
