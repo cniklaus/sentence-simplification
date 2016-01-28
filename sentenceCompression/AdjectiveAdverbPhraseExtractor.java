@@ -133,14 +133,14 @@ public class AdjectiveAdverbPhraseExtractor {
 	}
 	
 	
-	public static void extractAdverbPhrases(CoreContextSentence coreContextSentence, Tree tree) {
+	public static boolean extractAdverbPhrases(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
-		//String sentence = Sentence.listToString(parse.yield());
-		//boolean isSplit = false;
+		String sentence = Sentence.listToString(parse.yield());
+		boolean isSplit = false;
 		boolean isPresent = SentenceProcessor.isPresent(coreContextSentence.getOriginal());
 		String aux = SentenceProcessor.setAux(true, isPresent);
 		
-		for (Tree t : tree) {
+		for (Tree t : parse) {
 			if (t.label().value().equals("S")) {
 				if (t.getChildrenAsList().size() >= 2) {
 					if (t.getChild(0).label().value().equals("ADVP") && t.getChild(1).label().value().equals(",")) {
@@ -149,43 +149,9 @@ public class AdjectiveAdverbPhraseExtractor {
 						
 						if (!(t.label().value().equals("S") && t.getChild(0).label().value().equals("NP") && t.getChild(1).label().value().equals("VP") && t.getChild(2).label().value().equals(".")
 								&& t.getChild(1).getChild(1).label().value().equals("ADVP") && t.getChild(1).getChildrenAsList().size()==2)) {
-							//SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-							//isSplit = true;
-							coreContextSentence.getContext().add(SentenceProcessor.parse(SentenceProcessor.tokenize(phrase)));
+							SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+							isSplit = true;
 							
-							ArrayList<Tree> core = coreContextSentence.getCore();
-							ArrayList<Tree> coreNew = coreContextSentence.getCoreNew();
-							
-							ArrayList<String> coreString = new ArrayList<String>();
-							ArrayList<String> coreNewString = new ArrayList<String>();
-											
-							for (Tree tr : core) {
-								String s = Sentence.listToString(tr.yield());
-								coreString.add(s);
-							}
-							
-							for (Tree tr : coreNew) {
-								String s = Sentence.listToString(tr.yield());
-								coreNewString.add(s);
-							}
-							
-							int n = 0;
-							for (String str : coreString) {
-								if (str.contains(phraseToDelete)) {
-									str = str.replace(phraseToDelete, "");
-									coreContextSentence.getCore().set(n, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
-								}
-								n++;
-							}
-											
-							int m = 0;
-							for (String str : coreNewString) {
-								if (str.contains(phraseToDelete)) {
-									str = str.replace(phraseToDelete, "");
-									coreContextSentence.getCoreNew().set(m, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
-								}
-								m++;
-							}
 						}
 					}
 				}
@@ -391,7 +357,7 @@ public class AdjectiveAdverbPhraseExtractor {
 				}
 			}*/
 		}
-		
+		return isSplit;
 		
 	}
 	

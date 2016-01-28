@@ -42,9 +42,6 @@ public class FileOperator {
 		
 		FileWriter writer = new FileWriter(file);
 		
-				
-		
-		int boolNum = 0;
 		for (CoreContextSentence s : sentences) {
 			
 			try {
@@ -159,11 +156,30 @@ public class FileOperator {
 				e.printStackTrace();
 			}
 			
-			boolNum++;
+			
 		}
 		writer.flush();
 		writer.close();	
 	}
-		
+	
+	
+	public void writeFileSentencesToDelete(ArrayList<Integer> eliminatedSentences, File file) throws IOException {
 
+		FileWriter writer = new FileWriter(file);
+		try {
+			
+			for (Integer i : eliminatedSentences) {
+				writer.write(i.toString());
+				writer.write("\n");
+					
+			}
+						
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		writer.flush();
+		writer.close();	
+		
+	}
+	
 }

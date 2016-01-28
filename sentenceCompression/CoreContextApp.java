@@ -24,6 +24,8 @@ import edu.stanford.nlp.trees.TreePrint;
 
 public class CoreContextApp {
 		
+	public static ArrayList<Integer> eliminatedSentences = new ArrayList<Integer>();
+	
 	public static void main(String[] args) throws IOException, ClassCastException, ClassNotFoundException {
 		
 		
@@ -73,6 +75,7 @@ public class CoreContextApp {
 		
 		String input = args[0];//"data/Wikipedia/Eval/baseball/bugs";
 		String output = args[1];//"data/Wikipedia/Eval/baseball/baseballResultBugs";
+		String outputNumbers = args[2];
 		
 		ArrayList<CoreContextSentence> sen = new ArrayList<CoreContextSentence>();
 		
@@ -90,11 +93,16 @@ public class CoreContextApp {
 			TreePrint print = new TreePrint("penn");
 			int i = 0;
 			ArrayList<Boolean> severalCores = new ArrayList<Boolean>();
-			int boolNum = 0; 
+			 
+			int counterSentences = 0;
+			
 			
 			for (String s : sentences) {
+				
+				
 				severalCores.add(false);
 				SentenceProcessor.positions.clear();
+				SentenceProcessor.loc.clear();
 				
 				Core.getStart().clear();
 				Core.getEnd().clear();
@@ -125,6 +133,23 @@ public class CoreContextApp {
 				
 				//System.out.println(s);
 				
+				boolean loc = false;
+				for (int locCounter = 0; locCounter < nerTokens.length-2; locCounter++) {
+					//System.out.println(nerTokens[locCounter] + " " + sentenceTokens[locCounter+1] + " " + nerTokens[locCounter+2]);
+					if (nerTokens[locCounter].endsWith("/LOCATION") && sentenceTokens[locCounter+1].equals(",") && nerTokens[locCounter+2].endsWith("/LOCATION")) {
+						
+						loc = true;
+						//System.out.println(sentenceTokens[locCounter] + " " + sentenceTokens[locCounter+2]);
+						
+						SentenceProcessor.loc(sentenceTokens[locCounter]);
+						SentenceProcessor.loc(sentenceTokens[locCounter+2]);
+						
+						
+					}
+				}
+				if (loc) {
+					//System.out.println("------------------------- " +s );
+				}
 				
 				if (s.contains("-LRB-") && s.contains("-RRB-")) {
 					
@@ -262,7 +287,17 @@ public class CoreContextApp {
 					//System.out.println(s);
 				}
 				
+				if (!keep) {
+					eliminatedSentences.add(counterSentences);
+					
+				}
 				
+				
+				/**
+				for (Integer counter3 : eliminatedSentences) {
+					System.out.println(counter3);
+				}
+				*/
 				
 				if (keep) {
 					CoreContextSentence sentence = new CoreContextSentence();
@@ -328,7 +363,7 @@ public class CoreContextApp {
 					InitialNounPhraseExtractor.extractInitialParentheticalNounPhrases(sentence, sentence.getOriginal(), true, -1);
 					
 					AdjectiveAdverbPhraseExtractor.extractAdjectivePhrases(sentence, sentence.getOriginal(), true, -1);
-					
+					AdjectiveAdverbPhraseExtractor.extractAdverbPhrases(sentence, sentence.getOriginal(), true, -1);
 					
 					AppositivePhraseExtractor.extractNonRestrictiveAppositives(sentence, sentence.getOriginal(), true, -1);
 					AppositivePhraseExtractor.extractRestrictiveAppositives(sentence, sentence.getOriginal(), true, -1);
@@ -960,6 +995,7 @@ public class CoreContextApp {
 			}
 			*/
 			
+			/**
 			ArrayList<Tree> coreFinal2 = sentence.getCore();
 			ArrayList<Tree> coreNewFinal2 = sentence.getCoreNew();
 			
@@ -973,17 +1009,23 @@ public class CoreContextApp {
 				//System.out.println("xx2: " + Sentence.listToString(t.yield()));
 				AdjectiveAdverbPhraseExtractor.extractAdverbPhrases(sentence, t);
 			}
-			
+			*/
 			
 			if (!sentence.getInput().equals("")) {
 				sen.add(sentence);
 			}
 			
+			if (sentence.getInput().equals("")) {
+				//System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+				eliminatedSentences.add(counterSentences);
+			}
+			
 			
 		}
-				boolNum++;
+			counterSentences++;	
 			}
 			fo.writeFile(sen, new File(output));
+			fo.writeFileSentencesToDelete(eliminatedSentences, new File(outputNumbers));
 			
 			
 		} catch (FileNotFoundException e) {

@@ -14,28 +14,51 @@ import edu.stanford.nlp.process.TokenizerFactory;
 
 public class Measures {
 	public static double getCompressionRate(ArrayList<ArrayList<String>> compressed, ArrayList<String> original) {
-		double rate = 0.0;
 		
-		int numberTokensOriginal = 0;
+		double[] rates = new double[original.size()];
+		double compressionRate = 0.0;
+		
+		int counter = 0;
 		for (String s : original) {
+			System.out.println("original: " + s);
+			
+			int numberTokensOriginal = 0;
 			String[] tokensOriginal = s.split(" ");
 			numberTokensOriginal = numberTokensOriginal + tokensOriginal.length;
-		}
-		
-		int numberTokensCompressed = 0;
-		for (ArrayList<String> compressedCurrent : compressed) {
-			for (String com : compressedCurrent) {
-				String[] comTokens = com.split(" ");
-				numberTokensCompressed = numberTokensCompressed + comTokens.length;
+			System.out.println(numberTokensOriginal);
+			
+			String cores = "";
+			for (String core : compressed.get(counter)) {
+				cores = cores + " " + core;
 			}
-		
+			cores = cores.trim();
+			int numberTokensCompressed = 0;
+			String[] comTokens = cores.split(" ");
+			numberTokensCompressed = numberTokensCompressed + comTokens.length;
+			
+			double rate = (double) numberTokensCompressed / numberTokensOriginal;
+			
+			rates[counter] = rate; 
+			
+			System.out.println("cores: " + cores);
+			System.out.println(numberTokensCompressed);
+			System.out.println("rate: " + rate);
+			counter++;
+			
+			System.out.println();
 		}
-				
-		rate = (double) numberTokensCompressed / numberTokensOriginal;
-		//System.out.println(numberTokensCompressed + " " + numberTokensOriginal);
-		System.out.println(rate);
-		  
-		return rate;
+		
+		double sum = 0.0;
+		for (int i = 0; i < rates.length; i++) {
+			sum = sum + rates[i];
+		}
+		System.out.println("sum " + sum);
+		System.out.println("size: " + original.size());
+		
+		compressionRate = sum / original.size();
+		
+		return compressionRate;
+		
 	}
 	
 	

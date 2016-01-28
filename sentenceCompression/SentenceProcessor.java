@@ -2,6 +2,7 @@ package sentenceCompression;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import edu.stanford.nlp.ie.AbstractSequenceClassifier;
@@ -26,6 +27,8 @@ public class SentenceProcessor {
 	private static final String pluralPresent = " are ";
 	private static final String pluralPast = " were ";
 	
+	public static ArrayList<String> loc = new ArrayList<String>();
+	
 	static MaxentTagger tagger = new MaxentTagger("tagger/english-left3words-distsim.tagger");
 	public static ArrayList<Integer> positions = new ArrayList<Integer>();
 	
@@ -42,6 +45,7 @@ public class SentenceProcessor {
 		
 		return tokens;
 	}
+	
 	
 	
 	public static Tree parse(List<CoreLabel> tokens) {
@@ -700,6 +704,10 @@ public class SentenceProcessor {
 	
 	public static void pos(Integer i) {
 		positions.add(i);
+	}
+	
+	public static void loc(String locations) {
+		loc.add(locations);
 	}
 	
 	
