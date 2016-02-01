@@ -13,11 +13,11 @@ public class SentenceExtractor {
 	static ArrayList<String> toDelete = new ArrayList<String>();
 	
 	public static void main(String[] args) throws IOException {
-		toDelete = readNumbersToDelete("data/Wikipedia/Eval/baseball/numbers");
+		toDelete = readNumbersToDelete("data/Wikipedia/Eval/Google/numbers");
 		
-		ArrayList<ArrayList<String>> coreFramework = extractCore("data/Wikipedia/Eval/baseball/baseballResult", false);
-		ArrayList<ArrayList<String>> coreGold = extractCore("data/Wikipedia/Eval/baseball/gold_annotatedContext", true);
-		ArrayList<String> original = extractOriginal("data/Wikipedia/Eval/baseball/baseballResult", false);
+		ArrayList<ArrayList<String>> coreFramework = extractCore("data/Wikipedia/Eval/Google/GoogleResult", false);
+		ArrayList<ArrayList<String>> coreGold = extractCore("data/Wikipedia/Eval/Google/gold_annotatedContext", true);
+		ArrayList<String> original = extractOriginal("data/Wikipedia/Eval/Google/GoogleResult", false);
 		
 		for (String s : toDelete) {
 			//System.out.println(s);

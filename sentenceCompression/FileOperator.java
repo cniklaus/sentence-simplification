@@ -93,8 +93,12 @@ public class FileOperator {
 						
 						if (!Sentence.listToString(t.yield()).equals("If")) {
 							String str = "";
-							if (!Sentence.listToString(t.yield()).endsWith(".")) {
-								str = Sentence.listToString(t.yield()) + " .";
+							if (!Sentence.listToString(t.yield()).endsWith(".") && !Sentence.listToString(t.yield()).endsWith(". ''")) {
+								
+									str = Sentence.listToString(t.yield()) + " .";
+									//System.out.println(".................................. " + str);
+								
+								
 							} else {
 								str = Sentence.listToString(t.yield());
 							}

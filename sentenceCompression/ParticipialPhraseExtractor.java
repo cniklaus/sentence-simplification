@@ -1,7 +1,9 @@
 package sentenceCompression;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import edu.stanford.nlp.ling.LabeledWord;
 import edu.stanford.nlp.ling.Sentence;
 import edu.stanford.nlp.trees.Tree;
 
@@ -21,7 +23,10 @@ public class ParticipialPhraseExtractor {
 							//if (t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value().equals("NN") || t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value().equals("NNS") || t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value().equals("NNP") || t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value().equals("NNPS")) {
 								if (t.getChild(i+2).getChild(0).label().value().equals("VBN") || (t.getChild(i+2).getChild(0).label().value().equals("ADVP") && t.getChild(i+2).getChild(1).label().value().equals("VBN"))) {
 									//System.out.println("success1");
-									String aux = getAux(t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value());
+									List<LabeledWord> label = t.getChild(i).labeledYield();
+									boolean number = SentenceProcessor.isSingular(label.get(label.size()-1));
+									String aux = SentenceProcessor.setAux(number, isPresent);
+									
 									String phrase = Sentence.listToString(t.getChild(i).yield()) + aux + Sentence.listToString(t.getChild(i+2).yield()) + " .";
 									String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+2).yield());
 									
@@ -42,7 +47,9 @@ public class ParticipialPhraseExtractor {
 							//if (t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value().equals("NN") || t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value().equals("NNS") || t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value().equals("NNP") || t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value().equals("NNPS")) {
 								if (t.getChild(i+2).getChild(0).label().value().equals("VBN") || (t.getChild(i+2).getChild(0).label().value().equals("ADVP") && t.getChild(i+2).getChild(1).label().value().equals("VBN"))) {
 									//System.out.println("success2");
-									String aux = getAux(t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value());
+									List<LabeledWord> label = t.getChild(i).labeledYield();
+									boolean number = SentenceProcessor.isSingular(label.get(label.size()-1));
+									String aux = SentenceProcessor.setAux(number, isPresent);
 									//System.out.println(t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value());
 									String phrase = Sentence.listToString(t.getChild(i).yield()) + aux + Sentence.listToString(t.getChild(i+2).yield()) + " .";
 									String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+2).yield()) + " ,";
@@ -61,7 +68,10 @@ public class ParticipialPhraseExtractor {
 							//if (t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value().equals("NN") || t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value().equals("NNS") || t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value().equals("NNP") || t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value().equals("NNPS")) {
 								if (t.getChild(i+3).getChild(0).label().value().equals("VBN") || (t.getChild(i+3).getChild(0).label().value().equals("ADVP") && t.getChild(i+3).getChild(1).label().value().equals("VBN"))) {
 									//System.out.println("success3");
-									String aux = getAux(t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value());
+									List<LabeledWord> label = t.getChild(i).labeledYield();
+									boolean number = SentenceProcessor.isSingular(label.get(label.size()-1));
+									String aux = SentenceProcessor.setAux(number, isPresent);
+									
 									String phrase = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + aux + Sentence.listToString(t.getChild(i+2).yield()) + " .";
 									String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+3).yield());
 								
@@ -79,7 +89,10 @@ public class ParticipialPhraseExtractor {
 							//if (t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value().equals("NN") || t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value().equals("NNS") || t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value().equals("NNP") || t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value().equals("NNPS")) {
 								if (t.getChild(i+3).getChild(0).label().value().equals("VBN") || (t.getChild(i+3).getChild(0).label().value().equals("ADVP") && t.getChild(i+3).getChild(1).label().value().equals("VBN"))) {
 									//System.out.println("success3");
-									String aux = getAux(t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value());
+									List<LabeledWord> label = t.getChild(i).labeledYield();
+									boolean number = SentenceProcessor.isSingular(label.get(label.size()-1));
+									String aux = SentenceProcessor.setAux(number, isPresent);
+									
 									String phrase = "This" + aux + "when being " + Sentence.listToString(t.getChild(i+3).yield()) + " .";
 									String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+3).yield());
 								
@@ -101,7 +114,10 @@ public class ParticipialPhraseExtractor {
 							//if (t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value().equals("NN") || t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value().equals("NNS") || t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value().equals("NNP") || t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value().equals("NNPS")) {
 								if (t.getChild(i+3).getChild(0).label().value().equals("VBN") || (t.getChild(i+3).getChild(0).label().value().equals("ADVP") && t.getChild(i+3).getChild(1).label().value().equals("VBN"))) {
 									//System.out.println("success4");
-									String aux = getAux(t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value());
+									List<LabeledWord> label = t.getChild(i).labeledYield();
+									boolean number = SentenceProcessor.isSingular(label.get(label.size()-1));
+									String aux = SentenceProcessor.setAux(number, isPresent);
+									
 									String phrase = Sentence.listToString(t.getChild(i).yield()) + " " + Sentence.listToString(t.getChild(i+1).yield()) + aux + Sentence.listToString(t.getChild(i+3).yield()) + " .";
 									String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+3).yield()) + " ,";
 									
@@ -118,7 +134,10 @@ public class ParticipialPhraseExtractor {
 							//if (t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value().equals("NN") || t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value().equals("NNS") || t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value().equals("NNP") || t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value().equals("NNPS")) {
 								if (t.getChild(i+3).getChild(0).label().value().equals("VBN") || (t.getChild(i+3).getChild(0).label().value().equals("ADVP") && t.getChild(i+3).getChild(1).label().value().equals("VBN"))) {
 									//System.out.println("success4");
-									String aux = getAux(t.getChild(i).getChild(t.getChild(i).getChildrenAsList().size()-1).label().value());
+									List<LabeledWord> label = t.getChild(i).labeledYield();
+									boolean number = SentenceProcessor.isSingular(label.get(label.size()-1));
+									String aux = SentenceProcessor.setAux(number, isPresent);
+									
 									String phrase = "This" + aux + "when being " + Sentence.listToString(t.getChild(i+3).yield()) + " .";
 									String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+3).yield()) + " ,";
 									
@@ -621,14 +640,5 @@ public class ParticipialPhraseExtractor {
 	}
 	
 
-	private static String getAux(String aux) {
-
-		if (aux.equals("NNP") || aux.equals("NN")) {
-			aux = " is ";
-		} else {
-			aux = " are ";
-		}
-		
-		return aux;
-	}
+	
 }

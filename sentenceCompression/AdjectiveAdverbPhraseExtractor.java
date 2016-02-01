@@ -157,49 +157,15 @@ public class AdjectiveAdverbPhraseExtractor {
 				}
 			}
 			
-			/**
+			
 			for (int i = 0; i < t.getChildrenAsList().size()-2; i++) {
 				if (t.getChild(i).label().value().equals(",") && t.getChild(i+1).label().value().equals("ADVP") && t.getChild(i+2).label().value().equals(",")) {
 					String phrase = "This" + aux + Sentence.listToString(t.getChild(i+1).yield()) + " .";
 					String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+1).yield()) + " ,";
 					
-					//SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-					//isSplit = true;
-					coreContextSentence.getContext().add(SentenceProcessor.parse(SentenceProcessor.tokenize(phrase)));
+					SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+					isSplit = true;
 					
-					ArrayList<Tree> core = coreContextSentence.getCore();
-					ArrayList<Tree> coreNew = coreContextSentence.getCoreNew();
-					
-					ArrayList<String> coreString = new ArrayList<String>();
-					ArrayList<String> coreNewString = new ArrayList<String>();
-									
-					for (Tree tr : core) {
-						String s = Sentence.listToString(tr.yield());
-						coreString.add(s);
-					}
-					
-					for (Tree tr : coreNew) {
-						String s = Sentence.listToString(tr.yield());
-						coreNewString.add(s);
-					}
-					
-					int n = 0;
-					for (String str : coreString) {
-						if (str.contains(phraseToDelete)) {
-							str = str.replace(phraseToDelete, "");
-							coreContextSentence.getCore().set(n, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
-						}
-						n++;
-					}
-									
-					int m = 0;
-					for (String str : coreNewString) {
-						if (str.contains(phraseToDelete)) {
-							str = str.replace(phraseToDelete, "");
-							coreContextSentence.getCoreNew().set(m, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
-						}
-						m++;
-					}
 				}
 			}
 			for (int i = 0; i < t.getChildrenAsList().size()-1; i++) {
@@ -207,47 +173,13 @@ public class AdjectiveAdverbPhraseExtractor {
 					String phrase = "This" + aux + Sentence.listToString(t.getChild(i+1).yield()) + " .";
 					String phraseToDelete = ", " + Sentence.listToString(t.getChild(i+1).yield());
 					
-					//SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
-					//isSplit = true;
+					SentenceProcessor.updateSentence(phrase, phraseToDelete.trim(), sentence, coreContextSentence, isOriginal, contextNumber);
+					isSplit = true;
 					
-					coreContextSentence.getContext().add(SentenceProcessor.parse(SentenceProcessor.tokenize(phrase)));
-					
-					ArrayList<Tree> core = coreContextSentence.getCore();
-					ArrayList<Tree> coreNew = coreContextSentence.getCoreNew();
-					
-					ArrayList<String> coreString = new ArrayList<String>();
-					ArrayList<String> coreNewString = new ArrayList<String>();
-									
-					for (Tree tr : core) {
-						String s = Sentence.listToString(tr.yield());
-						coreString.add(s);
-					}
-					
-					for (Tree tr : coreNew) {
-						String s = Sentence.listToString(tr.yield());
-						coreNewString.add(s);
-					}
-					
-					int n = 0;
-					for (String str : coreString) {
-						if (str.contains(phraseToDelete)) {
-							str = str.replace(phraseToDelete, "");
-							coreContextSentence.getCore().set(n, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
-						}
-						n++;
-					}
-									
-					int m = 0;
-					for (String str : coreNewString) {
-						if (str.contains(phraseToDelete)) {
-							str = str.replace(phraseToDelete, "");
-							coreContextSentence.getCoreNew().set(m, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
-						}
-						m++;
-					}
 				}
 			}
 			
+			/**
 			if (t.getChildrenAsList().size() >= 3) {
 				for (int i = 0; i < t.getChildrenAsList().size()-2; i++) {
 					if (t.getChild(i).label().value().equals("NP") && t.getChild(i+1).label().value().equals("ADVP") && t.getChild(i+2).label().value().equals("VP")) {

@@ -88,7 +88,7 @@ public class CoreContextApp {
 		try {
 			sentences = fo.readFile(new File(input));
 			
-			File f = new File("data/Wikipedia/Eval/Mandela/MandelaParsed");
+			File f = new File("data/Wikipedia/Eval/baseball/baseballParsed");
 			PrintWriter pw = new PrintWriter(f);
 			TreePrint print = new TreePrint("penn");
 			int i = 0;

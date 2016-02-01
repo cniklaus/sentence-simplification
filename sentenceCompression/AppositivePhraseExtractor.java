@@ -476,10 +476,10 @@ public class AppositivePhraseExtractor {
 		String[] nerTokens = nerString.split(" ");
 		for (int nerCounter = 0; nerCounter < nerTokens.length; nerCounter++) {
 			int[] person = new int[2];
-			if (nerTokens[nerCounter].endsWith("/PERSON")) {
+			if (nerTokens[nerCounter].endsWith("/PERSON") || nerTokens[nerCounter].endsWith("/ORGANIZATION")) {
 				person[0] = nerCounter;
 				nerCounter++;
-				while (nerTokens[nerCounter].endsWith("/PERSON")) {
+				while (nerTokens[nerCounter].endsWith("/PERSON") || nerTokens[nerCounter].endsWith("/ORGANIZATION")) {
 					nerCounter++;
 				}
 				person[1] = nerCounter-1;
@@ -513,7 +513,12 @@ public class AppositivePhraseExtractor {
 				}
 				
 				
+				
+				
 				tagStart++;
+				
+				
+					
 				//System.out.println("start: " + tagStart);
 				//System.out.println("end: " + tagEnd);
 				for (int c = tagStart; c < tagEnd; c++) {
@@ -532,6 +537,9 @@ public class AppositivePhraseExtractor {
 					
 				}
 				
+				
+				
+				
 				String tagPhrase = "";
 				for (int c = tagStart; c <= tagEnd; c++) {
 					tagPhrase = tagPhrase + " " + tagTokens[c];
@@ -545,13 +553,48 @@ public class AppositivePhraseExtractor {
 					tagEnd = 0;
 				}
 				
+				boolean isDetOrPronoun = false;
+				if (tagPhraseTokens[0].endsWith("_DT") || tagPhraseTokens[0].endsWith("_PRP$") || tagPhraseTokens[0].endsWith("_POS") ||
+						tagPhraseTokens[0].endsWith("_NNP") || tagPhraseTokens[0].endsWith("_NNPS")) {
+					isDetOrPronoun = true;
+				}
+				
+				String det = "";
+				
+				if (!isDetOrPronoun) {
+					
+					if (tagPhraseTokens[0].startsWith("a") || tagPhraseTokens[0].startsWith("e") || tagPhraseTokens[0].startsWith("i") || tagPhraseTokens[0].startsWith("o") || tagPhraseTokens[0].startsWith("u") ||
+							tagPhraseTokens[0].startsWith("A") || tagPhraseTokens[0].startsWith("E") || tagPhraseTokens[0].startsWith("I") || tagPhraseTokens[0].startsWith("O") || tagPhraseTokens[0].startsWith("U")) {
+						det = " an ";
+					} else {
+						det = " a ";
+					}
+				}
+				
+				boolean detThe = false;
+				if (tagPhraseTokens[0].equals("the_DT") || tagPhraseTokens[0].equals("The_DT")) {
+					if (tagPhraseTokens[1].startsWith("a") || tagPhraseTokens[1].startsWith("e") || tagPhraseTokens[1].startsWith("i") || tagPhraseTokens[1].startsWith("o") || tagPhraseTokens[1].startsWith("u") ||
+							tagPhraseTokens[1].startsWith("A") || tagPhraseTokens[1].startsWith("E") || tagPhraseTokens[1].startsWith("I") || tagPhraseTokens[1].startsWith("O") || tagPhraseTokens[1].startsWith("U")) {
+						det = " an ";
+					} else {
+						det = " a ";
+					}
+					detThe = true;
+					tagStart++;
+				}
+				
 				if (tagEnd > 0) {
 					String sen = "";
 					for (int c = person[0]; c <= person[1]; c++) {
 						sen = sen + " " + inputTokens[c];
 					}
-					sen = sen + aux;
-					String phraseToDelete = ""; 
+					sen = sen + aux + det;
+					String phraseToDelete = "";
+					if (detThe) {
+						phraseToDelete = inputTokens[tagStart-1];
+						//System.out.println("............");
+					}
+					 
 					for (int c = tagStart; c <= tagEnd; c++) {
 						sen = sen + " " + inputTokens[c];
 						phraseToDelete = phraseToDelete + " " + inputTokens[c];

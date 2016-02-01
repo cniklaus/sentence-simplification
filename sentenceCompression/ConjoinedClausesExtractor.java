@@ -342,10 +342,13 @@ public class ConjoinedClausesExtractor {
 		
 		for (Tree t : parse) {
 			if (t.label().value().equals("S")) {	
-				for (int i = 0; i < t.getChildrenAsList().size(); i++) {
-					if (t.getChild(i).label().value().equals("SBAR")) {
+				if (t.getChildrenAsList().size() >= 2) { 
+				for (int i = 0; i < t.getChildrenAsList().size()-1; i++) {
+					
+					if (t.getChild(i).label().value().equals("SBAR") && t.getChild(i+1).label().value().equals(",")) {
+						
 						if (t.getChild(i).getChild(0).label().value().equals("WHADVP") && t.getChild(i).getChild(1).label().value().equals("S")) {
-							if (t.getChild(i).getChild(0).getChild(0).label().value().equals("WRB") && t.getChild(i).getChild(0).getChild(0).getChild(0).label().value().equals("When")) {
+							if (t.getChild(i).getChild(0).getChild(0).label().value().equals("WRB") && t.getChild(i).getChild(0).getChild(0).getChild(0).label().value().equals("when")) {
 								
 								String aux = "";
 								for (int j = 0; j < t.getChild(i).getChild(1).getChildrenAsList().size()-1; j++) {
@@ -378,6 +381,7 @@ public class ConjoinedClausesExtractor {
 							}
  						}
 					}
+				}
 				}
 			}
 		}
