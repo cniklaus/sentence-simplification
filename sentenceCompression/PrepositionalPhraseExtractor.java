@@ -6,10 +6,14 @@ import java.util.List;
 
 import edu.stanford.nlp.ling.LabeledWord;
 import edu.stanford.nlp.ling.Sentence;
+import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 import edu.stanford.nlp.trees.Tree;
 
 public class PrepositionalPhraseExtractor {
 
+	static MaxentTagger tagger = new MaxentTagger("tagger/english-left3words-distsim.tagger");
+	
+	
 	public static boolean extractInitialPPs(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 	 	
 		String sentence = Sentence.listToString(parse.yield());
@@ -1152,5 +1156,329 @@ public class PrepositionalPhraseExtractor {
 		return isSplit;
 	}
 	
+	
+	public static boolean extractFinalPPs(CoreContextSentence coreContextSentence, Tree parse) {
+		
+		String sentence = Sentence.listToString(parse.yield());
+		String current = sentence;
+		String[] sentenceTokens = current.split(" ");
+		boolean isSplit = false;
+		boolean isPresent = SentenceProcessor.isPresent(coreContextSentence.getOriginal());
+		String aux = SentenceProcessor.setAux(true, isPresent);
+		
+		ArrayList<String> phrases = new ArrayList<String>();
+		
+		boolean isCompOrSup = false;
+		
+		for (Tree t : parse) {
+			if (t.label().value().equals("RBS") || t.label().value().equals("RBR") ||
+					t.label().value().equals("JJR") || t.label().value().equals("JJS")) {
+				isCompOrSup = true;
+			}
+		}
+		
+		ArrayList<Tree> tree = new ArrayList<Tree>();
+		if (!isCompOrSup) {
+		for (Tree t : parse) {
+			
+			if (t.label().value().equals("PP") ) {
+				
+					
+				//if (t.ancestor(1, parse).label().value().equals("VP")) {
+					if (!t.ancestor(1, parse).getChild(0).label().value().equals("VBG")) {
+						//System.out.println("...........");
+						
+						
+						if (t.ancestor(1, parse).getChild(0).label().value().equals("VBN")) {
+							if (t.ancestor(1, parse).ancestor(1, parse).label().value().equals("VP") && !t.ancestor(1, parse).ancestor(1, parse).getChild(0).label().value().equals("VB")) {
+								tree.add(t);
+							}
+						} else {
+							if (!(t.ancestor(1, parse).label().value().equals("NP") &&
+									(t.getChild(0).getChild(0).label().value().equals("for")) || t.getChild(0).getChild(0).label().value().equals("to"))) {
+								tree.add(t);
+							}
+							
+						}
+						
+					}
+				//}
+				
+				//System.out.println(Sentence.listToString(t.yield()));
+				
+			}
+		}
+		}
+		
+	
+		
+		if (tree.size() > 0) {
+		String pp = Sentence.listToString(tree.get(tree.size()-1).yield());
+		
+		String[] ppTokens = pp.split(" ");
+		String tagged = tagger.tagString(pp);
+		String[] taggedTokens = tagged.split(" ");
+		
+		String nerString = SentenceProcessor.ner(pp);
+		String[] nerTokens = nerString.split(" ");
+		
+		if ((nerTokens[nerTokens.length-1].endsWith("/LOCATION") || taggedTokens[taggedTokens.length-1].endsWith("_CD")) &&
+				!taggedTokens[0].startsWith("of")) {
+			String phrase = "This " + aux + pp + " .";
+			String phraseToDelete = pp;
+			
+			boolean contained = false;
+			for (String s : phrases) {
+				if (s.equals(pp)) {
+					contained = true;
+				}
+			}
+			
+			if (!contained) {
+				phrases.add(pp);
+				coreContextSentence.getContext().add(SentenceProcessor.parse(SentenceProcessor.tokenize(phrase)));
+			}
+			
+			
+			//System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx " + pp);
+			current = current.replace(phraseToDelete, "");
+			sentenceTokens = current.split(" ");
+			
+		
+			
+			ArrayList<Tree> core = coreContextSentence.getCore();
+			ArrayList<Tree> coreNew = coreContextSentence.getCoreNew();
+			
+			ArrayList<String> coreString = new ArrayList<String>();
+			ArrayList<String> coreNewString = new ArrayList<String>();
+							
+			for (Tree tr : core) {
+				String s = Sentence.listToString(tr.yield());
+				coreString.add(s);
+			}
+			
+			for (Tree tr : coreNew) {
+				String s = Sentence.listToString(tr.yield());
+				coreNewString.add(s);
+			}
+			
+			int n = 0;
+			for (String str : coreString) {
+				if (str.contains(phraseToDelete)) {
+					str = str.replace(phraseToDelete, "");
+					coreContextSentence.getCore().set(n, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
+				}
+				n++;
+			}
+							
+			int m = 0;
+			for (String str : coreNewString) {
+				if (str.contains(phraseToDelete)) {
+					str = str.replace(phraseToDelete, "");
+					coreContextSentence.getCoreNew().set(m, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
+				}
+				m++;
+			}
+			isSplit = true;
+			
+		} else {
+			for (int i = 0; i < taggedTokens.length; i++) {
+				if ((nerTokens[i].endsWith("/LOCATION") || nerTokens[i].endsWith("/ORGANIZATION")) &&
+						!taggedTokens[0].startsWith("of")) {
+					//System.out.println("yyyyyyyyyyyy " + pp);
+					
+					String phrase = "This " + aux + pp + " .";
+					String phraseToDelete = pp;
+					
+					current = current.replace(phraseToDelete, "");
+					sentenceTokens = current.split(" ");
+					
+					boolean contained = false;
+					for (String s : phrases) {
+						if (s.equals(pp)) {
+							contained = true;
+						}
+					}
+					
+					if (!contained) {
+						phrases.add(pp);
+						coreContextSentence.getContext().add(SentenceProcessor.parse(SentenceProcessor.tokenize(phrase)));
+					}
+					
+					ArrayList<Tree> core = coreContextSentence.getCore();
+					ArrayList<Tree> coreNew = coreContextSentence.getCoreNew();
+					
+					ArrayList<String> coreString = new ArrayList<String>();
+					ArrayList<String> coreNewString = new ArrayList<String>();
+									
+					for (Tree tr : core) {
+						String s = Sentence.listToString(tr.yield());
+						coreString.add(s);
+					}
+					
+					for (Tree tr : coreNew) {
+						String s = Sentence.listToString(tr.yield());
+						coreNewString.add(s);
+					}
+					
+					int n = 0;
+					for (String str : coreString) {
+						if (str.contains(phraseToDelete)) {
+							str = str.replace(phraseToDelete, "");
+							coreContextSentence.getCore().set(n, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
+						}
+						n++;
+					}
+									
+					int m = 0;
+					for (String str : coreNewString) {
+						if (str.contains(phraseToDelete)) {
+							str = str.replace(phraseToDelete, "");
+							coreContextSentence.getCoreNew().set(m, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
+						}
+						m++;
+					}
+					isSplit = true;
+					
+				} else if (nerTokens[i].endsWith("/PERSON") &&
+						!taggedTokens[0].startsWith("of")) {
+					//System.out.println("here: " + ppTokens[taggedTokens.length-1]);
+					//System.out.println("here: " + sentenceTokens[sentenceTokens.length-2]);
+					
+					if (ppTokens[taggedTokens.length-1].equals(sentenceTokens[sentenceTokens.length-2])) {
+					//System.out.println("zzzzzzzzzzz " + pp);
+					
+					
+					String phrase = "This " + aux + pp + " .";
+					String phraseToDelete = pp;
+					
+					boolean contained = false;
+					for (String s : phrases) {
+						if (s.equals(pp)) {
+							contained = true;
+						}
+					}
+					
+					if (!contained) {
+						phrases.add(pp);
+						coreContextSentence.getContext().add(SentenceProcessor.parse(SentenceProcessor.tokenize(phrase)));
+					}
+					
+					ArrayList<Tree> core = coreContextSentence.getCore();
+					ArrayList<Tree> coreNew = coreContextSentence.getCoreNew();
+					
+					ArrayList<String> coreString = new ArrayList<String>();
+					ArrayList<String> coreNewString = new ArrayList<String>();
+									
+					for (Tree tr : core) {
+						String s = Sentence.listToString(tr.yield());
+						coreString.add(s);
+					}
+					
+					for (Tree tr : coreNew) {
+						String s = Sentence.listToString(tr.yield());
+						coreNewString.add(s);
+					}
+					
+					int n = 0;
+					for (String str : coreString) {
+						if (str.contains(phraseToDelete)) {
+							str = str.replace(phraseToDelete, "");
+							coreContextSentence.getCore().set(n, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
+						}
+						n++;
+					}
+									
+					int m = 0;
+					for (String str : coreNewString) {
+						if (str.contains(phraseToDelete)) {
+							str = str.replace(phraseToDelete, "");
+							coreContextSentence.getCoreNew().set(m, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
+						}
+						m++;
+					}
+					
+					current = current.replace(phraseToDelete, "");
+					sentenceTokens = current.split(" ");
+					
+					isSplit = true;
+					}
+					
+				} else if (taggedTokens[taggedTokens.length-1].endsWith("_NNP") &&
+						!taggedTokens[0].startsWith("of")) {
+					if (ppTokens[taggedTokens.length-1].equals(sentenceTokens[sentenceTokens.length-2])) {
+					//System.out.println("vvvvvvvvv " + pp);
+					
+					
+					String phrase = "This " + aux + pp + " .";
+					String phraseToDelete = pp;
+					
+					boolean contained = false;
+					for (String s : phrases) {
+						if (s.equals(pp)) {
+							contained = true;
+						}
+					}
+					
+					if (!contained) {
+						phrases.add(pp);
+						coreContextSentence.getContext().add(SentenceProcessor.parse(SentenceProcessor.tokenize(phrase)));
+					}
+					
+					ArrayList<Tree> core = coreContextSentence.getCore();
+					ArrayList<Tree> coreNew = coreContextSentence.getCoreNew();
+					
+					ArrayList<String> coreString = new ArrayList<String>();
+					ArrayList<String> coreNewString = new ArrayList<String>();
+									
+					for (Tree tr : core) {
+						String s = Sentence.listToString(tr.yield());
+						coreString.add(s);
+					}
+					
+					for (Tree tr : coreNew) {
+						String s = Sentence.listToString(tr.yield());
+						coreNewString.add(s);
+					}
+					
+					int n = 0;
+					for (String str : coreString) {
+						if (str.contains(phraseToDelete)) {
+							str = str.replace(phraseToDelete, "");
+							coreContextSentence.getCore().set(n, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
+						}
+						n++;
+					}
+									
+					int m = 0;
+					for (String str : coreNewString) {
+						if (str.contains(phraseToDelete)) {
+							str = str.replace(phraseToDelete, "");
+							coreContextSentence.getCoreNew().set(m, SentenceProcessor.parse(SentenceProcessor.tokenize(str)));
+						}
+						m++;
+					}
+					
+					current = current.replace(phraseToDelete, "");
+					sentenceTokens = current.split(" ");
+					
+					isSplit = true;
+					
+				}
+				}
+			}
+		}
+		
+		
+		
+		}
+		
+		//System.out.println(tree.get(tree.size()-1));
+		//System.out.println(Sentence.listToString(tree.get(tree.size()-1).yield()));
+		
+		return isSplit;
+		
+		}
+		
 
 }

@@ -88,7 +88,7 @@ public class CoreContextApp {
 		try {
 			sentences = fo.readFile(new File(input));
 			
-			File f = new File("data/Wikipedia/Eval/baseball/baseballParsed");
+			File f = new File("data/Wikipedia/Eval/Mandela/MandelaParsed");
 			PrintWriter pw = new PrintWriter(f);
 			TreePrint print = new TreePrint("penn");
 			int i = 0;
@@ -704,6 +704,30 @@ public class CoreContextApp {
 					}
 				}
 				
+			
+				boolean pps = true;
+				//int zahl = 0;
+				while (pps) {
+					ArrayList<Tree> coreFinal2 = sentence.getCore();
+					ArrayList<Tree> coreNewFinal2 = sentence.getCoreNew();
+					//System.out.println("zzzzzzzzzzzz: " + zahl);
+					
+					for (Tree t : coreFinal2) {
+						//System.out.println("xx1: " + Sentence.listToString(t.yield()));
+						pps = PrepositionalPhraseExtractor.extractFinalPPs(sentence, t);
+					}
+					
+					for (Tree t : coreNewFinal2) {
+						//System.out.println("xx2: " + Sentence.listToString(t.yield()));
+						pps = PrepositionalPhraseExtractor.extractFinalPPs(sentence, t);
+					}
+					//zahl++;
+				}
+				
+				
+				
+				
+				
 				
 				
 			ArrayList<Tree> contextTrees = sentence.getContext();
@@ -995,21 +1019,9 @@ public class CoreContextApp {
 			}
 			*/
 			
-			/**
-			ArrayList<Tree> coreFinal2 = sentence.getCore();
-			ArrayList<Tree> coreNewFinal2 = sentence.getCoreNew();
 			
+		
 			
-			for (Tree t : coreFinal2) {
-				//System.out.println("xx1: " + Sentence.listToString(t.yield()));
-				AdjectiveAdverbPhraseExtractor.extractAdverbPhrases(sentence, t);
-			}
-			
-			for (Tree t : coreNewFinal2) {
-				//System.out.println("xx2: " + Sentence.listToString(t.yield()));
-				AdjectiveAdverbPhraseExtractor.extractAdverbPhrases(sentence, t);
-			}
-			*/
 			
 			if (!sentence.getInput().equals("")) {
 				sen.add(sentence);
