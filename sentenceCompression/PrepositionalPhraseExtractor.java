@@ -1195,8 +1195,19 @@ public class PrepositionalPhraseExtractor {
 							}
 						} else {
 							if (!(t.ancestor(1, parse).label().value().equals("NP") &&
-									(t.getChild(0).getChild(0).label().value().equals("for")) || t.getChild(0).getChild(0).label().value().equals("to"))) {
+									(t.getChild(0).getChild(0).label().value().equals("for") || t.getChild(0).getChild(0).label().value().equals("to")))) {
 								tree.add(t);
+								
+								
+							}
+							if (t.ancestor(1, parse).label().value().equals("NP") &&
+									t.getChild(0).getChild(0).label().value().equals("for")) {
+								for (Tree tr : t.ancestor(1, parse)) {
+									if (tr.label().value().equals("CD")) {
+										System.out.println("xxxxxxx");
+										tree.add(t);
+									}
+								}
 							}
 							
 						}
@@ -1465,7 +1476,9 @@ public class PrepositionalPhraseExtractor {
 					isSplit = true;
 					
 				}
+					
 				}
+				
 			}
 		}
 		
