@@ -4,6 +4,12 @@ import java.util.ArrayList;
 
 import edu.stanford.nlp.trees.Tree;
 
+/**
+ * Class representing a core and its associated context sentences
+ * 
+ * @author christina
+ *
+ */
 public class CoreContextSentence {
 
 	private Tree original;

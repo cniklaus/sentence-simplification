@@ -9,6 +9,12 @@ import edu.stanford.nlp.ling.LabeledWord;
 import edu.stanford.nlp.ling.Sentence;
 import edu.stanford.nlp.trees.Tree;
 
+/**
+ * Class providing several methods for transforming an input sentence
+ * 
+ * @author christina
+ *
+ */
 public class SentenceProcessor {
 	
 	private static final String singularPresent = " is ";
@@ -19,6 +25,14 @@ public class SentenceProcessor {
 	public static ArrayList<String> loc = new ArrayList<String>();
 	public static ArrayList<Integer> positions = new ArrayList<Integer>();
 	
+	
+	/**
+	 * returns the positions of the tokens to eliminate from the input sentence to create the compressed core
+	 * 
+	 * @param initialSentence
+	 * @param constituentsToDelete
+	 * @return positions of the constituents to remove from the input sentence for creating the core
+	 */
 	public static int[] matchSentences(String initialSentence, String clauseToDelete) {
 		
 		int[] startEndOfDelete = new int[2];
@@ -55,6 +69,16 @@ public class SentenceProcessor {
 	}
 
 
+	/**
+	 * updates the set of context sentences and the positions which are to be deleted from the input for creating the core
+	 * 
+	 * @param context phrase
+	 * @param constituents to delete
+	 * @param sentence
+	 * @param coreContextSentence
+	 * @param isOriginal
+	 * @param contextNumber
+	 */
 	public static void updateSentence(String relClause, String clauseToDelete, String sentence, CoreContextSentence coreContextSentence, boolean isOriginal, int contextNumber) {
 		
 		if (isOriginal == true) {
@@ -88,6 +112,12 @@ public class SentenceProcessor {
 	}
 
 	
+	/**
+	 * adds a new context sentence to the list of accompanying context sentences
+	 * 
+	 * @param context sentence
+	 * @param sentence
+	 */
 	public static void updateContext(String clause, CoreContextSentence sentence) {
 		
 		List<CoreLabel> tokens = RepresentationGenerator.tokenize(clause);
@@ -97,6 +127,12 @@ public class SentenceProcessor {
 	}
 
 
+	/**
+	 * updates the positions of the tokens which are to be deleted from the input sentence when creating the core
+	 * 
+	 * @param start end end position of the tokens to delete
+	 * @param sentence
+	 */
 	public static void updateDelete(int[] del, CoreContextSentence sentence) {
 		
 		boolean[] delete = sentence.getDelete();
@@ -109,6 +145,12 @@ public class SentenceProcessor {
 	}
 	
 	
+	/**
+	 * adds a new core sentence
+	 * 
+	 * @param core sentence
+	 * @param sentence
+	 */
 	public static void addCore(String phrase, CoreContextSentence sen) {
 		
 		phrase = phrase.replace(". .", ".");
@@ -136,6 +178,12 @@ public class SentenceProcessor {
 	}
 	
 	
+	/**
+	 * reduces the input sentence to its core components
+	 * 
+	 * @param delete
+	 * @param sentence
+	 */
 	public static void produceCore(boolean[] delete, CoreContextSentence sentence) {
 		
 		Tree original = sentence.getOriginal();
@@ -164,6 +212,12 @@ public class SentenceProcessor {
 	}
 	
 	
+	/**
+	 * updates the array containing the positions of the components to delete from the input sentence when creating the core
+	 * 
+	 * @param position
+	 * @param sentence
+	 */
 	public static void deleteTokenInOriginal(int n, CoreContextSentence sentence) {
 		
 		boolean[] del = sentence.getDelete();
@@ -173,6 +227,12 @@ public class SentenceProcessor {
 	}
 	
 	
+	/**
+	 * further simplifies a context sentence, when appropriate
+	 * 
+	 * @param sentence
+	 * @return true if a context sentence has been transformed
+	 */
 	public static boolean pruneContextSentences(CoreContextSentence sentence) {
 		
 		int n = 0;
@@ -337,6 +397,12 @@ public class SentenceProcessor {
 	}
 	
 	
+	/**
+	 * checks whether the original sentence is in present tense
+	 * 
+	 * @param tree
+	 * @return true if the original sentence is in present tense
+	 */
 	public static boolean isPresent(Tree tree) {
 		
 		for (Tree t : tree) {
@@ -413,6 +479,12 @@ public class SentenceProcessor {
 	}
 	
 	
+	/**
+	 * checks whether the phrase to which an extracted constituent refers is singular
+	 * 
+	 * @param antecedent
+	 * @return true if the antecedent is singular
+	 */
 	public static boolean isSingular(LabeledWord label) {
 		
 		if (!label.tag().value().equals("NN") && !label.tag().value().equals("NNP") && !label.tag().value().equals("PRP")) {
@@ -423,6 +495,13 @@ public class SentenceProcessor {
 	}
 
 	
+	/**
+	 * sets the auxiliary verb which connects an extracted component and its antecedent
+	 * 
+	 * @param singular
+	 * @param present
+	 * @return auxiliary verb
+	 */
 	public static String setAux(boolean singular, boolean present) {
 		String aux = "";
 		
@@ -440,7 +519,12 @@ public class SentenceProcessor {
 	}
 
 
-	
+	/**
+	 * is called if an input sentence is split into several core sentences
+	 * 
+	 * @param sentence
+	 * @return true if a core sentence has been simplified
+	 */
 	public static boolean pruneCoreSentences(CoreContextSentence sentence) {
 		int n = 0;
 		ArrayList<Tree> currentCore = sentence.getCoreNew();
@@ -619,16 +703,32 @@ public class SentenceProcessor {
 	}
 	
 	
+	/**
+	 * removes unnecessary whitespace from a sentence
+	 * 
+	 * @param sentence
+	 * @return string with dispensable whitespace removed
+	 */
 	public static String collapseWhitespace(String value) {
 		return value.replaceAll("\\s+", " ");
 	}
 		
 	
+	/**
+	 * adds a position-ID to the specified array
+	 * 
+	 * @param i
+	 */
 	public static void pos(Integer i) {
 		positions.add(i);
 	}
 	
 	
+	/**
+	 * adds LOCATION-tagged tokens to the specified array
+	 * 
+	 * @param locations
+	 */
 	public static void loc(String locations) {
 		loc.add(locations);
 	}

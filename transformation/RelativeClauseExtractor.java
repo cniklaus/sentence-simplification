@@ -6,8 +6,24 @@ import edu.stanford.nlp.ling.LabeledWord;
 import edu.stanford.nlp.ling.Sentence;
 import edu.stanford.nlp.trees.Tree;
 
+/**
+ * Class for extracting non-restrictive relative clauses
+ * 
+ * @author christina
+ *
+ */
 public class RelativeClauseExtractor {
 
+	/**
+	 * extracts non-restrictive relative clauses from the input sentence and transforms them into stand-alone context sentences,
+	 * returns true if a non-restrictive relative clause was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean extractNonRestrictiveRelativeClauses(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());

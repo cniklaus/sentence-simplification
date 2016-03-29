@@ -14,12 +14,27 @@ import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.Sentence;
 import edu.stanford.nlp.trees.Tree;
 
-
+/**
+ * Class for simplifying a sequence of input sentences by splitting each of them - one after another - into core and associated context sentences.
+ * 
+ * This class constitutes "stage 3" of the simplification framework.
+ * 
+ * @author christina
+ *
+ */
 public class Transformer {
 		
 	public static ArrayList<Integer> eliminatedSentences = new ArrayList<Integer>();
 	
-	
+	/**
+	 * simplifies a list of NL sentences 
+	 * by making various calls to transformation classes 
+	 * which specify simplification rules for selected grammatical constituents
+	 * 
+	 * @param list of sentences
+	 * @param output file
+	 * @throws IOException
+	 */
 	public static void simplify(ArrayList<String> sentences, String output) throws IOException {
 		
 		ArrayList<CoreContextSentence> sen = new ArrayList<CoreContextSentence>();
@@ -31,6 +46,7 @@ public class Transformer {
 			ArrayList<Boolean> severalCores = new ArrayList<Boolean>();
 			int counterSentences = 0;
 			
+			//simplify one sentence after another by splitting it into a set of core and affiliated context sentences
 			for (String s : sentences) {
 				severalCores.add(false);
 				SentenceProcessor.positions.clear();
@@ -46,6 +62,7 @@ public class Transformer {
 				String[] sentenceTokens = s.split(" "); 
 				String[] nerTokens = nerString.split(" ");
 				
+				//transform input sentence to lower case
 				if (!nerTokens[0].endsWith("/ORGANIZATION") && !nerTokens[0].endsWith("/PERSON") && !nerTokens[0].endsWith("/LOCATION") &&
 						!sentenceTokens[0].equals("I")) {
 					sentenceTokens[0] = sentenceTokens[0].toLowerCase();
@@ -64,6 +81,7 @@ public class Transformer {
 					}
 				}
 					
+				//delete bracketed content
 				if (s.contains("-LRB-") && s.contains("-RRB-")) {
 					s = s.replaceAll("-LRB-.*?-RRB-", "");
 					s = s.replaceAll("  ,", " ,");
@@ -73,6 +91,7 @@ public class Transformer {
 				Tree parse = RepresentationGenerator.parse(tokens);
 				boolean keep = true;
 				
+				//check if an input sentence containing ":" or ";" connects two full sentences (if false then the input sentence is not processed)
 				if (s.contains(" : ") || s.contains(" ; ")) {
 					keep = false;
 					for (Tree t : parse) {
@@ -85,7 +104,8 @@ public class Transformer {
 						}
 					}
 				}
-					
+				
+				//check if input sentence starts with a participial phrase succeeded by a comma which is followed by a PP
 				String taggedOriginalGerundPP = RepresentationGenerator.posTag(s);
 				String[] taggedOriginalTokensGerundPP = taggedOriginalGerundPP.split(" ");
 				String ppString = "";
@@ -129,6 +149,8 @@ public class Transformer {
 						}
 					}
 				}
+				
+				
 				String contextPP = "";
 				if (printPP && !ppString.equals("")) {
 					boolean tense = SentenceProcessor.isPresent(parse);
@@ -146,6 +168,7 @@ public class Transformer {
 					eliminatedSentences.add(counterSentences);
 				}
 					
+				
 				if (keep) {
 					CoreContextSentence sentence = new CoreContextSentence();
 					if (!contextPP.equals("")) {
@@ -159,6 +182,7 @@ public class Transformer {
 					boolean[] delete = new boolean[tokens.size()];
 					sentence.setDelete(delete);
 					
+					//split the input sentence into several cores, if appropriate
 					int counterSplit = 0;
 					while (counterSplit < 5) {
 						Punctuation.splitAtColon(sentence, sentence.getOriginal(), true, -1);
@@ -180,6 +204,7 @@ public class Transformer {
 						sentence.getContext().add(trAttr);
 					}
 					 
+					//extract incidental pieces of information and transform them into stand-alone context sentences
 					PrepositionalPhraseExtractor.extractToDo(sentence, sentence.getOriginal(), true, -1);
 					
 					RelativeClauseExtractor.extractNonRestrictiveRelativeClauses(sentence, sentence.getOriginal(), true, -1);
@@ -217,12 +242,14 @@ public class Transformer {
 					Punctuation.extractParentheses(sentence, sentence.getOriginal(), true, -1);
 					Punctuation.removeBrackets(sentence, sentence.getOriginal(), true, -1);
 					
+					//simplify extracted context sentences, if appropriate
 					boolean isContextPruned = SentenceProcessor.pruneContextSentences(sentence);
 					
 					while (isContextPruned) {
 						isContextPruned = SentenceProcessor.pruneContextSentences(sentence);
 					}
 				
+					//further simplify core sentences
 					boolean isCorePruned = SentenceProcessor.pruneCoreSentences(sentence);
 				
 					int num = 0;
@@ -250,6 +277,7 @@ public class Transformer {
 						n++;
 					}
 				
+					//clean punctuation
 					ArrayList<String> contextSen = new ArrayList<String>();
 					int v = 0;
 					for (Tree tree : sentence.getContext()) {
@@ -274,6 +302,7 @@ public class Transformer {
 						v++;
 					}
 				
+					//delete duplicate context sentences
 					int m = 0;
 					for (String str : contextSen) {
 					
@@ -301,6 +330,7 @@ public class Transformer {
 						z++;
 					}
 					
+					//create core sentence by deleting extracted components
 					Tree original = sentence.getOriginal();
 					String inputSentence = Sentence.listToString(original.yield());
 					String[] tokensOriginal = inputSentence.split(" ");
@@ -359,6 +389,7 @@ public class Transformer {
 				
 					sentence.setCore(c2);
 					
+					//add context sentences
 					ArrayList<Tree> contextSentences = sentence.getContext();
 					ArrayList<String> contextString = new ArrayList<String>();
 					
@@ -379,6 +410,7 @@ public class Transformer {
 						}
 					}
 					
+					//cleanup punctuation
 					for (String coreS : coreStringC) {
 						int o = 0;
 						for (String coreS2 : coreStringC) {
@@ -396,6 +428,7 @@ public class Transformer {
 						}
 					}
 					
+					//remove duplicate context sentences
 					for (String sCon : contextString) {
 						ArrayList<Tree> coreSentences = sentence.getCoreNew();
 						ArrayList<String> coreString = new ArrayList<String>();
@@ -484,6 +517,7 @@ public class Transformer {
 						}
 					}
 					
+					//extract selected prepositional phrases representing the last one in the input
 					boolean pps = true;
 					while (pps) {
 						ArrayList<Tree> coreFinal2 = sentence.getCore();

@@ -3,8 +3,24 @@ package transformation;
 import edu.stanford.nlp.ling.Sentence;
 import edu.stanford.nlp.trees.Tree;
 
+/**
+ * Class for extracting lead noun phrases
+ * 
+ * @author christina
+ *
+ */
 public class InitialNounPhraseExtractor {
 	
+	/**
+	 * extracts lead noun phrases from the input sentence and transforms them into stand-alone context sentences,
+	 * returns true if a lead noun phrase was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean extractInitialParentheticalNounPhrases(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());

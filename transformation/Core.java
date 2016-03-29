@@ -2,6 +2,12 @@ package transformation;
 
 import java.util.ArrayList;
 
+/**
+ * Class representing a core sentence
+ * 
+ * @author christina
+ *
+ */
 public class Core {
 	
 	public static ArrayList<Integer> start = new ArrayList<Integer>();

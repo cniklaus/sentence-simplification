@@ -7,8 +7,24 @@ import edu.stanford.nlp.ling.LabeledWord;
 import edu.stanford.nlp.ling.Sentence;
 import edu.stanford.nlp.trees.Tree;
 
+/**
+ * Class for decomposing sentences incorporating selected punctuation (colons, semicolons, parentheses)
+ * 
+ * @author christina
+ *
+ */
 public class Punctuation {
 
+	/**
+	 * splits sentences that are separated by a colon or semicolon into two individual core sentences
+	 * returns true if the input sentence is composed of two sentences separated by a colon or semicolon
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean splitAtColon(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());
@@ -37,6 +53,16 @@ public class Punctuation {
 	}
 	
 	
+	/**
+	 * extracts constructs included in parentheses (indicated by PRN tags) from the input sentence and transforms them into stand-alone context sentences,
+	 * returns true if such a PRN construct was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean extractParentheses(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 	
 		String sentence = Sentence.listToString(parse.yield());
@@ -258,6 +284,16 @@ public class Punctuation {
 	}
 	
 	
+	/**
+	 * removes bracketed content from the input sentence without transforming it into stand-alone context sentences,
+	 * returns true if bracketed content was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean removeBrackets(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());

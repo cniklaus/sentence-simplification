@@ -6,8 +6,24 @@ import edu.stanford.nlp.ling.LabeledWord;
 import edu.stanford.nlp.ling.Sentence;
 import edu.stanford.nlp.trees.Tree;
 
+/**
+ * Class for extracting adjective and adverb phrases that are set off by commas
+ * 
+ * @author christina
+ *
+ */
 public class AdjectiveAdverbPhraseExtractor {
 	
+	/**
+	 * extracts adjective phrases that are delimited by punctuation from the input sentence and transforms them into stand-alone context sentences,
+	 * returns true if such an adjective phrase was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean extractAdjectivePhrases(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());
@@ -127,6 +143,16 @@ public class AdjectiveAdverbPhraseExtractor {
 	}
 	
 	
+	/**
+	 * extracts adverb phrases that are delimited by punctuation from the input sentence and transforms them into stand-alone context sentences,
+	 * returns true if such an adverb phrase was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean extractAdverbPhrases(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());
@@ -174,6 +200,13 @@ public class AdjectiveAdverbPhraseExtractor {
 	}
 	
 	
+	/**
+	 * checks whether the identified phrase represents an enumeration of phrases
+	 * 
+	 * @param tree
+	 * @param n
+	 * @return
+	 */
 	private static boolean checkForEnum(Tree t, int n) {
 		
 		for (int i = n+1; i < t.getChildrenAsList().size(); i++) {

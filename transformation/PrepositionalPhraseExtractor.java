@@ -1,6 +1,5 @@
 package transformation;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,8 +8,24 @@ import edu.stanford.nlp.ling.LabeledWord;
 import edu.stanford.nlp.ling.Sentence;
 import edu.stanford.nlp.trees.Tree;
 
+/**
+ * Class for extracting a variety of prepositional phrases
+ * 
+ * @author christina
+ *
+ */
 public class PrepositionalPhraseExtractor {
 	
+	/**
+	 * extracts prepositional phrases at the beginning of a sentence from the input sentence and transforms them into stand-alone context sentences,
+	 * returns true if such a prepositional phrase was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean extractInitialPPs(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 	 	
 		String sentence = Sentence.listToString(parse.yield());
@@ -309,6 +324,16 @@ public class PrepositionalPhraseExtractor {
 	}
 	
 	
+	/**
+	 * extracts prepositional phrases that are set off by punctuation from the input sentence and transforms them into stand-alone context sentences,
+	 * returns true if such a prepositional phrase was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean extractInfixPPs(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		 	
 		String sentence = Sentence.listToString(parse.yield());
@@ -407,6 +432,16 @@ public class PrepositionalPhraseExtractor {
 	}
 	
 	
+	/**
+	 * extracts prepositional phrases starting with "from" and including "to" from the input sentence and transforms them into stand-alone context sentences,
+	 * returns true if such a prepositional phrase was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean extractFromTo(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 	 	
 		String sentence = Sentence.listToString(parse.yield());
@@ -444,6 +479,16 @@ public class PrepositionalPhraseExtractor {
 	}
 	
 	
+	/**
+	 * extracts prepositional phrases starting with the attributions "according to" from the input sentence and transforms them into stand-alone context sentences,
+	 * returns true if such a prepositional phrase was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean extractAccording(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());
@@ -519,6 +564,17 @@ public class PrepositionalPhraseExtractor {
 	}
 	
 	
+	/**
+	 * extracts specific prepositional phrases starting with "to" (presumably expressing an intention) from the input sentence 
+	 * and transforms them into stand-alone context sentences,
+	 * returns true if such a prepositional phrase was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean extractToDo(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());
@@ -852,6 +908,14 @@ public class PrepositionalPhraseExtractor {
 	}
 	
 	
+	/**
+	 * extracts selected prepositional phrases representing the last one in the input from the input sentence and transforms them into stand-alone context sentences,
+	 * returns true if such a prepositional phrase was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @return
+	 */
 	public static boolean extractFinalPPs(CoreContextSentence coreContextSentence, Tree parse) {
 		
 		String sentence = Sentence.listToString(parse.yield());

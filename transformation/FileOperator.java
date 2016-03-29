@@ -12,8 +12,21 @@ import java.util.Collections;
 import edu.stanford.nlp.ling.Sentence;
 import edu.stanford.nlp.trees.Tree;
 
+/**
+ * Class for reading the input NL text file and writing the output file
+ * 
+ * @author christina
+ *
+ */
 public class FileOperator {
 	
+	/**
+	 * reads the input file
+	 * 
+	 * @param file containing NL text
+	 * @return list of lines of text from the input file
+	 * @throws FileNotFoundException
+	 */
 	public ArrayList<String> readFile(File file) throws FileNotFoundException {
 		
 		ArrayList<String> sentences = new ArrayList<String>();
@@ -35,6 +48,13 @@ public class FileOperator {
 	}
 	
 	
+	/**
+	 * writes the output file
+	 * 
+	 * @param list of simplified sentences
+	 * @param output file
+	 * @throws IOException
+	 */
 	public void writeFile(ArrayList<CoreContextSentence> sentences, File file) throws IOException {
 		
 		FileWriter writer = new FileWriter(file);
@@ -104,6 +124,13 @@ public class FileOperator {
 	}
 	
 	
+	/**
+	 * writes the sentences that have not been processed by the framework to a file - for evaluation purposes
+	 * 
+	 * @param eliminatedSentences
+	 * @param file
+	 * @throws IOException
+	 */
 	public void writeFileSentencesToDelete(ArrayList<Integer> eliminatedSentences, File file) throws IOException {
 
 		FileWriter writer = new FileWriter(file);

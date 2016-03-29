@@ -1,11 +1,26 @@
 package transformation;
 
-
 import edu.stanford.nlp.ling.Sentence;
 import edu.stanford.nlp.trees.Tree;
 
+/**
+ * Class for decomposing a variety of conjoined clauses
+ * 
+ * @author christina
+ *
+ */
 public class ConjoinedClausesExtractor {
 
+	/**
+	 * separates clauses conjoined by one of the conjunctions "and, or, but" (without a preceding comma) into separate core sentences,
+	 * returns true if a conjoined clause of this type was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean infixAndOrButSplit(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());
@@ -38,6 +53,16 @@ public class ConjoinedClausesExtractor {
 	}
 	
 	
+	/**
+	 * separates clauses conjoined by one of the conjunctions "and, or, but" (with a preceding comma) into separate core sentences,
+	 * returns true if a conjoined clause of this type was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean infixCommaAndOrButSplit(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());
@@ -70,6 +95,17 @@ public class ConjoinedClausesExtractor {
 	}
 	
 	
+	/**
+	 * extracts subordinate clauses starting with the conjunction "when" that are not placed at the start of the input sentence
+	 * from the input sentence and transforms them into stand-alone context sentences,
+	 * returns true if a conjoined clause of this type was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean infixWhenSplit(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());
@@ -182,6 +218,17 @@ public class ConjoinedClausesExtractor {
 	}
 	
 	
+	/**
+	 * extracts subordinate clauses starting with the conjunction "when" that are placed at the start of the input sentence
+	 * from the input sentence and transforms them into stand-alone context sentences,
+	 * returns true if a conjoined clause of this type was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean initialWhenSplit(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());
@@ -233,6 +280,17 @@ public class ConjoinedClausesExtractor {
 	}
 	
 	
+	/**
+	 * extracts subordinate clauses starting with one of the conjunctions "though, although, because" that are placed at the start of the input sentence
+	 * from the input sentence and transforms them into stand-alone context sentences,
+	 * returns true if a conjoined clause of this type was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean initialThoughAlthoughBecauseSplit(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());
@@ -261,6 +319,17 @@ public class ConjoinedClausesExtractor {
 	}
 	
 	
+	/**
+	 * extracts subordinate clauses starting with one of the conjunctions "before, after"
+	 * from the input sentence and transforms them into stand-alone context sentences,
+	 * returns true if a conjoined clause of this type was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean infixPPSAfterBeforeSplit(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 	
 		String sentence = Sentence.listToString(parse.yield());
@@ -334,6 +403,17 @@ public class ConjoinedClausesExtractor {
 	}
 	
 	
+	/**
+	 * extracts subordinate clauses starting with one of the conjunctions "before, after"
+	 * from the input sentence and transforms them into stand-alone context sentences,
+	 * returns true if a conjoined clause of this type was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean infixCommaPPAfterBeforeSplit(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());
@@ -376,6 +456,17 @@ public class ConjoinedClausesExtractor {
 	}
 	
 	
+	/**
+	 * extracts subordinate clauses starting with one of the conjunctions "before, after"
+	 * from the input sentence and transforms them into stand-alone context sentences,
+	 * returns true if a conjoined clause of this type was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean infixPPAfterBeforeSplit(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());
@@ -458,6 +549,17 @@ public class ConjoinedClausesExtractor {
 	}
 	
 	
+	/**
+	 * extracts subordinate clauses starting with one of the conjunctions "before, after"
+	 * from the input sentence and transforms them into stand-alone context sentences,
+	 * returns true if a conjoined clause of this type was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean infixSBARAfterBeforeSplit(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());
@@ -532,6 +634,17 @@ public class ConjoinedClausesExtractor {
 	}
 	
 	
+	/**
+	 * extracts subordinate clauses starting with one of the conjunctions "as, since" that are not placed at the start of the input sentence
+	 * from the input sentence and transforms them into stand-alone context sentences,
+	 * returns true if a conjoined clause of this type was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean infixAsSinceSplit(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());
@@ -669,6 +782,17 @@ public class ConjoinedClausesExtractor {
 	}
 	
 	
+	/**
+	 * extracts subordinate clauses starting with one of the conjunctions "though, although, because" that are not placed at the start of the input sentence
+	 * from the input sentence and transforms them into stand-alone context sentences,
+	 * returns true if a conjoined clause of this type was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean infixBecauseThoughAlthoughSplit(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());
@@ -726,6 +850,17 @@ public class ConjoinedClausesExtractor {
 	}
 	
 	
+	/**
+	 * extracts correlated clauses starting with "if"
+	 * from the input sentence and transforms them into stand-alone context sentences,
+	 * returns true if a conjoined clause of this type was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean ifSplit(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());
@@ -795,6 +930,17 @@ public class ConjoinedClausesExtractor {
 	}
 	
 	
+	/**
+	 * extracts subordinate clauses starting with "while" that is followed by a gerund
+	 * from the input sentence and transforms them into stand-alone context sentences,
+	 * returns true if a conjoined clause of this type was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean extractWhilePlusParticiple(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());
@@ -835,6 +981,17 @@ public class ConjoinedClausesExtractor {
 	}
 	
 	
+	/**
+	 * extracts subordinate clauses starting with the conjunctions "so"
+	 * from the input sentence and transforms them into stand-alone context sentences,
+	 * returns true if a conjoined clause of this type was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean extractSo(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());

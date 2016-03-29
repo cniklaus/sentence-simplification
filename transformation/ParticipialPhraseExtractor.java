@@ -7,8 +7,24 @@ import edu.stanford.nlp.ling.LabeledWord;
 import edu.stanford.nlp.ling.Sentence;
 import edu.stanford.nlp.trees.Tree;
 
+/**
+ * Class for extracting participial phrases that are segregated through punctuation
+ * 
+ * @author christina
+ *
+ */
 public class ParticipialPhraseExtractor {
 	
+	/**
+	 * extracts participial phrases that are offset by commas from the input sentence and transforms them into stand-alone context sentences,
+	 * returns true if such a participial phrase was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean extractPresentAndPastParticiples(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 
 		String sentence = Sentence.listToString(parse.yield());

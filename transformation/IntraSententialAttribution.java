@@ -8,8 +8,24 @@ import edu.stanford.nlp.ling.LabeledWord;
 import edu.stanford.nlp.ling.Sentence;
 import edu.stanford.nlp.trees.Tree;
 
+/**
+ * Class for extracting intra-sentential attributions
+ * 
+ * @author christina
+ *
+ */
 public class IntraSententialAttribution {
 
+	/**
+	 * extracts intra-sentential attributions of the type "A says that ..." from the input sentence and transforms them into stand-alone context sentences,
+	 * returns the attribution which is to be deleted from the input
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static ArrayList<String> extractIntraSententialAttributions(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		boolean isPresent = SentenceProcessor.isPresent(coreContextSentence.getOriginal());

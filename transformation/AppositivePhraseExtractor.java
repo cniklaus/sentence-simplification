@@ -7,8 +7,24 @@ import edu.stanford.nlp.ling.LabeledWord;
 import edu.stanford.nlp.ling.Sentence;
 import edu.stanford.nlp.trees.Tree;
 
+/**
+ * Class for extracting appositive phrases
+ * 
+ * @author christina
+ *
+ */
 public class AppositivePhraseExtractor {
 	
+	/**
+	 * extracts non-restrictive appositive phrases from the input sentence and transforms them into stand-alone context sentences,
+	 * returns true if such an appositive phrase was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean extractNonRestrictiveAppositives(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		boolean isPresent = SentenceProcessor.isPresent(coreContextSentence.getOriginal());
 		String sentence = Sentence.listToString(parse.yield());
@@ -288,6 +304,16 @@ public class AppositivePhraseExtractor {
 	}
 	
 	
+	/**
+	 * extracts restrictive appositive phrases from the input sentence and transforms them into stand-alone context sentences,
+	 * returns true if such an appositive phrase was found in the input sentence
+	 * 
+	 * @param coreContextSentence
+	 * @param parse
+	 * @param isOriginal
+	 * @param contextNumber
+	 * @return
+	 */
 	public static boolean extractRestrictiveAppositives(CoreContextSentence coreContextSentence, Tree parse, boolean isOriginal, int contextNumber) {
 		
 		String sentence = Sentence.listToString(parse.yield());
